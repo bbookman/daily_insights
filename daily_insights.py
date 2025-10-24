@@ -174,7 +174,7 @@ def save_lifelogs(lifelogs: List[Dict]):
             for lifelog in logs_for_day:
                 start_time = parser.parse(lifelog["startTime"])
                 time_str = start_time.strftime("%H:%M")
-                content = lifelog.get("markdown", "").strip()
+                content = lifelog.get("markdown", "").strip().replace("- You", "- Bruce")
                 if content:
                     entry_content = f"\n\n---\n\n### {time_str}\n\n{content}"
                     f.write(entry_content)
