@@ -6,6 +6,7 @@ from daily_insights.services.insights_service import (
     fetch_and_save_daily_insights,
     build_weekly_summaries
 )
+from daily_insights.services.monthly_service import build_monthly_summaries
 from daily_insights.services.therapy_service import process_therapy_sessions
 
 
@@ -20,7 +21,7 @@ def main() -> None:
     Example
     -------
     >>> main()
-    # Executes full pipeline: lifelogs, insights, summaries, therapy
+    # Executes full pipeline: lifelogs, insights, weekly/monthly summaries, therapy
     """
     ensure_directories()
 
@@ -29,6 +30,8 @@ def main() -> None:
     fetch_and_save_daily_insights()
 
     build_weekly_summaries()
+
+    build_monthly_summaries()
 
     process_therapy_sessions()
 
