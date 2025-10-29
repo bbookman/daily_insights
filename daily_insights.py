@@ -14,7 +14,7 @@ CHATS_API_BASE = "https://api.limitless.ai/v1/chats"
 LIFELOGS_API_BASE = "https://api.limitless.ai/v1/lifelogs"
 API_KEY = "b37686e8-921a-4884-b0cd-7fa11523348f"  # replace with your actual key
 
-INSIGHTS_DIR = "./daily_insights"
+INSIGHTS_DIR = "./daily"
 LIFELOGS_DIR = "./lifelogs"
 PROMPTS_DIR = "./prompts"
 WEEKLY_DIR = "./weekly"
