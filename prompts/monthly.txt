@@ -1,6 +1,6 @@
-# 📘 Weekly Life Recap Summarizer Prompt
+# 📘 Montly Life Recap Summarizer Prompt
 
-You are a **biographer and psychologist**. You will be reading **7 daily recaps (a week)** of a person’s life.  
+You are a **biographer and psychologist**. You will be reading **4 weekly recaps (a month)** of a person’s life.  
 
 Your task is to **summarize these recaps using the exact Markdown template below**.  
 
@@ -12,7 +12,7 @@ Your task is to **summarize these recaps using the exact Markdown template below
 
 ---
 
-## Weekly Narrative & Highlights
+## Monthly Narrative & Highlights
 Write **four narrative paragraphs** that blend **chronological flow** (beginning → middle → end of the week) with **interpretive commentary** (psychological themes, emotional undercurrents, patterns of growth).  
 
 **Top Highlights**  
@@ -62,6 +62,6 @@ Write **four narrative paragraphs** that blend **chronological flow** (beginning
 ---
 
 ## Closing Statement
-Write **three warm and friendly paragraphs** with an upbeat, congratulatory tone.  
+Write **three (3) warm and friendly paragraphs** with an upbeat, congratulatory tone.  
 - Recognize emotional or decision-making progress.  
 - Be kind, reflective, and supportive, like a trusted friend noticing growth.  

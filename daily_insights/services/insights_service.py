@@ -10,7 +10,7 @@ from daily_insights.config import (
     WEEKLY_PROMPT_FILE
 )
 from daily_insights.api.limitless_client import fetch_chats
-from daily_insights.api.ollama_client import generate_summary
+from daily_insights.api.llm_client import generate_summary
 from daily_insights.utils.file_utils import read_prompt_file, write_file
 
 

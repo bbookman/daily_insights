@@ -8,6 +8,7 @@ from daily_insights.services.insights_service import (
 )
 from daily_insights.services.monthly_service import build_monthly_summaries
 from daily_insights.services.therapy_service import process_therapy_sessions
+from daily_insights.utils.pipeline_stats import display_pipeline_summary
 
 
 def main() -> None:
@@ -34,6 +35,10 @@ def main() -> None:
     build_monthly_summaries()
 
     process_therapy_sessions()
+
+    # Display comprehensive pipeline statistics
+    print("\n")
+    display_pipeline_summary()
 
 
 if __name__ == "__main__":
