@@ -9,6 +9,11 @@ import asyncio
 from daily_insights.config import LIFELOGS_DIR
 from daily_insights.api.limitless_client import fetch_new_lifelogs, fetch_new_lifelogs_async
 from daily_insights.utils.file_utils import append_file_async, write_file_async
+from daily_insights.services.speaker_service import (
+    identify_speakers_async,
+    apply_speaker_labels,
+    mark_file_processed
+)
 
 
 def get_existing_lifelog_dates() -> Set[str]:
@@ -225,11 +230,29 @@ async def save_lifelogs_async(lifelogs: List[Dict]) -> None:
 
         combined_content = "".join(content_parts)
 
+        # Apply speaker identification
+        try:
+            print(f"Identifying speakers in {date_str}...")
+            speaker_mappings = await identify_speakers_async(combined_content)
+
+            if speaker_mappings:
+                print(f"Found {len(speaker_mappings)} speaker mappings for {date_str}")
+                combined_content = apply_speaker_labels(combined_content, speaker_mappings)
+            else:
+                print(f"No speaker mappings generated for {date_str}")
+
+        except Exception as e:
+            print(f"Warning: Speaker identification failed for {date_str}: {e}")
+            # Continue with original content if speaker identification fails
+
         # Write or append based on whether file exists
         if is_new_file:
             await write_file_async(str(filepath), combined_content)
         else:
             await append_file_async(str(filepath), combined_content)
+
+        # Mark file as processed
+        mark_file_processed(f"lifelogs/{filepath.name}")
 
         files_created_or_updated.add(filepath.name)
 

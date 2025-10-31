@@ -1,0 +1,2876 @@
+{
+  "version": 1,
+  "last_updated": "2025-10-30T16:13:41.329690",
+  "examples": [
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Sit down, sweetie.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:52:30.093111"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Have your breakfast.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:52:30.093159"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Benetton, when you come out of the bathroom, turn off the light.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:53:00.048931"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Oh.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:53:17.198329"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: You are stupid then.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:53:17.198352"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Why couldn't you do that?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:53:17.198357"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Hello, it's your pancake Benetton.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:53:41.591058"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Just information, um, the doctor that I'm seeing today and the psychiatrist office are very close to each other.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:53:45.390838"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Yeah, Benetton, everybody's sick.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:54:03.566445"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Peach.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:54:03.566465"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Stop freaking out, Peach.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:54:03.566468"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Benetton, can you put your breakfast stuff in the sink?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:54:23.809395"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Yeah, thank you, good.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:54:23.809415"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Just a minute, please.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:54:23.809418"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Yes.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:55:34.938981"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Is that like 2 o'clock?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:55:34.939005"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Are you still going to work?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:55:34.939008"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Ivette: Yes.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T08:56:22.935068"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Ivette: I have no idea where it would be.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T08:56:22.935092"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Ivette: It should be in the drawer.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T08:56:22.935098"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Ivette: There's there.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T08:58:00.223839"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Ivette: This is the corner.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T08:58:00.223868"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Ivette: In the corner.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T08:58:00.223873"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: No, thank you.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:58:07.457581"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: I know we had uh salsa verde here somewhere.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:58:07.457606"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: So annoying.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:58:07.457609"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Yeah, I think I'm going to go in that floor.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:59:00.368258"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: I can see the report on the.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:59:00.368286"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Are you talking to me?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T08:59:00.368292"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: I'm in the bathroom.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:02:03.919613"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Russell: Hey, I'm going to my doctor.",
+      "speaker": "Russell",
+      "labeled_date": "2025-10-30T09:06:17.735970"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Russell: Is your keys there?",
+      "speaker": "Russell",
+      "labeled_date": "2025-10-30T09:06:17.735983"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Russell: Dad, where are you?",
+      "speaker": "Russell",
+      "labeled_date": "2025-10-30T09:06:17.735986"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Send a text to Russell.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:06:39.208054"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: What do you want to say to Russell?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:06:39.208079"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: When you clean up after the robot's done, um, there's both the kitchen and the dining room.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:06:39.208083"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Next uh journal entry about my friends is about Suzanne Mallary.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:06:55.889758"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: She's currently now married.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:06:55.889784"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: She is Suzanne Sparacio.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:06:55.889789"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And from what I recall, we have we're sharing a freshman biology class.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:05.959577"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: It's uh like biology 101.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:05.959604"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And we were sitting next to each other and the we had a lab to do.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:05.959610"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: His name was Paul.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:10.104999"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Oh no, he she was dating some Indian guy before that.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:10.105028"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um Omar?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:10.105033"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um I'll have to remember to talk about that, to talk about why I chose my history major and then why I changed it to biology.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:13.280804"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: But let's talk about Suzanne or Suzy Mallary.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:13.280835"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um she's super intelligent.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:13.280841"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um but I just remember, you know, it's a black and white photo.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:17.961914"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: It showed up in sort of um some, you know, miscellaneous um small paper.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:17.961942"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And but I just remember it.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:17.961948"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um and those classes are a little intense because they're shorter uh classes.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:22.557138"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And so we did spend almost most days together studying.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:22.557166"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um and we had a competition because we both got really good grades on the exams.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:22.557223"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um so yeah, she graduated and don't remember if she she started to working, started working or God, I just can't recall.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:27.481111"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um but you know, we didn't like live in the same city or whatever.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:27.481134"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um I went and started living uh with my parents uh in Los Gatos.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:27.481137"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um she's gone through a hell of a lot in her life.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:32.764738"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um number one, Paul uh turned out to be a sociopath.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:32.764767"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um extremely controlling and not giving and only out for himself.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:32.764772"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um and so that kind of estranged some of her children to her, although later she was able to mend some of those relationships.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:35.757404"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um she also had to take him to court a number of times uh for custody reasons and maybe also financial reasons.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:35.757425"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Uh he was extremely manipulative and did a whole lot of different things uh to make her life hell.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:35.757429"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um and Rick is a very nice man.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:43.892802"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um not I don't know.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:43.892827"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: He's kind.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:43.892836"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um and eventually like she went to some doctors at Stanford, I think, and they made a treatment that targeted her cancer.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:50.006230"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: She's currently cancer-free, but obviously Susie went through a whole lot uh spending time uh at the hospital with her daughter and all the recovery and just all the worry about her health condition.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:50.006261"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: I will mention also that Susie did eventually go to school at Stanford University and received her PhD.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:07:50.006266"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um she was in my car and we were driving and some sort of traffic issue happened.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:04.093902"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And I think I got really angry and maybe pounded the um the um dashboard or the window with my fist.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:04.093931"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And she said something to the effect of, you know, hey, um you should probably learn to calm down.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:04.093936"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: I'm not sure if I ever was able to implement anything in terms of being able to think about how to calm down and how to not have those reactions.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:16.159974"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um but I just don't forget that specific little incident.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:16.159986"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Uh so it must have been something fairly important in my life to have happened.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:16.159988"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Her mother was from Mexico, her father was a gringo.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:19.707329"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And it sounds, I remember her, I think her mother was bipolar or certainly had some fairly serious mental health problems.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:19.707349"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And so Susie found it very difficult growing up.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:19.707354"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And how to be an adult at a young age and she's very, very adept at taking care of herself, getting resources, understanding resources, navigating the adult world.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:24.309238"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um and that I I really admire that.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:24.309257"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: She has given me lots of advice over time and she's giving me she's given me good advice about my relationship with Ivette, um, how I think about my kids and my relationship with my kids and my decision making about my kids.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:08:24.309274"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And some of that is definitely informed by her experience with her children and seeing how some of her decisions uh affected her children.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:02.614120"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: I also remember that Suzie had invited me, I think it was called the Bear.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:11.964526"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: It was this bar burger place uh on a corner of the university.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:11.964556"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Uh and you know, it was mediocre but a place where a lot of the young college students would go to drink and socialize.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:11.964562"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: But I think she had met Paul at that club or at that place where we were dancing.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:15.060017"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Um and again that's just a memory that sticks out in my head about Suzie.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:15.060046"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Ah, I just had another memory.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:15.060051"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: There was this girl who lived in the dorms.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:18.587200"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: I had lived in the dorms at Chico, Chico State University.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:18.587228"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: I'd lived in the dorms for two years.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:18.587233"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And so she taught me how to do it.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:25.986920"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And I remember, you know, riding it and having her teach me fairly successfully as well as um she at one point I think went on the back of it and so she was in back of me while I was um steering and controlling it.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:25.986949"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: And even then I remember being successful.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:09:25.986960"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: Here's the letter, it's attached.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:10:49.507431"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-03-24.md",
+      "snippet": "- Bruce: What is my current dose of vitamin D?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:10:49.507462"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-04-24.md",
+      "snippet": "- Bruce: Okay. Can you give me an example? It's helpful.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:39:16.989177"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-04-24.md",
+      "snippet": "- Bruce: No, I mean show me. You understand? Look, if let me just explain what what I might need to understand. Let's pretend this was like this. And let's pretend that I thought that was acceptable. It isn't, but pretend for a minute I thought that's what I found.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:39:16.989305"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-04-24.md",
+      "snippet": "- Bruce: But I've felt anxious since I came to work.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:39:45.800554"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-04-24.md",
+      "snippet": "- Bruce: I'm still in an okay mood and able to be jovial.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:39:45.800583"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-04-24.md",
+      "snippet": "- Bruce: just anxious and I did take a Xanax.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:39:45.800586"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: That's been on. socks. socks must be downstairs. Okay.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:14.717535"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: All right, dogs.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:17.003075"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Be good.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:17.003096"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: I keep putting them down. Shit.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:20.825298"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: All right, now where did I put them?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:20.825326"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: They're still there. All right, be good dogs.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:20.825332"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: cheddar.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:52.731222"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: cheddar.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:52.731249"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: cheddar.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:42:52.731254"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: So, first thing to report is I've been feeling in a much better mood. It's clear to me that for about a week or so, I was really spiraling down to a place where I was really unhappy and just not just not feeling well.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:10.801774"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Um, it's more than just sinus and allergies. It was really a angry, super sad state.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:10.801802"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Um, you know, crying at least three times a week and now I'm not doing that. I don't feel I still not happy about at least intellectually.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:10.801807"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Intellectually, I'm not happy about the state of things. Um, the Trump administration and how evil it is and how evil um, the whole thing with ice and ice basically rounding up and imprisoning uh, people for very little reason and certainly um, those people are not going to get anything close to a fair trial and their treatment is horrific.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:22.869686"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Um, and it it paints a pall over the history of the United States. And certainly for the world, it makes the world look at us and basically say what the fuck? What is going on with the United States?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:22.869713"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Um, can they be trusted at all? Uh, certainly economically, um, the Trump administration is completely destroying the economy and fixing it is probably going to be something like a 20-year effort. Um, partly because there were things that previous administrations had done um, to predicate um, a crash, you know, having huge, huge amounts of debt um, is a real problem.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:28.731506"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: So anyway, going back to I feel emotionally better, I feel more like myself, like I can engage with a world at a good place.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:28.731525"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: I'd say I'm moderately happy. I'm more just happy that I feel normal. Um, my relationship with my family is good.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:34.554487"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: I really do need to call my parents. Just let them know I'm doing okay or at least text. Um, Russell has been doing well in terms of mostly taking care of himself.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:34.554510"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: I'm still doing some things in the house, but he's mostly taking care of himself, which is great for him. And I feel good that I've been able to nudge him in that direction, um, to take care of himself as a person, um, as a person growing into a young adult and teaching him things about being a young adult, being an adult in general, the responsibilities that come with adulthood and how to navigate them.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:34.554514"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: I am still enjoying my coding project. Um, I'm really crossing my fingers that it's in a decent state. Um, I am concerned that the um, the AI assistance are not as great as they could be and especially since I'm, I mean, I can read code to a degree, but the complexity of the code that they're writing is tricky for me.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:38.142943"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: But I'm really hoping I can make this work.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:41.441667"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: I've been writing the same app like 10 times, but this is the best looking one so far.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:41.441685"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: It's um it's actually ingesting data.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:41.441688"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Um what else?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:45.204768"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Still feeling a little lonely, especially in the sex and department, my my sexual life consists of my right hand.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:45.204797"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: And um it's difficult. I really need a woman's touch.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:45.204804"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: I don't even know what street they would be walking.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:52.773019"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Work is all right. I'm still mostly enjoying my work.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:52.773034"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: It isn't the most intellectually stimulating, but socially stimulating it is, for sure, and that's good.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:52.773038"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Cancel the timer.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:56.241949"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Set a timer for 20 minutes.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:56.241979"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Okay, evidation.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:56.241985"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: I'm going to say low stress.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:59.155275"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Then we'll take the measurement.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:43:59.155303"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Okay.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:03.044335"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: It's reporting this very consistent biological age 50.5.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:03.044356"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Biological age 50.5.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:03.044359"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Share my experience with anxiety.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:11.011668"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Oh yeah, let's do that.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:11.011694"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Okay, it's asking if I've taken any drugs and I've definitely taken Xanax.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:11.011700"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: 7,838 steps.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:15.968561"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: Today I walked 7,838 steps.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:15.968590"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: And I've definitely taken Zoloft.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:39.977148"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: health care provider changed my prescription? No.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:39.977177"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-07-24.md",
+      "snippet": "- Bruce: non-medical lifestyle changes? I'll say no.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:44:39.977182"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: I'm having horrible, horrible, horrible allergies. Really, really bad.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:45:03.197189"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Yeah. And then we'll just sign it, okay? We'll do that every day, okay? And I've made some copies of these.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:45:21.318457"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Well, I mean, yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:45:21.318495"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Right. Um, this is having nothing to do with that at the moment, but this is a social security thing and you'll have a statement also. Um, and this is saying, so, uh, full retirement is 67, right? And early retirement is 62. Okay? So if I can retire if I happen to retire at 62, I'll get a little, uh,",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:45:21.318500"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: What we're going to apply for SSDI, they don't say any they don't need anything about your retirement account, right? They don't look at your assets, okay?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:45:59.901053"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: They don't care about those. But they do care about uh, God, what is it? SGA, uh God.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:45:59.901079"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: God, I can't remember the term for it, but there's basically if you make over like 1,600 and you'll remember this. Oh, SGA.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:45:59.901085"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: No, no, no, no, no. What I'm yeah, what this is saying, look, forget about this for a minute.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:09.243343"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: What I'm saying is, if you make one, just remember if you make any of that, you're going to get denied, okay?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:09.243371"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Right, but there's still that tension, right? Oh, you can work part time, right? So it becomes this tension.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:09.243377"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: So these are sort of are my two are two choices. If I work, we've got to figure out how to make less than that and probably get denied.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:23.785169"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: You'll still get denied. But we need to go to the judge.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:23.785199"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: What I'm saying, no, listen. If I make less than this, that's great, but we'll still have this problem that you were working. Sorry, you were working. Tell us why you were working and you can't work. Tell I don't I don't understand. You're saying you can't work but you were working, right?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:23.785205"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: That's what the judge will say.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:44.394958"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: So we don't have to make that decision right this minute. But it's something that I want you to figure to decide. And I can find if you need more information about this, I can get all the information about about this. In fact, I have some already basically saying, look, this is a tension, right? There's a problem here. And it's it's horrible. I mean, imagine somebody more disabled than me, right? But has a part-time job.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:44.394987"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Well, they they can be good, but here's the problem. No matter what we do, no matter what lawyer we get, Ivette.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:56.209993"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: No, we can talk to",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:56.210020"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Right, but it has nothing to do with this, right? It's evidence. In fact, I'll use it in my packet, right? Saying, look, over the last three years, I went down a huge amount and I've been losing job, losing job, losing job.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:46:56.210026"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: you have to say, okay, here's the date. Here's the date where I was disabled, where I I could no longer work.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:07.907503"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: two years ago.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:07.907530"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Just a minute.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:07.907536"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: So you have to claim a date, right? And then after that, that's why I'm saying, look, after that date,",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:16.878575"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: if you're looking for work,",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:16.878603"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: then you're able to work. What the hell is wrong with you? Are you able to work or are you not able to work?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:16.878609"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: No, no, listen. Listen. It's not that you can't get it. It's that they may reduce what you get.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:20.599443"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: find those lawyers. Okay?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:20.599468"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: I'm just telling you what I read.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:20.599471"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Irritable. Uh, withdraw from others, no question. I'm feeling anxious.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:31.026270"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: I haven't yeah, cuz Just make it up. I want. Can you do this and sometimes you drive me crazy. Okay. You do this, you put your things.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:31.026297"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: No. No. This is this is a form. It's not an official form. It's something I made based on all the advice that I saw. Okay. So you can sign it too and you can put severity if you want. It doesn't matter.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:31.026303"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: That's fine. You go ahead and do that. Okay?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:38.852268"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: No, no, no. No. No. Severity.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:38.852297"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: This I'm I'll give you another one. Mild, moderate or severe. Okay, so Oh, you put that okay, so you put that S here, severity, severity and then you have to sign.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:38.852303"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Here. And then if you want, why don't you just take them? Here, I'm going to give this to you. Um, however, the one thing that I would also be knowful is like notes. Like let's say, for example,",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:45.355408"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay, great. Can I finish my sentence or not?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:45.355428"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Yeah, great. God, you're so ADHD. Um, like withdraw from others. The other day when your family was here, I didn't spend too much time. You can make a note saying something like avoided family gathering.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:47:45.355430"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: I I I would rather have somebody else help you with your resume.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:34.370586"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: It drives me crazy.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:34.370614"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: I can't. I can't do that.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:34.370620"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Again, what are we what what are are we we doing?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:42.891614"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Doing?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:42.891637"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Oh, there's all sorts of problems with Indeed and LinkedIn.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:42.891659"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Such a",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:47.269864"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Where's the message?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:47.269892"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Anyway, I want you to let's go back for to that for a minute and if you could focus.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:48:47.269897"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:49:10.749406"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: So preferred. Okay. Certain requirements is like boom boom you have to. Preferred means well, we really like you to have this. Now, you know what a notary is?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:49:10.749440"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: You can go to the inside mall.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:00.851037"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: walk around the inside mall a little bit.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:00.851060"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:09.611436"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: I understand.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:09.611456"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Let me do my thing my way. I won't hit submit on any website anywhere, okay?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:09.611458"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: God damn it. Russell just chill about stupid things.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:30.156427"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: All right, any, oh my god. So my journal entry got fired. Got fired for stealing. I was stealing. I my brain didn't quite work. I thought I could do it without getting caught. But at the same time, my psychiatrist would say it's all about the little kid who thinks they can get away with stuff and wants to get away with stuff and make trouble. And it's also part of destroying uh work because I don't want work anymore. And probably all of those things are true.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:30.156459"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Do I wish it I don't know if I even wish it didn't happen. I mean, getting fired is fine. Getting fired for stealing. I'm just hoping Ivette doesn't find out. Um, you know, we I'm hoping she decides that I shouldn't be working. That would be great. Um, because that's what I want. I want not to work anymore. I really, really want that. And if she and I can figure that out, um, that would be fantastic. Otherwise, um, you know, my typical things I have I want to",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:45.675291"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Yeah, I'm proud of uh taking care of my allergies. I've been taking my medication. I have been doing more in the house. Um, so I think that that's helping if we had Ivette and I had a really great conversation today about some of the tradeoffs and the decision making uh regarding uh employment. So, uh that that it was a little difficult but not not terribly difficult. So, that's good. Otherwise, Maslow's hierarchy of needs hierarchies pretty much completely met. Got a roof over my head, I've got food, I've got water, I've got electricity, I've got my family around, I've got gas for my car, I have a car. Um, I have pretty much everything I need. I'm playing video games. I'm playing with my computer. Um, writing my application.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:45.675307"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: You know, I don't know if I've really talked much about the app that I'm working on. So, the the um I don't know, the what statement would you call this? The idea is called Life Board. And it's a place that can gather all of the digital information about your life. Uh, both the past and the present. You can connect all of the services that you're using, you know, Facebook, Spotify, uh calendar, even things like Ticket Master or Event Bright. So what you can do is you can start to fill up Life Board with information about your life. And then the idea is you can do a couple of big things. One, for each day or each week or however you want to organize it, um, you can have prompts. And you can have those prompts pull in the various pieces of data. Now, you know what? I realize I just realized now that the prompts should sometimes have no date. Uh, or they should have they should have a, you know, like a label for a date, a label for a time period or basically just a label. Um, so that they can apply to more than one date or no date at all. You know, if I want something that um, I might want something that periodically updates itself too. Like like a continuous journal. I don't know, I'll have to think about that.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:50:57.025344"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:33.803998"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: They have this thing called the RangeMe.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:33.804027"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: And, actually, there's another company that does the same thing.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:33.804033"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: We require you to identify your products.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:45.165758"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:45.165786"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: That can be scanned at the point of sale. Your UPS barcode symbols must include global trade number, blah, blah, blah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:45.165791"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Cuz reading is actually helpful.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:52.556683"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:52.556711"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: The pre will ensure that your number, your assigned product will be uniquely identified and linked only to your company. They're basically telling you you have to set this up in order for them to basically a UPC code.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:51:52.556721"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: is on their website with you're participating and working with to get your product sent to them. Oh, okay. So that.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:52:06.852936"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: For Wegmans, they work with this company called Sindigo. And they're the ones who like they're going to gather all the information. So it's not see, our vendors partners work directly with Sindigo. Okay. Okay. Okay, so we need to write all that. Yeah, I have that I can get that information and put it together. I see that's what I do.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:52:06.852961"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay, let's do it again so that you know I did that, okay?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:52:46.992201"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Uh, where is it? Hold on a minute. I did exactly that already.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:52:46.992224"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: See how it says new item setup?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:52:46.992226"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Uh, let's see. I don't know if I have his",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:53:02.360971"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: No. How do I I don't know anything about using WhatsApp. How do I get style his number or whatever the fuck. Oh, I see.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:53:02.361003"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Do you know his number?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:53:02.361009"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Ivette: Yeah, on your.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T09:53:10.388142"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Ivette: Bueno.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T09:53:10.388163"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Ivette: Qué onda?",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T09:53:10.388166"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Ivette: solo Ancona, mejor Ancona, a ver si me explico.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T09:53:35.937149"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Ivette: Right. Okay.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T09:53:35.937178"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Ivette: Ancona es Ancona y ya luego le ponemos todo lo demás.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T09:53:35.937183"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: So I just.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:00.485426"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: There's just well, but we don't want to say yes and then it's no.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:00.485455"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: But at least we've gotten this far and we know what questions to ask. This is optional. So we don't have to, but it would be nice to it would be nice for them to.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:00.485461"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay. So if you already have products that are on one of those platforms, it's going to have a whole bunch of details about the product, right?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:07.317666"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: This is allowing you to bring it in. You don't have to do that. You can add them.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:07.317694"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Right? So like look, then it's going to give you all this questions about the product. It's weight, it's every.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:07.317699"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Or is it Ancona is the mark and the sea salt is also called Ancona sea salt? No.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:14.011814"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: No, it's not. I guarantee.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:14.011843"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: It's a mark though. It's look, it's just like the rub.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:14.011849"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Do we have a list of these?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:40.665888"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: These are optional, but it's a good idea to have.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:40.665907"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Organic.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:58.685868"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay. So we want to we can move along. Again, this is optional. Unique selling position. What is it? Examples, eco-friendly, yes, women owned.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:58.685896"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: I I remember you guys talking about this too, right? It is este short keywords of or label that categorize your product with similar products. Using the right USPS makes it easier. Organic, sustainable, handmade.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:54:58.685904"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay, the idea. Uh about us or about the product?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:55:15.308330"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: can't copy it.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:55:15.308358"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: actual documents, not photos of documents, not this.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:55:15.308364"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: So that's the product image, right?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:55:32.713275"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: No, no, no, no, no. No. And send it to him. Yeah. Cuz it says use a white background, show the entire product. Should be the focus of the image. This is just it's too it's not a good photo. We can help you make a retail ready image. No, they're going to charge. I know. Let's see if he has something else. Something better. Primo, nos están pidiendo que pongamos una foto que esté mejor que esa, porque es la primera impresión para tus clientes y está amarilla del lado derecho, si la ves y que no está muy buena la imagen. Te mandé lo que dice ahí. Tendrás otra que esté más clara, que no tenga amarillo ni colores en la sal, que se vea la sal más blanca.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:55:47.811748"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: send him this one and say ask him if he has this but with a white background.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:12.610446"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Sure.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:12.610466"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Oh, you know what then the product name is hand harvested kosher sea salt.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:12.610469"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Okay, I got it. Got it. Got it. Yeah, yeah, yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:16.075481"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: um pricing. Do you have this information about pricing?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:16.075500"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: profile and select industry.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:19.422315"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: like a product sheet.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:22.454827"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: Yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:22.454855"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-24.md",
+      "snippet": "- Bruce: What I think would be good is if we just get a list of things that we need from him.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:56:22.454860"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: psychotherapy.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:57:39.348074"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Yeah, um his first name is Larry.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:57:39.348134"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: His last name I'm going to have to spell for you.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:57:39.348143"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Uh, no.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:57:56.442913"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Uh, college, university, bachelor's degree.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:57:56.442935"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: The first name is uh, sorry.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:57:56.442939"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Benetton: You want the barbecue sauce?",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T09:58:10.520349"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Benetton: You want the barbecue?",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T09:58:10.520368"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Benetton: I already have lunch at school.",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T09:58:10.520371"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: All right, Benetton. Benetton.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:14.356561"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Benetton, please close the door.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:14.356592"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Benetton, please close the door.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:14.356597"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Let me show you which one.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:27.972246"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Which ones, those?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:27.972265"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Benetton, please close the refrigerator, please.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:27.972275"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Please turn it down.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:35.496347"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Thank you.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:35.496365"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Please turn it down again. It's really noisy.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:35.496373"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: You want them on the right?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:40.175165"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Sweetie, can I ask you again to please turn it down?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:40.175184"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Thank you. It's a little noisy.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:40.175187"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: What's going on? Did you get food? Did I feed you?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:44.864013"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: No.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:44.864043"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: I didn't feed you. Sorry, I'll take you out and then I'll feed you.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:44.864049"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: Okay, we're supposed to be careful. There is a big pothole. Anybody hear that?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:58:54.780300"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: I really prefer something I don't have to take care of. So nothing really with a yard unless I absolutely have to.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:59:18.064644"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: A lot of those condos that I see barely have a kitchen at all. So I'd like at least a small kitchen.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:59:18.064668"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: I really prefer something I don't have to take care of. So nothing really with a yard unless I absolutely have to.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:59:18.064671"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: I mean a lot of those condos don't have kitchens.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:59:22.609291"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: I mean a lot of those condos don't have kitchens.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:59:22.609310"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-24.md",
+      "snippet": "- Bruce: really have bad luck with the garbage disposal.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T09:59:27.151330"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Alexa: Organize is spelled O R G A",
+      "speaker": "Alexa",
+      "labeled_date": "2025-10-30T10:00:32.844248"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Alexa: Insomnia is spelled I N S",
+      "speaker": "Alexa",
+      "labeled_date": "2025-10-30T10:00:35.498808"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Benetton: I already had lunch.",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T10:01:12.597482"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Benetton: No, only four days.",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T10:02:10.516153"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Bruce: Washington DC.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:02:14.277285"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Benetton: How many, how many days for Washington DC?",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T10:02:18.016209"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Benetton: Oh no, four days.",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T10:02:18.016237"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Bruce: and will be in the mail uh tomorrow or today. And then yeah, I do have the um telehealth and again you said just to check that. And then was there another one?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:02:31.477761"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Bruce: Oh. Yes. that be your wife Maria? Yes, yes. She received one also.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:02:31.477790"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Bruce: Okay, fantastic. I really appreciate your help a lot.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:02:31.477796"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Bruce: Hi, my name is Bruce Bookman. I'm a new volunteer. This is a call for Michaela. Um, she had sent me a couple of docu signs and for whatever reason, one kind of got lost. It is the docu sign, what I remember is it has details about driver's license and all sorts of stuff about driving. So I need that to be resent. Uh again, my name is Bruce Bookman, resend the docu sign for driving. My email is Bruce.bookman@gmail.com. Again, that's Bruce.bookman@gmail.com. My number is 6692219612. Thank you.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:02:39.645163"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Bruce: I'll do a journal entry for today. Let's think about things that we can celebrate about me. Still having a good relationship with Ivette. Had some kind of a clash this morning, but we went through it pretty, pretty swiftly, pretty easily. Didn't really affect me much. Um, otherwise, I feel good that I finished all the paperwork for filing for um social security disability. So that's all done. I do notice that yesterday and today I have anxiety about that. Um, it's just more of a generalized feeling of anxiety. It's not fun, um, but it's there. But in general, I'm doing really well. Uh I feel well, I feel normal. I don't feel angry. I don't feel frustrated. I don't feel pushed. I feel at peace. I feel positive. Um, not working has been making such a huge difference for me. I feel like I have the time to do the things that are expected of me or are um important to me.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:03:41.775790"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Bruce: I'm coming here to say hello to my dog grape. That's g r a p e. Grape like a little grape, like something you eat. She is a maltese yorky. She's tiny. Maybe you're 7 pounds. She's pretty tiny.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:04:32.245793"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-24.md",
+      "snippet": "- Bruce: Oh, something really cool. Um, a couple days ago, Ivette and I had cleaned the pantry and really got it really organized and clean and I found uh a couple of boxes of mighty fine pudding. That's m y and then a T and then fine. And then it's chocolate pudding and it's a real childhood favorite of mine for making uh chocolate pudding pies. Um, my mom would make them for me. Usually I'd ask her to make them on Thanksgiving and Christmas. Sometimes maybe, I think maybe Passover. Um, and God, I love chocolate.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:04:45.080282"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: All right, I'm going to be talking to my therapist Larry.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:00.679892"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Yeah, let's put it this way. I now have responsibilities that I didn't have before.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:14.298523"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Take my son to school, pick my son up from school, clean the house, make meals.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:14.298579"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Now, I will say I am enjoying pieces of that. Um, I would like it to be more of my choice, but then then if I choose not to do those things, I will suffer consequences. But yes. Um, Oh, and yeah, I like one thing I'm enjoying for reasons I don't know, but and I just kind of act fell into this accidentally. So I'm making smoothies.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:14.298590"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: It's fun and they're delicious.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:28.637491"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: But I would like to get out of the house more. But with picking my son up and then dropping him off and then oh, taking him to his um activities, it's a little bit more difficult than I anticipated.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:28.637520"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: But it'll happen. It might not happen for another six months, but it'll happen.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:28.637525"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: It's a question I can't answer.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:32.105061"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: I don't think she still knows what the hell she's doing. I think she wants things to be true that can't be true. That absolutely can't be true.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:32.105080"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Like she can afford to live in California.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:32.105083"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: So let's talk a little bit about retirement and some experiences that I've had. Um, so I have, I don't know if I told you, I have this little doohickey, this little doohickey right here. And it's basically a little device that converts speech into text and then you can throw AI on it and do stuff with that that text. And you know, sometimes I prompt it with, hey, how was my day yesterday or whatever. And it's been noticing and it's just I yes, it is the case. Um, but having a device like this tell me it's true is an interesting experience. I lose my patience fairly easily. Um, and things explode that might not expect to explode. Um, so that's something I think we need to work on. Um, I don't want to spend the rest of my retirement pissed off.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:39.757689"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Um, now, yeah. You know, I always think that a small part of that, um, is that I was born in New Jersey. Um, now even though I was born there, I only spent maybe two years there, but obviously I have my my immediate family from Jersey and that area. Um, and you know, even though they eventually my mom and dad turned into Californians, it might not have been immediate. Um, so I'm guessing that I learned certain things at a young age. Um, I also I'm sure my relationship with my father, my experience with my father, you know, any little thing that could piss me off really does piss me off. So I would like to work on that.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:06:49.331280"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Well, I'll tell you a specific instance and maybe we can go from there. Um, so Ivette had asked me to make a meal for Benetton. Um, you know, now, now I'm retired so I have all the time in the world. So just that alone made me feel, okay, I don't have full control over my choices. Um, and you know, what I want to do. But okay, sure, I'll make a meal. Um, and I don't know if this was I have been making some meals for him and then been critiqued for what I made. I made the wrong.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:07:05.031233"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Um, so I asked her, hey, um can you tell me where the mac and cheese is? Um and she immediately said some something to the effect of figure it out and hung up.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:07:34.097984"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Which pissed me off even more. So you can see the progression here.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:07:34.098007"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-11.md",
+      "snippet": "- Bruce: Um, so I mean, I'm guessing one of the best things to do is try to nip it in the bud early. So I need help recognizing it, figuring out how to deal with it. You know, another oh God, this pisses me off.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:07:34.098011"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: What does that mean?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:08:26.159467"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: For what? What do you mean?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:08:26.159533"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: What do you mean you got the wrong date? What does that mean?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:08:26.159542"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Ivette: Oh, got it, got it, got it.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T10:08:28.656989"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Ivette: Yep, exactly. Hopefully I'll be able to reset it.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T10:08:28.657011"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Ivette: I know.",
+      "speaker": "Ivette",
+      "labeled_date": "2025-10-30T10:08:28.657013"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: Okay, Mr. Vacuum, you're going to go crazy this morning.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:08:54.391791"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: Remember to close the door to your room. You can open it, but remember to close it. Um also just as a reminder when you go out in the morning, turn off all the lights. When you go out.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:08:54.391822"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: Benetton and I are going to go on a little adventure, right Benetton?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:09:04.191777"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: Where you guys going?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:09:04.191805"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: It's a secret for Benetton. I'm just not going to tell him.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:09:04.191811"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: Benetton, almost ready. Going to take the dogs out and then we're going to go.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:10:23.390559"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: You're two good dogs out.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:10:23.390586"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: No, I think this is the back.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:11:25.960598"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: Come on, Papa, figure it out.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:11:25.960626"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: Okay, yeah, it's over there. I think, oh, it's over there. Oh, there's a Michael's too. We can stop at Michael's after.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:11:25.960632"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: Oh, it's late. Don't worry about it. It's just mama is feeling late, go to work.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:12:52.037216"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: It'll it'll work out.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:12:52.037236"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-08-11.md",
+      "snippet": "- Bruce: All right, your quesadillas are now in the oven. I'll be down in a minute.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:12:52.037239"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: No, thank you.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:14:53.136399"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: I appreciate you offering.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:14:53.136449"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: Make yourself at home.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:14:53.136458"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: Right.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:15:18.458250"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: And he may know her address and he may know her phone number, but he's not going to pick up the phone and call her and say I'm lost.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:15:18.458292"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: Yeah, so New Hanover County Social Service.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:15:32.145625"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: Amy is also really into special Olympics and just athletics in general. So and she's awesome at finding things for him to do. Just awesome. I mean, he does so much stuff.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:15:32.145642"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: Yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:16:05.118584"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: She she's so, yeah, she knows the system so darn well that I I just",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:16:05.118612"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: my husband doesn't know. There's certain rules. I mean, I take him everywhere. He loves I love going with him places.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:16:05.118618"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: He loves going downtown to he we walk a lot and he likes to ride the elevators in the hotels. He's big into elevators.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:16:26.071947"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: He loves to go to the mall and walk walk the mall and do the elevators in the mall.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:16:26.071969"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: Yeah, and I'm willing to do it's it's a blast. I always love being with him.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:16:26.071973"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: Okay. Yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:16:29.320917"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-27.md",
+      "snippet": "- Bruce: I just recently retired.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T10:16:29.320944"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Benetton: Yeah.",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T15:22:10.730381"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Benetton: All right.",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T15:22:10.730448"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: I know, in general, it's because the actual work is just busy work.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:22:39.686113"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: That you don't depend on them.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:22:39.686136"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Yeah. Or it has to be a small, small organization that isn't.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:22:39.686139"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Benetton: Yeah.",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T15:42:18.270025"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Benetton: All right.",
+      "speaker": "Benetton",
+      "labeled_date": "2025-10-30T15:42:18.270082"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: I know, in general, it's because the actual work is just busy work.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:42:44.364101"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: That you don't depend on them.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:42:44.364122"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Yeah. Or it has to be a small, small organization that isn't.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:42:44.364125"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Sherry: It you're working on yourself and it can become this this glowing of helping others. It can become that or it can become pure in control and if someone approaches you with that, you you might not even be able to see it. It's all this blind spot shadow stuff that goes on in every group.",
+      "speaker": "Sherry",
+      "labeled_date": "2025-10-30T15:48:11.114877"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Sherry: And I just find it irritating and I always find it irritating with all this. It's in all relationships and it's all that unacknowledged stuff that you can't talk about because the person can't even see it and you've got your own stuff about it and your own power stuff that you want to make things happen and you might want to do them in ways that are helpful. I mean, making the group more organized and functional, that could be very helpful.",
+      "speaker": "Sherry",
+      "labeled_date": "2025-10-30T15:48:11.114897"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:48:35.560005"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Just what I was saying.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:48:35.560034"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Right, I know that I was abused and that hurt my little child next and so the shoulds.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:48:35.560040"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: I don't know. I think uh just my brain had not gotten that we uh have kind of a new schedule.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:48:51.139815"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: I was also a little distracted. Uh we were um we were doing some home shopping, so I may have been a little little distracted.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:48:51.139839"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: But not that exciting because we decided to put a pause on our home shopping.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:48:51.139841"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: It's all right. Um as long as T uh emails me or texts me, I will try to be better about showing up.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:03.938414"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Okay. Great.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:03.938433"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: I hope I'll be at the office, but I I do have a scheduled appointment uh at 10:00 a.m. on Thursday.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:03.938436"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Yeah. Yeah. I have um my son has an IEP at noon, so anything like after 1:30.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:05.915318"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Okay.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:05.915348"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Yeah, it is.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:05.915353"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Okay, great. And and I'm leaving here Sunday afternoon and going to hotel at the airport and flying early on Monday morning.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:10.631527"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Yeah, they're necessary.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:10.631554"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Yeah, if it actually even happens, right?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:10.631560"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Um yeah, I'll start with lanes. That's a that's an interesting one. Um one of the things I've been improving on is just noticing the um the ideas that I might have and being able to judge whether they lead me outside my lanes. And doing a better job of saying no to them.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:24.759275"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Um and I I'll be specific in a well, so I've been looking to, you know, connect to the community and you know, for psychological health reasons and all sorts of other good reasons, try to get out and be connected with others. And I first found myself, you know, I I at some festival I happened to bump into some organizations, one of which is um kind of a well, they're socialists. Um and then another one um is working on uh helping helping immigrants know what their what their um what their rights are.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:24.759302"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: so, so I haven't done a whole lot other than apply for about three or four um volunteer opportunities um that have nothing to do with politics really. It's, you know, helping people with at the Red Cross, um doing some uh other community related things. Um yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:33.257142"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: And you know, I can still feel like I'm giving, I'm taking care of people or or animals and that in the long run, in the big picture that matters just as much as political activity. Um so, um I've been working on that. Um so that yeah, in terms of staying in lanes, um yeah. I uh you know, about a month or so ago, you know, I even I purchased some poster board and you know, with the intention of making some signs and uh standing in the middle of downtown Wilmington or something like that and I recently threw those away and said, this this may be important to me, but I have to do something for myself that I have to stay away from certain things.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:39.593009"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: However, I think this particular one taught me more. It taught me a lot more. Um",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:51.760029"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: Okay.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:51.760057"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-01.md",
+      "snippet": "- Bruce: One, one of many things that it taught me was how much pain this causes um the family especially of that. Um and I, you know, in a unhealthy state, you really can't help that, but at least I don't know. I I saw it very more clearly how much pain this can cause. Um",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:49:51.760063"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: I don't know what exactly it's called because it was flashing on your screen, but it's a um salted toffee thingy. Yeah, it's on the pretty good.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:50:50.034661"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: What do you think?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:50:50.034699"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Okay, so my only ask is not a whole lot of ice.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:50:50.034709"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Yeah.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:08.359854"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: We're talking about so what they discovered you remember those discs that are this big?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:08.359882"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: So they discovered a way to basically store more data on the same disks, and so they started a software company.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:08.359887"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Oh,",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:13.075781"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: And then I was insanely unhappy at being a teacher because well, one big reason was here are a lot of my friends.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:13.075807"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: They're in the software industry.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:13.075812"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: And, yeah, so I went, screw this.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:16.169920"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: And luckily, as I was searching for a job, my dad did have a software company at that point, and he said, you know, you might be good at technical support, helping our users.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:16.169940"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: And so I started working there, and then I had a thirty five year computer",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:51:16.169943"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Sherry: And you can even take a few classes there too.",
+      "speaker": "Sherry",
+      "labeled_date": "2025-10-30T15:52:02.291392"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Sherry: Yeah, and I'm also like, that sounds interesting. That sounds interesting.",
+      "speaker": "Sherry",
+      "labeled_date": "2025-10-30T15:52:02.291412"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Sherry: Right. There are interesting things if I lived closer, I could definitely probably cultivate that more, but as it is, it's just a trade for me.",
+      "speaker": "Sherry",
+      "labeled_date": "2025-10-30T15:52:02.291426"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Something like that.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:30.386531"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: From a real job.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:30.386549"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Well, I I got fired and then I decided.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:30.386553"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: So, um, once I was, in this case, I was laid off from my last tech job, realized the tech industry is a young man's industry.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:34.655515"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Um, especially in the Silicon Valley.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:34.655536"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Especially in the Silicon Valley. Um, they look at you and you're slightly gray and forget it.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:34.655540"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Um, I had I had introduced into my life generalized anxiety. I hadn't had it before. But something happened and I became anxious.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:40.805077"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: And so that pressed on me and being bipolar, it was just a mess.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:40.805103"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-10-03.md",
+      "snippet": "- Bruce: Um, so I couldn't keep a job. Um, so when we moved here, I still couldn't keep a job. Um, so yeah, once once I got fired from that, I went, you know, I can't keep a job for very long. And if I work again, I won't be able to keep that job.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T15:52:40.805109"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-13.md",
+      "snippet": "- Bruce: I'm happy this morning that I kind of ignored certain things. I can do that. Um that I seem to be doing an okay job of turning the knob down, yes.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T16:13:09.289138"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-13.md",
+      "snippet": "- Bruce: Yeah, it is what it is. At least you don't have to sell it yourself, right?",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T16:13:27.948948"
+    },
+    {
+      "source": "manual",
+      "file": "lifelogs/2025-09-13.md",
+      "snippet": "- Bruce: So, I went downtown and I didn't know there's there was some big like art show thing down there.",
+      "speaker": "Bruce",
+      "labeled_date": "2025-10-30T16:13:27.948976"
+    }
+  ]
+}
