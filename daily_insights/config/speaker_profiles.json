@@ -4,134 +4,208 @@
     "Bruce": {
       "relationship": "self",
       "relationships": {
-      "Ivette": "spouse",
-      "Russell": "son",
-      "Benetton": "son",
-      "Matt": "brother",
-      "Myron": "friend",
-      "Eve": "friend",
-      "Neil": "friend",
-      "Lydia": "friend",
-      "Alan": "friend",
-      "Chad": "friend",
-      "Mike": "friend",
-      "Tony": "friend",
-      "Kela": "sister in-law",
-      "Joel": "friend",
-      "Phil": "father",
-      "Lois": "mother",
-      "Larry": "psychologist",
-      "Dorinda Dew": "psychiatrist",
-      "Mark Armitage": "doctor"
-    },
-       "languages": {
-      "English": "fluent",
-      "Spanish": "conversational"
-    },
+        "Ivette": "spouse",
+        "Russell": "son",
+        "Benetton": "son",
+        "Matt": "brother",
+        "Myron": "friend",
+        "Eve": "friend",
+        "Neil": "friend",
+        "Lydia": "friend",
+        "Alan": "friend",
+        "Chad": "friend",
+        "Mike": "friend",
+        "Tony": "friend",
+        "Kela": "sister in-law",
+        "Joel": "friend",
+        "Phil": "father",
+        "Lois": "mother",
+        "Larry": "psychologist",
+        "Dorinda Dew": "psychiatrist",
+        "Mark Armitage": "doctor"
+      },
+      "languages": {
+        "English": "fluent",
+        "Spanish": "conversational"
+      },
       "speech_patterns": {
         "vocabulary_level": "college",
         "speaking_style": "logical, ordered, analytical, emotional, fatherly, long monologues",
-        "common_topics": ["work", "pets (Peach, Grape)", "journal", "friends",
-        "home projects", "retirement","technology", "psychological issues", 
-        "computers", "software", "news", "politics", "science", "medicine"],
-        "distinctive_phrases": ["Just a second", "I can't hear you", "Are you talking to me?", "I'm in the bathroom",
-      "Bookman like a book and a man", "669-221-9612", "bruce.bookman@gmail.com", "xanax", "zoloft",
-    "I'll be down in a minute"]
+        "common_topics": [
+          "work",
+          "pets (Peach, Grape)",
+          "journal",
+          "friends",
+          "home projects",
+          "retirement",
+          "technology",
+          "psychological issues",
+          "computers",
+          "software",
+          "news",
+          "politics",
+          "science",
+          "medicine"
+        ],
+        "distinctive_phrases": [
+          "Just a second",
+          "I can't hear you",
+          "Are you talking to me?",
+          "I'm in the bathroom",
+          "Bookman like a book and a man",
+          "669-221-9612",
+          "bruce.bookman@gmail.com",
+          "xanax",
+          "zoloft",
+          "I'll be down in a minute"
+        ]
       },
       "added_date": "2025-10-29"
     },
     "Ivette": {
       "relationship": "spouse",
-            "relationships": {
-              "Bruce": "spouse",
-      "Russell": "son",
-      "Benetton": "son",
-      "Kela": "sister", 
-      "Joey": "brother in-law",
-      "Anna": "sister",
-      "Luis": "brother in-law",
-      "Rodger": "nephew",
-      "Elizabeth": "niece",
-      "Carlos": "brother"
-    },
-   "languages": {
-      "English": "fluent",
-      "Spanish": "native"
-    },
+      "relationships": {
+        "Bruce": "spouse",
+        "Russell": "son",
+        "Benetton": "son",
+        "Kela": "sister",
+        "Joey": "brother in-law",
+        "Anna": "sister",
+        "Luis": "brother in-law",
+        "Rodger": "nephew",
+        "Elizabeth": "niece",
+        "Carlos": "brother"
+      },
+      "languages": {
+        "English": "fluent",
+        "Spanish": "native"
+      },
       "speech_patterns": {
         "vocabulary_level": "conversational",
         "speaking_style": "direct, expressive, emphatic, instructional, demanding, imaginative, motherly, unfocused, code-switches naturally",
-        "common_topics": ["pets (Peach, Grape)", "household", "dream","stress","work", "YWCA","travel", "Mexico", "cleaning", "tasks", "school", "migrane", "headaches", "anxiety"],
-        "distinctive_phrases": ["I am not a housekeeper"]
+        "common_topics": [
+          "pets (Peach, Grape)",
+          "household",
+          "dream",
+          "stress",
+          "work",
+          "YWCA",
+          "travel",
+          "Mexico",
+          "cleaning",
+          "tasks",
+          "school",
+          "migrane",
+          "headaches",
+          "anxiety"
+        ],
+        "distinctive_phrases": [
+          "I am not a housekeeper"
+        ]
       },
       "added_date": "2025-10-29"
     },
     "Russell": {
-      "relationship": "son",  
+      "relationship": "son",
       "relationships": {
-      "Bruce": "father",
-      "Ivette": "mother",
-      "Benetton": "brother",
-      "Rodger": "cousin",
-      "David": "friend"
-    },
+        "Bruce": "father",
+        "Ivette": "mother",
+        "Benetton": "brother",
+        "Rodger": "cousin",
+        "David": "friend"
+      },
       "languages": {
-      "English": "native",
-      "Spanish": "learning"
-    },
+        "English": "native",
+        "Spanish": "learning"
+      },
       "speech_patterns": {
         "vocabulary_level": "conversational",
         "speaking_style": "unfocused, slang",
-        "common_topics": ["school", "friends", "sports", "gym","work", "YWCA", "college"],
-        "distinctive_phrases": ["Cape Fear Community College", "Cape Fear"]
+        "common_topics": [
+          "school",
+          "friends",
+          "sports",
+          "gym",
+          "work",
+          "YWCA",
+          "college"
+        ],
+        "distinctive_phrases": [
+          "Cape Fear Community College",
+          "Cape Fear"
+        ]
       },
       "added_date": "2025-10-29"
-  },
-  "Alexa": {
-    "relationship": "device",  
-    "relationships": {},
-    "languages": {
-      "English": "fluent"
     },
-      "speech_patterns": {
-        "vocabulary_level": "technical",
-        "speaking_style": "robotic, monotone",
-        "common_topics": ["music", "weather", "reminders", "timers"],
-        "distinctive_phrases": ["Alexa", "Echo"]
-      },
-      "added_date": "2025-10-29"
-  },
-  "Siri": {
-    "relationship": "device",  
-    "relationships": {},
-    "languages": {
-      "English": "fluent"
-    },
-      "speech_patterns": {
-        "vocabulary_level": "technical",
-        "speaking_style": "robotic, monotone",
-        "common_topics": ["music", "reminders", "appointments", "calendar", "events"],
-        "distinctive_phrases": ["Might I have a word with you, please?", "Urgent"]
-      },
-      "added_date": "2025-10-29"
-  },
-    "Benetton": {
-      "relationship": "son",  
-      "relationships": {
-      "Bruce": "father",
-      "Ivette": "mother",
-      "Russell": "brother",
-      "Rodger": "cousin"
-    },
+    "Alexa": {
+      "relationship": "device",
+      "relationships": {},
       "languages": {
-      "English": "learning"
-    }, 
+        "English": "fluent"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "technical",
+        "speaking_style": "robotic, monotone",
+        "common_topics": [
+          "music",
+          "weather",
+          "reminders",
+          "timers"
+        ],
+        "distinctive_phrases": [
+          "Alexa",
+          "Echo"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Siri": {
+      "relationship": "device",
+      "relationships": {},
+      "languages": {
+        "English": "fluent"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "technical",
+        "speaking_style": "robotic, monotone",
+        "common_topics": [
+          "music",
+          "reminders",
+          "appointments",
+          "calendar",
+          "events"
+        ],
+        "distinctive_phrases": [
+          "Might I have a word with you, please?",
+          "Urgent"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Benetton": {
+      "relationship": "son",
+      "relationships": {
+        "Bruce": "father",
+        "Ivette": "mother",
+        "Russell": "brother",
+        "Rodger": "cousin"
+      },
+      "languages": {
+        "English": "learning"
+      },
       "speech_patterns": {
         "vocabulary_level": "child like",
         "speaking_style": "child like, simple, repetative, short sentences",
-        "common_topics": ["school"],
-        "distinctive_phrases": ["Thank you", "I already have lunch", 
-        "already have dinner", "go some places", "what is today"]
+        "common_topics": [
+          "school"
+        ],
+        "distinctive_phrases": [
+          "Thank you",
+          "I already have lunch",
+          "already have dinner",
+          "go some places",
+          "what is today"
+        ]
       },
       "added_date": "2025-10-29"
     },
@@ -149,8 +223,17 @@
       "speech_patterns": {
         "vocabulary_level": "college",
         "speaking_style": "logical, ordered, analytical, emotional",
-        "common_topics": ["family", "politics", "science", "medicine"],
-        "distinctive_phrases": ["I'm not sure", "I'm not sure", "I'm not sure"]
+        "common_topics": [
+          "family",
+          "politics",
+          "science",
+          "medicine"
+        ],
+        "distinctive_phrases": [
+          "I'm not sure",
+          "I'm not sure",
+          "I'm not sure"
+        ]
       },
       "added_date": "2025-10-29"
     },
@@ -165,10 +248,31 @@
       "speech_patterns": {
         "vocabulary_level": "college",
         "speaking_style": "analytical, emotional",
-        "common_topics": ["self reflection"],
-        "distinctive_phrases": ["dark", "shadow"]
+        "common_topics": [
+          "self reflection"
+        ],
+        "distinctive_phrases": [
+          "dark",
+          "shadow"
+        ]
       },
       "added_date": "2025-10-29"
+    },
+    "Joel": {
+      "relationship": "friend",
+      "relationships": {},
+      "languages": {
+        "English": "fluent"
+      },
+      "added_date": "2025-10-30"
+    },
+    "Eve": {
+      "relationship": "friend",
+      "relationships": {},
+      "languages": {
+        "English": "fluent"
+      },
+      "added_date": "2025-10-30"
     }
   }
 }

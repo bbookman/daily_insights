@@ -3,7 +3,7 @@
 import json
 import sys
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from datetime import datetime
 
 from daily_insights.services.speaker_service import (
@@ -11,8 +11,11 @@ from daily_insights.services.speaker_service import (
     load_training_examples,
     save_training_examples,
     extract_speaker_instances,
+    save_speaker_profile,
+    get_reverse_relationship,
     SPEAKER_PROFILES_FILE
 )
+from daily_insights.api.speaker_llm_client import analyze_speaker_patterns_with_llm
 
 
 def label_training_transcript(transcript_file: str) -> None:
@@ -264,21 +267,466 @@ def suggest_speaker(utterances: List[str], known_speakers: List[str]) -> Optiona
     return None
 
 
+def collect_essential_info() -> Optional[Dict]:
+    """
+    Collect essential speaker information through conversation.
+
+    Collects: name, relationship to user, languages with competency.
+
+    Returns
+    -------
+    Optional[Dict]
+        Dictionary with 'name', 'relationship', 'languages'
+        Returns None if user cancels
+
+    Example
+    -------
+    >>> info = collect_essential_info()
+    >>> info['name']
+    'Matt'
+    >>> info['relationship']
+    'brother'
+    """
+    print("\n=== Speaker Profile Initialization ===\n")
+    print("Let's add a speaker to your profile system.\n")
+
+    # Get speaker name
+    while True:
+        name = input("Speaker's name: ").strip()
+        if not name:
+            print("Name cannot be empty. Please try again.")
+            continue
+
+        # Check for duplicates
+        existing_profiles = load_speaker_profiles()
+        if name in existing_profiles.get("speakers", {}):
+            overwrite = input(f"\n⚠️  '{name}' already exists. Overwrite? (y/n): ").strip().lower()
+            if overwrite != 'y':
+                return None
+
+        break
+
+    # Get relationship
+    print(f"\nWhat is {name}'s relationship to you?")
+    print("Common options: spouse, son, daughter, parent, sibling, friend, colleague, other")
+    relationship = input("> ").strip().lower()
+
+    if not relationship:
+        relationship = "other"
+
+    # Get languages
+    print(f"\nWhat language(s) does {name} speak?")
+    print("For each language, specify competency: native, fluent, conversational, learning")
+    print("Example: English fluent, Spanish conversational")
+    print("(or just press Enter to add English as default)")
+
+    languages = {}
+    lang_input = input("> ").strip()
+
+    if not lang_input:
+        # Default to English fluent
+        languages["English"] = "fluent"
+    else:
+        # Parse language input
+        for lang_spec in lang_input.split(','):
+            lang_spec = lang_spec.strip()
+            parts = lang_spec.rsplit(' ', 1)  # Split from right to get competency
+
+            if len(parts) == 2:
+                lang_name = parts[0].strip().title()
+                competency = parts[1].strip().lower()
+
+                if competency in ["native", "fluent", "conversational", "learning"]:
+                    languages[lang_name] = competency
+                else:
+                    # Default to fluent if competency not recognized
+                    languages[lang_name] = "fluent"
+            else:
+                # Just language name, default to fluent
+                languages[lang_spec.title()] = "fluent"
+
+    print(f"\n✓ Essential info collected for {name}")
+
+    return {
+        "name": name,
+        "relationship": relationship,
+        "languages": languages
+    }
+
+
+def find_speaker_in_transcripts(speaker_name: str, max_excerpts: int = 30) -> List[str]:
+    """
+    Find conversation excerpts for a speaker in recent transcripts.
+
+    Searches lifelogs and bee directories for speaker instances.
+
+    Parameters
+    ----------
+    speaker_name : str
+        Name of speaker to find
+    max_excerpts : int
+        Maximum number of excerpts to return
+
+    Returns
+    -------
+    List[str]
+        List of conversation excerpts featuring the speaker
+
+    Example
+    -------
+    >>> excerpts = find_speaker_in_transcripts("Bruce", max_excerpts=20)
+    >>> len(excerpts)
+    20
+    """
+    excerpts = []
+    project_root = Path(__file__).parent.parent.parent
+
+    # Search lifelogs
+    lifelogs_dir = project_root / "lifelogs"
+    if lifelogs_dir.exists():
+        # Get most recent lifelog files
+        lifelog_files = sorted(lifelogs_dir.glob("*.md"), reverse=True)[:10]
+
+        for file_path in lifelog_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                instances = extract_speaker_instances(content)
+
+                for speaker_label, utterance in instances:
+                    # Check if this matches our speaker (case-insensitive, fuzzy match)
+                    if speaker_name.lower() in speaker_label.lower():
+                        excerpts.append(f"{speaker_label}: {utterance}")
+
+                        if len(excerpts) >= max_excerpts:
+                            return excerpts
+
+            except Exception as e:
+                print(f"Warning: Error reading {file_path}: {e}")
+                continue
+
+    # Search bee transcripts
+    bee_dir = project_root / "bee"
+    if bee_dir.exists():
+        bee_files = sorted(bee_dir.glob("*.md"), reverse=True)[:10]
+
+        for file_path in bee_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                instances = extract_speaker_instances(content)
+
+                for speaker_label, utterance in instances:
+                    if speaker_name.lower() in speaker_label.lower():
+                        excerpts.append(f"{speaker_label}: {utterance}")
+
+                        if len(excerpts) >= max_excerpts:
+                            return excerpts
+
+            except Exception as e:
+                print(f"Warning: Error reading {file_path}: {e}")
+                continue
+
+    return excerpts
+
+
+def collect_optional_details(speaker_name: str) -> Optional[Dict]:
+    """
+    Collect optional detailed information with LLM-powered suggestions.
+
+    Parameters
+    ----------
+    speaker_name : str
+        Name of speaker for transcript analysis
+
+    Returns
+    -------
+    Optional[Dict]
+        Dictionary with 'speech_patterns' or None if skipped
+
+    Example
+    -------
+    >>> details = collect_optional_details("Matt")
+    >>> details['speech_patterns']['vocabulary_level']
+    'college'
+    """
+    print(f"\nWould you like me to analyze transcripts to suggest speech patterns for {speaker_name}? (y/n): ", end="")
+    analyze = input().strip().lower()
+
+    if analyze != 'y':
+        print("Skipping detailed pattern analysis.")
+        return None
+
+    # Find excerpts in transcripts
+    print(f"\n🔍 Analyzing recent transcripts for {speaker_name}...")
+    excerpts = find_speaker_in_transcripts(speaker_name, max_excerpts=30)
+
+    if not excerpts:
+        print(f"⚠️  No conversations found for {speaker_name} in recent transcripts.")
+        print("You can add speech patterns manually later by editing the config file.")
+        return None
+
+    print(f"Found {len(excerpts)} conversation excerpts")
+
+    # Use LLM to analyze patterns
+    print("🤖 Analyzing speech patterns with LLM...")
+    suggested_patterns = analyze_speaker_patterns_with_llm(speaker_name, excerpts)
+
+    if not suggested_patterns:
+        print("⚠️  LLM analysis failed. You can add patterns manually later.")
+        return None
+
+    # Display suggestions
+    print("\n📊 Suggested patterns:")
+    print(f"  Vocabulary: {suggested_patterns.get('vocabulary_level', 'N/A')}")
+    print(f"  Style: {suggested_patterns.get('speaking_style', 'N/A')}")
+
+    topics = suggested_patterns.get('common_topics', [])
+    if isinstance(topics, list):
+        print(f"  Topics: {', '.join(topics)}")
+    else:
+        print(f"  Topics: {topics}")
+
+    phrases = suggested_patterns.get('distinctive_phrases', [])
+    if isinstance(phrases, list):
+        print(f"  Phrases: {', '.join(phrases)}")
+    else:
+        print(f"  Phrases: {phrases}")
+
+    # Ask user to accept/edit
+    print("\nAccept these suggestions? (y/n/edit): ", end="")
+    choice = input().strip().lower()
+
+    if choice == 'n':
+        print("Skipping speech patterns.")
+        return None
+    elif choice == 'edit':
+        print("\nManual editing not yet implemented - accepting suggestions for now.")
+        # TODO: Implement manual editing interface
+        return {"speech_patterns": suggested_patterns}
+    else:
+        # Accept suggestions
+        return {"speech_patterns": suggested_patterns}
+
+
+def update_bidirectional_relationships(
+    speaker_name: str,
+    relationships: Dict[str, str]
+) -> bool:
+    """
+    Update bidirectional relationships between speakers.
+
+    When adding "Matt → Bruce: brother", automatically updates
+    "Bruce → Matt: brother".
+
+    Parameters
+    ----------
+    speaker_name : str
+        Name of the speaker whose relationships are being added
+    relationships : Dict[str, str]
+        Dictionary of {other_speaker: relationship}
+
+    Returns
+    -------
+    bool
+        True if all updates succeeded
+
+    Example
+    -------
+    >>> update_bidirectional_relationships("Matt", {"Bruce": "brother"})
+    True
+    """
+    try:
+        profiles_data = load_speaker_profiles()
+        speakers = profiles_data.get("speakers", {})
+
+        for other_speaker, relationship in relationships.items():
+            # Check if other speaker exists
+            if other_speaker not in speakers:
+                print(f"⚠️  Speaker '{other_speaker}' not found in profiles. Skipping bidirectional update.")
+                continue
+
+            # Get reverse relationship
+            reverse_rel = get_reverse_relationship(relationship)
+
+            if reverse_rel == "?":
+                # Unknown relationship, ask user
+                print(f"\n{other_speaker} → {speaker_name}: What's their relationship?")
+                reverse_rel = input("> ").strip().lower()
+
+            # Update other speaker's relationships
+            if "relationships" not in speakers[other_speaker]:
+                speakers[other_speaker]["relationships"] = {}
+
+            speakers[other_speaker]["relationships"][speaker_name] = reverse_rel
+            print(f"✓ Auto-updated: {other_speaker} → {speaker_name}: {reverse_rel}")
+
+        # Save updated profiles
+        with open(SPEAKER_PROFILES_FILE, 'w', encoding='utf-8') as f:
+            json.dump(profiles_data, f, indent=2, ensure_ascii=False)
+
+        return True
+
+    except Exception as e:
+        print(f"Error updating bidirectional relationships: {e}")
+        return False
+
+
+def collect_relationships(speaker_name: str) -> Dict[str, str]:
+    """
+    Collect relationships to other speakers.
+
+    Parameters
+    ----------
+    speaker_name : str
+        Name of the speaker
+
+    Returns
+    -------
+    Dict[str, str]
+        Dictionary of {other_speaker: relationship}
+
+    Example
+    -------
+    >>> relationships = collect_relationships("Matt")
+    >>> relationships["Bruce"]
+    'brother'
+    """
+    print(f"\n{speaker_name} has relationships with other speakers. Let's add them:")
+    print(f"Who else does {speaker_name} know? (comma-separated, or 'skip')")
+
+    relationships_input = input("> ").strip()
+
+    if relationships_input.lower() == 'skip' or not relationships_input:
+        return {}
+
+    # Parse names
+    other_speakers = [name.strip() for name in relationships_input.split(',')]
+    relationships = {}
+
+    # Get existing speakers
+    existing_profiles = load_speaker_profiles()
+    existing_names = list(existing_profiles.get("speakers", {}).keys())
+
+    for other_speaker in other_speakers:
+        # Verify speaker exists
+        if other_speaker not in existing_names:
+            print(f"⚠️  '{other_speaker}' not found in profiles. Add them first, then update relationships.")
+            continue
+
+        # Get relationship
+        print(f"\n{speaker_name} → {other_speaker}: What's their relationship?")
+        relationship = input("> ").strip().lower()
+
+        if relationship:
+            relationships[other_speaker] = relationship
+
+    return relationships
+
+
+def init_speaker_profile() -> None:
+    """
+    Interactive speaker profile initialization with LLM-powered suggestions.
+
+    Conversational workflow:
+    1. Collect essential info (name, relationship, languages)
+    2. Optional: LLM-powered speech pattern analysis
+    3. Optional: Add relationships to other speakers
+    4. Save profile with bidirectional relationship updates
+    5. Batch mode: Repeat for multiple speakers
+
+    Example
+    -------
+    >>> init_speaker_profile()
+    # Interactive session to create speaker profiles
+    """
+    speakers_added = []
+
+    while True:
+        # Phase 1: Collect essential info
+        essential_info = collect_essential_info()
+
+        if not essential_info:
+            # User cancelled
+            print("\nCancelled.")
+            break
+
+        speaker_name = essential_info["name"]
+        relationship = essential_info["relationship"]
+        languages = essential_info["languages"]
+
+        # Phase 2: Optional detailed analysis
+        optional_details = collect_optional_details(speaker_name)
+
+        # Phase 3: Collect relationships
+        relationships = collect_relationships(speaker_name)
+
+        # Build profile
+        profile_data = {
+            "relationship": relationship,
+            "relationships": relationships if relationships else {},
+            "languages": languages,
+            "added_date": datetime.now().strftime("%Y-%m-%d")
+        }
+
+        # Add speech patterns if collected
+        if optional_details and "speech_patterns" in optional_details:
+            profile_data["speech_patterns"] = optional_details["speech_patterns"]
+
+        # Save the speaker profile
+        if save_speaker_profile(speaker_name, profile_data):
+            print(f"\n✓ Speaker profile created for {speaker_name}!")
+            speakers_added.append(speaker_name)
+
+            # Update bidirectional relationships
+            if relationships:
+                update_bidirectional_relationships(speaker_name, relationships)
+        else:
+            print(f"\n❌ Failed to save speaker profile for {speaker_name}")
+
+        # Ask if user wants to add another
+        print(f"\nAdd another speaker? (y/n): ", end="")
+        continue_choice = input().strip().lower()
+
+        if continue_choice != 'y':
+            break
+
+    # Summary
+    if speakers_added:
+        print(f"\n=== Summary ===")
+        print(f"✓ Saved {len(speakers_added)} speaker profile(s): {', '.join(speakers_added)}")
+    else:
+        print("\nNo speakers added.")
+
+
 def main():
-    """CLI entry point for speaker training tool."""
-    if len(sys.argv) < 3:
-        print("Usage: python -m daily_insights.cli.speaker_commands label-training <transcript_file>")
-        print("\nExample:")
+    """CLI entry point for speaker management commands."""
+    if len(sys.argv) < 2:
+        print("Usage: python -m daily_insights.cli.speaker_commands <command> [args]")
+        print("\nAvailable commands:")
+        print("  init                          - Interactive speaker profile initialization")
+        print("  label-training <file>         - Label speakers in training transcript")
+        print("\nExamples:")
+        print("  python -m daily_insights.cli.speaker_commands init")
         print("  python -m daily_insights.cli.speaker_commands label-training lifelogs/2025-03-01.md")
         sys.exit(1)
 
     command = sys.argv[1]
-    if command == "label-training":
+
+    if command == "init":
+        init_speaker_profile()
+    elif command == "label-training":
+        if len(sys.argv) < 3:
+            print("Error: label-training requires a transcript file path")
+            print("Usage: python -m daily_insights.cli.speaker_commands label-training <transcript_file>")
+            sys.exit(1)
         transcript_file = sys.argv[2]
         label_training_transcript(transcript_file)
     else:
         print(f"Unknown command: {command}")
-        print("Available commands: label-training")
+        print("Available commands: init, label-training")
         sys.exit(1)
 
 

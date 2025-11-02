@@ -171,7 +171,10 @@ def fetch_chats() -> List[Dict]:
     """
     print("\nStarting to fetch daily insights from chats...")
     cursor = None
-    headers = {"x-api-key": API_KEY}
+    headers = {
+        "X-API-Key": API_KEY.strip(),
+        "Content-Type": "application/json"
+    }
     page_count = 0
     all_chats = []
 
@@ -363,7 +366,10 @@ async def fetch_chats_async() -> List[Dict]:
     """
     print("\nStarting to fetch daily insights from chats (async)...")
     cursor = None
-    headers = {"x-api-key": API_KEY}
+    headers = {
+        "X-API-Key": API_KEY.strip(),
+        "Content-Type": "application/json"
+    }
     page_count = 0
     all_chats = []
 

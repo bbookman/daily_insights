@@ -9,6 +9,7 @@ import asyncio
 from daily_insights.config import BEE_DIR, BEE_PROMPT_FILE, INSIGHTS_DIR
 from daily_insights.api.llm_client import generate_summary, generate_summary_async
 from daily_insights.utils.file_utils import read_file_async, write_file_async
+from daily_insights.utils.date_utils import should_process_date
 
 
 def get_existing_bee_insight_dates() -> Set[str]:
@@ -64,6 +65,7 @@ def find_unprocessed_bee_files() -> List[Path]:
 
     Looks for files matching pattern YYYY-MM-DD_bee.md in /bee directory
     and filters out those that already have corresponding insight files.
+    Only includes files dated yesterday or earlier (skips today's incomplete data).
 
     Returns
     -------
@@ -80,12 +82,19 @@ def find_unprocessed_bee_files() -> List[Path]:
 
     existing_dates = get_existing_bee_insight_dates()
     unprocessed_files = []
+    skipped_today = 0
     pattern = re.compile(r"(\d{4}-\d{2}-\d{2})_bee\.md")
 
     for file_path in Path(BEE_DIR).glob("*_bee.md"):
         match = pattern.match(file_path.name)
         if match:
             date_str = match.group(1)
+
+            # Skip today's bee files (incomplete data)
+            if not should_process_date(date_str):
+                skipped_today += 1
+                continue
+
             if date_str not in existing_dates:
                 unprocessed_files.append(file_path)
             else:
@@ -93,6 +102,9 @@ def find_unprocessed_bee_files() -> List[Path]:
 
     # Sort by date (filename naturally sorts correctly)
     unprocessed_files.sort()
+
+    if skipped_today > 0:
+        print(f"Skipped {skipped_today} bee file(s) from today (incomplete data)")
 
     print(f"Found {len(unprocessed_files)} unprocessed bee transcription files.")
     return unprocessed_files
@@ -348,6 +360,7 @@ async def find_unprocessed_bee_files_async() -> List[Path]:
 
     Looks for files matching pattern YYYY-MM-DD_bee.md in /bee directory
     and filters out those that already have corresponding insight files.
+    Only includes files dated yesterday or earlier (skips today's incomplete data).
 
     Returns
     -------
@@ -364,12 +377,19 @@ async def find_unprocessed_bee_files_async() -> List[Path]:
 
     existing_dates = await get_existing_bee_insight_dates_async()
     unprocessed_files = []
+    skipped_today = 0
     pattern = re.compile(r"(\d{4}-\d{2}-\d{2})_bee\.md")
 
     for file_path in Path(BEE_DIR).glob("*_bee.md"):
         match = pattern.match(file_path.name)
         if match:
             date_str = match.group(1)
+
+            # Skip today's bee files (incomplete data)
+            if not should_process_date(date_str):
+                skipped_today += 1
+                continue
+
             if date_str not in existing_dates:
                 unprocessed_files.append(file_path)
             else:
@@ -377,6 +397,9 @@ async def find_unprocessed_bee_files_async() -> List[Path]:
 
     # Sort by date (filename naturally sorts correctly)
     unprocessed_files.sort()
+
+    if skipped_today > 0:
+        print(f"Skipped {skipped_today} bee file(s) from today (incomplete data)")
 
     print(f"Found {len(unprocessed_files)} unprocessed bee transcription files.")
     return unprocessed_files

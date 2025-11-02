@@ -256,8 +256,9 @@ class PipelineStatistics:
         lines.append(f"  • Complete: {ms['complete']} months")
 
         if ms["pending"]:
-            for month, weeks_have, weeks_need in ms["pending"]:
-                lines.append(f"  • Pending: {month} ({weeks_have} weeks, need {weeks_need} more)")
+            # Show only the latest pending month
+            month, weeks_have, weeks_need = ms["pending"][-1]
+            lines.append(f"  • Pending: {month} ({weeks_have} weeks, need {weeks_need} more)")
         lines.append("")
 
         # Therapy Sessions

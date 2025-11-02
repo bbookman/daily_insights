@@ -9,6 +9,7 @@ import asyncio
 from daily_insights.config import LIFELOGS_DIR
 from daily_insights.api.limitless_client import fetch_new_lifelogs, fetch_new_lifelogs_async
 from daily_insights.utils.file_utils import append_file_async, write_file_async
+from daily_insights.utils.date_utils import should_process_date
 from daily_insights.services.speaker_service import (
     identify_speakers_async,
     apply_speaker_labels,
@@ -45,6 +46,8 @@ def save_lifelogs(lifelogs: List[Dict]) -> None:
     """
     Group lifelogs by date and save them to markdown files.
 
+    Only processes logs dated yesterday or earlier (skips today's incomplete data).
+
     Args
     ----
     lifelogs: List of lifelog dictionaries from API
@@ -65,9 +68,14 @@ def save_lifelogs(lifelogs: List[Dict]) -> None:
 
     print("\nSaving new lifelogs to markdown files...")
     lifelogs_by_date = {}
+    skipped_today = 0
     for log in lifelogs:
         try:
             date_str = parser.parse(log["startTime"]).strftime("%Y-%m-%d")
+            # Skip today's logs (incomplete data)
+            if not should_process_date(date_str):
+                skipped_today += 1
+                continue
             if date_str not in lifelogs_by_date:
                 lifelogs_by_date[date_str] = []
             lifelogs_by_date[date_str].append(log)
@@ -76,6 +84,9 @@ def save_lifelogs(lifelogs: List[Dict]) -> None:
                 f"Could not process lifelog due to missing/invalid "
                 f"startTime: {log.get('id')}"
             )
+
+    if skipped_today > 0:
+        print(f"Skipped {skipped_today} lifelog(s) from today (incomplete data)")
 
     files_created_or_updated = set()
     for date_str, logs_for_day in lifelogs_by_date.items():
@@ -166,6 +177,8 @@ async def save_lifelogs_async(lifelogs: List[Dict]) -> None:
     """
     Async version: Group lifelogs by date and save them to markdown files.
 
+    Only processes logs dated yesterday or earlier (skips today's incomplete data).
+
     Args
     ----
     lifelogs: List of lifelog dictionaries from API
@@ -186,9 +199,14 @@ async def save_lifelogs_async(lifelogs: List[Dict]) -> None:
 
     print("\nSaving new lifelogs to markdown files...")
     lifelogs_by_date = {}
+    skipped_today = 0
     for log in lifelogs:
         try:
             date_str = parser.parse(log["startTime"]).strftime("%Y-%m-%d")
+            # Skip today's logs (incomplete data)
+            if not should_process_date(date_str):
+                skipped_today += 1
+                continue
             if date_str not in lifelogs_by_date:
                 lifelogs_by_date[date_str] = []
             lifelogs_by_date[date_str].append(log)
@@ -197,6 +215,9 @@ async def save_lifelogs_async(lifelogs: List[Dict]) -> None:
                 f"Could not process lifelog due to missing/invalid "
                 f"startTime: {log.get('id')}"
             )
+
+    if skipped_today > 0:
+        print(f"Skipped {skipped_today} lifelog(s) from today (incomplete data)")
 
     files_created_or_updated = set()
 

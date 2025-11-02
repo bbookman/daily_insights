@@ -13,7 +13,8 @@ from daily_insights.config import (
 from daily_insights.api.llm_client import generate_summary, generate_summary_async
 from daily_insights.utils.date_utils import (
     parse_week_filename,
-    group_weeks_by_month
+    group_weeks_by_month,
+    should_process_date
 )
 from daily_insights.utils.file_utils import (
     read_prompt_file, write_file,
@@ -21,15 +22,41 @@ from daily_insights.utils.file_utils import (
 )
 
 
+def week_contains_today(week_filename: str) -> bool:
+    """
+    Check if a weekly file's date range includes today.
+
+    Parameters
+    ----------
+    week_filename : str
+        Weekly filename like "2025-09-03_to_2025-09-10-weekly.md"
+
+    Returns
+    -------
+    bool
+        True if the week's date range includes today, False otherwise
+    """
+    try:
+        start_date, end_date = parse_week_filename(week_filename)
+        # If either the start or end date should not be processed (is today or later), skip this week
+        return not should_process_date(start_date) or not should_process_date(end_date)
+    except ValueError:
+        # If we can't parse the filename, default to excluding it
+        return True
+
+
 def build_monthly_summaries() -> None:
     """
     Build monthly summaries from weekly summaries.
 
+    Only includes weekly files dated yesterday or earlier (skips weeks containing today).
+
     Algorithm:
     1. Scan ./weekly/ for all weekly summary files
-    2. Group by calendar month using start_date
-    3. Skip incomplete months (< 4 weeks)
-    4. For each complete month:
+    2. Filter out weeks containing today (incomplete data)
+    3. Group by calendar month using start_date
+    4. Skip incomplete months (< 4 weeks)
+    5. For each complete month:
        a. Check if monthly summary already exists
        b. Skip if exists (one-time generation rule)
        c. Load monthly prompt template
@@ -48,8 +75,13 @@ def build_monthly_summaries() -> None:
     """
     print("\nStarting to build monthly summaries...")
 
-    # Step 1: Discover weekly files
-    weekly_files = sorted(Path(WEEKLY_DIR).glob("*-weekly.md"))
+    # Step 1: Discover weekly files and filter out today
+    all_weekly_files = sorted(Path(WEEKLY_DIR).glob("*-weekly.md"))
+    weekly_files = [f for f in all_weekly_files if not week_contains_today(f.name)]
+
+    if len(all_weekly_files) > len(weekly_files):
+        skipped = len(all_weekly_files) - len(weekly_files)
+        print(f"Skipped {skipped} weekly file(s) containing today (incomplete data)")
 
     if not weekly_files:
         print("No weekly summary files found. Skipping monthly generation.")
@@ -128,11 +160,14 @@ async def build_monthly_summaries_async() -> None:
     """
     Async version: Build monthly summaries from weekly summaries.
 
+    Only includes weekly files dated yesterday or earlier (skips weeks containing today).
+
     Algorithm:
     1. Scan ./weekly/ for all weekly summary files
-    2. Group by calendar month using start_date
-    3. Skip incomplete months (< 4 weeks)
-    4. For each complete month:
+    2. Filter out weeks containing today (incomplete data)
+    3. Group by calendar month using start_date
+    4. Skip incomplete months (< 4 weeks)
+    5. For each complete month:
        a. Check if monthly summary already exists
        b. Skip if exists (one-time generation rule)
        c. Load monthly prompt template
@@ -151,8 +186,13 @@ async def build_monthly_summaries_async() -> None:
     """
     print("\nStarting to build monthly summaries (async)...")
 
-    # Step 1: Discover weekly files
-    weekly_files = sorted(Path(WEEKLY_DIR).glob("*-weekly.md"))
+    # Step 1: Discover weekly files and filter out today
+    all_weekly_files = sorted(Path(WEEKLY_DIR).glob("*-weekly.md"))
+    weekly_files = [f for f in all_weekly_files if not week_contains_today(f.name)]
+
+    if len(all_weekly_files) > len(weekly_files):
+        skipped = len(all_weekly_files) - len(weekly_files)
+        print(f"Skipped {skipped} weekly file(s) containing today (incomplete data)")
 
     if not weekly_files:
         print("No weekly summary files found. Skipping monthly generation.")

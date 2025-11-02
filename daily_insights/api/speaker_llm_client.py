@@ -245,3 +245,108 @@ async def identify_speakers_with_llm_async(
 
     llm_output = await generate_summary_async(prompt)
     return parse_speaker_response(llm_output)
+
+
+def analyze_speaker_patterns_with_llm(speaker_name: str, excerpts: List[str]) -> Optional[Dict]:
+    """
+    Analyze transcript excerpts to suggest speech patterns for a speaker.
+
+    Uses LLM to analyze conversation samples and suggest vocabulary level,
+    speaking style, common topics, and distinctive phrases.
+
+    Parameters
+    ----------
+    speaker_name : str
+        Name of the speaker being analyzed
+    excerpts : List[str]
+        List of conversation excerpts featuring this speaker
+
+    Returns
+    -------
+    Optional[Dict]
+        Suggested speech patterns with keys:
+        - vocabulary_level: str (child-like, conversational, college, technical)
+        - speaking_style: str (comma-separated adjectives)
+        - common_topics: List[str] (5-7 topics)
+        - distinctive_phrases: List[str] (3-5 characteristic phrases)
+        Returns None if analysis fails.
+
+    Example
+    -------
+    >>> excerpts = ["Bruce: I need to analyze the system architecture...", ...]
+    >>> patterns = analyze_speaker_patterns_with_llm("Bruce", excerpts)
+    >>> patterns["vocabulary_level"]
+    'college'
+    """
+    if not excerpts:
+        return None
+
+    # Combine excerpts for analysis (limit to avoid token overflow)
+    combined_text = "\n".join(excerpts[:20])  # Max 20 excerpts
+
+    prompt = f"""Analyze these conversation excerpts from {speaker_name} and suggest their speech patterns.
+
+# Conversation Excerpts
+
+```
+{combined_text}
+```
+
+# Task
+
+Based on these excerpts, suggest:
+
+1. **Vocabulary Level** - Choose ONE:
+   - "child-like" - Simple words, short sentences, basic concepts
+   - "conversational" - Everyday language, normal speaking patterns
+   - "college" - Sophisticated vocabulary, complex sentences
+   - "technical" - Specialized terminology, domain-specific language
+
+2. **Speaking Style** - Provide 3-5 adjectives describing their communication style
+   Examples: analytical, emotional, direct, humorous, formal, casual, etc.
+
+3. **Common Topics** - List 5-7 topics they frequently discuss
+   Examples: work, family, technology, sports, etc.
+
+4. **Distinctive Phrases** - List 3-5 phrases they use repeatedly or characteristically
+   Examples: "just a second", "you know what I mean", specific greetings, etc.
+
+Return your analysis as JSON:
+
+{{
+  "vocabulary_level": "conversational",
+  "speaking_style": "direct, analytical, organized",
+  "common_topics": ["work", "family", "pets", "technology", "home"],
+  "distinctive_phrases": ["just a second", "let me think", "does that make sense"]
+}}
+
+Provide only the JSON response:"""
+
+    try:
+        llm_output = generate_summary(prompt)
+
+        # Extract JSON from response
+        start_idx = llm_output.find('{')
+        end_idx = llm_output.rfind('}') + 1
+
+        if start_idx == -1 or end_idx == 0:
+            print(f"Warning: No JSON found in pattern analysis response")
+            return None
+
+        json_str = llm_output[start_idx:end_idx]
+        patterns = json.loads(json_str)
+
+        # Validate required fields
+        required_fields = ["vocabulary_level", "speaking_style", "common_topics", "distinctive_phrases"]
+        if all(field in patterns for field in required_fields):
+            return patterns
+        else:
+            print(f"Warning: Missing required fields in pattern analysis")
+            return None
+
+    except json.JSONDecodeError as e:
+        print(f"Error parsing pattern analysis JSON: {e}")
+        return None
+    except Exception as e:
+        print(f"Error during pattern analysis: {e}")
+        return None

@@ -387,3 +387,132 @@ def is_file_processed(file_path: str) -> bool:
     except Exception as e:
         print(f"Error checking processing metadata: {e}")
         return False
+
+
+def save_speaker_profile(speaker_name: str, profile_data: Dict) -> bool:
+    """
+    Save or update a single speaker profile.
+
+    Parameters
+    ----------
+    speaker_name : str
+        Name of the speaker
+    profile_data : Dict
+        Speaker profile data with keys: relationship, relationships, languages, speech_patterns, added_date
+
+    Returns
+    -------
+    bool
+        True if saved successfully, False otherwise
+
+    Example
+    -------
+    >>> profile = {"relationship": "friend", "languages": {"English": "fluent"}, ...}
+    >>> save_speaker_profile("Matt", profile)
+    True
+    """
+    try:
+        # Load existing profiles
+        profiles_data = load_speaker_profiles()
+
+        # Add or update the speaker
+        profiles_data["speakers"][speaker_name] = profile_data
+
+        # Save back to file
+        with open(SPEAKER_PROFILES_FILE, 'w', encoding='utf-8') as f:
+            json.dump(profiles_data, f, indent=2, ensure_ascii=False)
+
+        return True
+
+    except Exception as e:
+        print(f"Error saving speaker profile: {e}")
+        return False
+
+
+def get_reverse_relationship(relationship: str) -> str:
+    """
+    Get the reverse/reciprocal relationship.
+
+    Parameters
+    ----------
+    relationship : str
+        Original relationship (e.g., "son", "friend", "spouse")
+
+    Returns
+    -------
+    str
+        Reverse relationship, or "?" if unknown and needs manual input
+
+    Example
+    -------
+    >>> get_reverse_relationship("son")
+    'father/mother'
+    >>> get_reverse_relationship("friend")
+    'friend'
+    >>> get_reverse_relationship("colleague")
+    'colleague'
+    """
+    # Define common relationship mappings
+    REVERSE_MAP = {
+        # Family relationships
+        "son": "father/mother",
+        "daughter": "father/mother",
+        "father": "son/daughter",
+        "mother": "son/daughter",
+        "parent": "son/daughter",
+        "brother": "brother/sister",
+        "sister": "brother/sister",
+        "sibling": "sibling",
+        "spouse": "spouse",
+        "husband": "wife",
+        "wife": "husband",
+        "grandfather": "grandson/granddaughter",
+        "grandmother": "grandson/granddaughter",
+        "grandson": "grandfather/grandmother",
+        "granddaughter": "grandfather/grandmother",
+        "uncle": "nephew/niece",
+        "aunt": "nephew/niece",
+        "nephew": "uncle/aunt",
+        "niece": "uncle/aunt",
+        "cousin": "cousin",
+
+        # In-law relationships
+        "brother-in-law": "brother-in-law/sister-in-law",
+        "sister-in-law": "brother-in-law/sister-in-law",
+        "father-in-law": "son-in-law/daughter-in-law",
+        "mother-in-law": "son-in-law/daughter-in-law",
+        "son-in-law": "father-in-law/mother-in-law",
+        "daughter-in-law": "father-in-law/mother-in-law",
+
+        # Social relationships
+        "friend": "friend",
+        "colleague": "colleague",
+        "coworker": "coworker",
+        "neighbor": "neighbor",
+        "classmate": "classmate",
+        "roommate": "roommate",
+
+        # Professional relationships
+        "boss": "employee/subordinate",
+        "employee": "boss/manager",
+        "manager": "employee/subordinate",
+        "mentor": "mentee",
+        "mentee": "mentor",
+        "teacher": "student",
+        "student": "teacher",
+        "doctor": "patient",
+        "patient": "doctor",
+        "therapist": "client",
+        "psychologist": "client",
+        "psychiatrist": "patient",
+
+        # Device/Assistant
+        "device": "owner",
+        "assistant": "user",
+
+        # Self
+        "self": "self",
+    }
+
+    # Return mapped reverse, or "?" if unknown
+    return REVERSE_MAP.get(relationship.lower(), "?")

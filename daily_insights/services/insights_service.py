@@ -16,11 +16,14 @@ from daily_insights.utils.file_utils import (
     read_prompt_file, write_file,
     read_prompt_file_async, write_file_async, read_file_async
 )
+from daily_insights.utils.date_utils import should_process_date
 
 
 def save_daily_insights(chats: List[Dict]) -> None:
     """
     Save daily insights from chats to markdown files.
+
+    Only processes insights dated yesterday or earlier (skips today's incomplete data).
 
     Args
     ----
@@ -36,12 +39,19 @@ def save_daily_insights(chats: List[Dict]) -> None:
     >>> save_daily_insights(chats)
     # Saves insights to daily_insights directory
     """
+    skipped_today = 0
     for chat in chats:
         if chat.get("summary") == "Daily insights":
             created_at = chat.get("createdAt")
             if not created_at:
                 continue
             date_str = created_at.split("T")[0]
+
+            # Skip today's insights (incomplete data)
+            if not should_process_date(date_str):
+                skipped_today += 1
+                continue
+
             filename = os.path.join(INSIGHTS_DIR, f"{date_str}.md")
 
             if os.path.exists(filename):
@@ -53,6 +63,9 @@ def save_daily_insights(chats: List[Dict]) -> None:
             if len(messages) > 1 and "text" in messages[1]:
                 text_content = messages[1]["text"]
                 write_file(filename, text_content)
+
+    if skipped_today > 0:
+        print(f"Skipped {skipped_today} insight(s) from today (incomplete data)")
 
 
 def fetch_and_save_daily_insights() -> None:
@@ -76,6 +89,8 @@ def build_weekly_summaries() -> None:
     """
     Build weekly summaries from daily insights.
 
+    Only includes daily files dated yesterday or earlier (skips today's incomplete data).
+
     Returns
     -------
     None
@@ -87,8 +102,10 @@ def build_weekly_summaries() -> None:
     """
     print("\nStarting to build weekly summaries...")
     daily_files = sorted(Path(INSIGHTS_DIR).glob("*.md"))
+    # Filter out today's file and non-daily files
     daily_dates = [
-        f.stem for f in daily_files if not f.stem.endswith("-weekly")
+        f.stem for f in daily_files
+        if not f.stem.endswith("-weekly") and should_process_date(f.stem)
     ]
 
     for i in range(0, len(daily_dates), 7):
@@ -137,6 +154,8 @@ async def save_daily_insights_async(chats: List[Dict]) -> None:
     """
     Async version: Save daily insights from chats to markdown files.
 
+    Only processes insights dated yesterday or earlier (skips today's incomplete data).
+
     Args
     ----
     chats: List of chat dictionaries from API
@@ -151,27 +170,41 @@ async def save_daily_insights_async(chats: List[Dict]) -> None:
     >>> await save_daily_insights_async(chats)
     # Saves insights to daily_insights directory
     """
-    async def save_single_insight(chat: Dict) -> None:
+    skipped_today = 0
+
+    async def save_single_insight(chat: Dict) -> bool:
+        nonlocal skipped_today
         if chat.get("summary") == "Daily insights":
             created_at = chat.get("createdAt")
             if not created_at:
-                return
+                return False
             date_str = created_at.split("T")[0]
+
+            # Skip today's insights (incomplete data)
+            if not should_process_date(date_str):
+                skipped_today += 1
+                return False
+
             filename = os.path.join(INSIGHTS_DIR, f"{date_str}.md")
 
             if os.path.exists(filename):
                 print(f"Skipping existing insight: {filename}")
-                return
+                return False
 
             print(f"Saving new insight: {filename}")
             messages = chat.get("messages", [])
             if len(messages) > 1 and "text" in messages[1]:
                 text_content = messages[1]["text"]
                 await write_file_async(filename, text_content)
+                return True
+        return False
 
     # Process all chats concurrently
     tasks = [save_single_insight(chat) for chat in chats]
     await asyncio.gather(*tasks)
+
+    if skipped_today > 0:
+        print(f"Skipped {skipped_today} insight(s) from today (incomplete data)")
 
 
 async def fetch_and_save_daily_insights_async() -> None:
@@ -195,6 +228,8 @@ async def build_weekly_summaries_async() -> None:
     """
     Async version: Build weekly summaries from daily insights.
 
+    Only includes daily files dated yesterday or earlier (skips today's incomplete data).
+
     Returns
     -------
     None
@@ -206,8 +241,10 @@ async def build_weekly_summaries_async() -> None:
     """
     print("\nStarting to build weekly summaries (async)...")
     daily_files = sorted(Path(INSIGHTS_DIR).glob("*.md"))
+    # Filter out today's file and non-daily files
     daily_dates = [
-        f.stem for f in daily_files if not f.stem.endswith("-weekly")
+        f.stem for f in daily_files
+        if not f.stem.endswith("-weekly") and should_process_date(f.stem)
     ]
 
     async def build_single_weekly(week: List[str]) -> None:

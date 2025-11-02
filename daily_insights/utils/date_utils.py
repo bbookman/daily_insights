@@ -2,7 +2,7 @@
 
 import re
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -137,3 +137,62 @@ def group_weeks_by_month(weekly_files: List[Path]) -> Dict[str, List[Path]]:
             continue
 
     return dict(months)
+
+
+def get_yesterday_date() -> str:
+    """
+    Get yesterday's date in YYYY-MM-DD format.
+
+    Uses system timezone to calculate yesterday's date.
+    This ensures we only process complete days (not today's incomplete data).
+
+    Returns
+    -------
+    str
+        Yesterday's date in YYYY-MM-DD format
+
+    Example
+    -------
+    >>> # If today is 2025-10-31
+    >>> get_yesterday_date()
+    '2025-10-30'
+    """
+    yesterday = datetime.now() - timedelta(days=1)
+    return yesterday.strftime("%Y-%m-%d")
+
+
+def should_process_date(date_str: str) -> bool:
+    """
+    Check if a date should be processed (yesterday or earlier only).
+
+    Today's data is incomplete until the day ends, so we only process
+    logs dated yesterday or earlier.
+
+    Parameters
+    ----------
+    date_str : str
+        Date string in YYYY-MM-DD format to check
+
+    Returns
+    -------
+    bool
+        True if date is yesterday or earlier, False if today or future
+
+    Example
+    -------
+    >>> # If today is 2025-10-31
+    >>> should_process_date("2025-10-30")  # yesterday
+    True
+    >>> should_process_date("2025-10-31")  # today
+    False
+    >>> should_process_date("2025-11-01")  # future
+    False
+    """
+    try:
+        check_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        yesterday_date = (datetime.now() - timedelta(days=1)).date()
+        return check_date <= yesterday_date
+    except ValueError:
+        # If date parsing fails, default to not processing
+        print(f"Warning: Could not parse date '{date_str}', skipping")
+        return False
