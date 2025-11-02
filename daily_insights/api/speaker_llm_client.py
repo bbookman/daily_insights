@@ -2,7 +2,11 @@
 
 import json
 from typing import Dict, List, Optional
+
+from daily_insights.logging_config import get_logger
 from daily_insights.api.llm_client import generate_summary, generate_summary_async
+
+logger = get_logger(__name__)
 
 
 def build_speaker_identification_prompt(
@@ -154,7 +158,7 @@ def parse_speaker_response(llm_output: str) -> List[Dict]:
         end_idx = llm_output.rfind('}') + 1
 
         if start_idx == -1 or end_idx == 0:
-            print(f"Warning: No JSON found in LLM response")
+            logger.warning("No JSON found in LLM response")
             return []
 
         json_str = llm_output[start_idx:end_idx]
@@ -163,15 +167,14 @@ def parse_speaker_response(llm_output: str) -> List[Dict]:
         if "speaker_mappings" in data:
             return data["speaker_mappings"]
         else:
-            print(f"Warning: No 'speaker_mappings' key in LLM response")
+            logger.warning("No 'speaker_mappings' key in LLM response")
             return []
 
     except json.JSONDecodeError as e:
-        print(f"Error parsing LLM JSON response: {e}")
-        print(f"Response was: {llm_output[:500]}")
+        logger.error("Error parsing LLM JSON response. Response: %s", llm_output[:500], exc_info=True)
         return []
     except Exception as e:
-        print(f"Unexpected error parsing speaker response: {e}")
+        logger.error("Unexpected error parsing speaker response", exc_info=True)
         return []
 
 
@@ -330,7 +333,7 @@ Provide only the JSON response:"""
         end_idx = llm_output.rfind('}') + 1
 
         if start_idx == -1 or end_idx == 0:
-            print(f"Warning: No JSON found in pattern analysis response")
+            logger.warning("No JSON found in pattern analysis response")
             return None
 
         json_str = llm_output[start_idx:end_idx]
@@ -341,12 +344,12 @@ Provide only the JSON response:"""
         if all(field in patterns for field in required_fields):
             return patterns
         else:
-            print(f"Warning: Missing required fields in pattern analysis")
+            logger.warning("Missing required fields in pattern analysis")
             return None
 
     except json.JSONDecodeError as e:
-        print(f"Error parsing pattern analysis JSON: {e}")
+        logger.error("Error parsing pattern analysis JSON", exc_info=True)
         return None
     except Exception as e:
-        print(f"Error during pattern analysis: {e}")
+        logger.error("Error during pattern analysis", exc_info=True)
         return None

@@ -2,7 +2,10 @@
 
 from typing import Optional
 
+from daily_insights.logging_config import get_logger
 from daily_insights.config import OPENAI_API_KEY, OPENAI_MODEL
+
+logger = get_logger(__name__)
 
 
 def generate_with_openai(
@@ -52,7 +55,7 @@ def generate_with_openai(
         )
 
     model_name = model or OPENAI_MODEL
-    print(f"Sending to OpenAI ({model_name})...")
+    logger.info("Sending to OpenAI (%s)", model_name)
 
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
@@ -67,7 +70,7 @@ def generate_with_openai(
         return response.choices[0].message.content
 
     except Exception as e:
-        print(f"Error calling OpenAI API: {e}")
+        logger.error("Error calling OpenAI API", exc_info=True)
         raise
 
 
@@ -122,7 +125,7 @@ async def generate_with_openai_async(
         )
 
     model_name = model or OPENAI_MODEL
-    print(f"Sending to OpenAI ({model_name}) [async]...")
+    logger.info("Sending to OpenAI (%s) [async]", model_name)
 
     try:
         client = AsyncOpenAI(api_key=OPENAI_API_KEY)
@@ -137,5 +140,5 @@ async def generate_with_openai_async(
         return response.choices[0].message.content
 
     except Exception as e:
-        print(f"Error calling OpenAI API: {e}")
+        logger.error("Error calling OpenAI API", exc_info=True)
         raise

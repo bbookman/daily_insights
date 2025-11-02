@@ -8,3 +8,6 @@ psychologist/
 monthly/
 bee/
 .env
+logs/*.log
+logs/*.log.*
+logs/

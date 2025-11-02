@@ -88,8 +88,9 @@ MAX_MESSAGES = int(os.getenv('MAX_MESSAGES', '100'))
 MAX_SPEAKERS = int(os.getenv('MAX_SPEAKERS', '3'))
 
 # ============================================================================
-# Feature Toggles
+# Utility Functions (Helper functions used by configuration)
 # ============================================================================
+
 
 def _parse_bool(value: str, default: bool = True) -> bool:
     """
@@ -100,6 +101,35 @@ def _parse_bool(value: str, default: bool = True) -> bool:
     if not value:
         return default
     return value.lower() in ('true', 'yes', '1', 'on')
+
+
+# ============================================================================
+# Logging Configuration
+# ============================================================================
+
+# Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
+
+# Enable console logging
+LOG_TO_CONSOLE = _parse_bool(os.getenv('LOG_TO_CONSOLE', 'true'))
+
+# Enable file logging
+LOG_TO_FILE = _parse_bool(os.getenv('LOG_TO_FILE', 'true'))
+
+# Log file directory
+LOG_DIR = PROJECT_ROOT / os.getenv('LOG_DIR', 'logs')
+
+# Log file name
+LOG_FILE = LOG_DIR / os.getenv('LOG_FILE', 'daily_insights.log')
+
+# Log rotation settings
+LOG_MAX_BYTES = int(os.getenv('LOG_MAX_BYTES', '10485760'))  # 10MB default
+LOG_BACKUP_COUNT = int(os.getenv('LOG_BACKUP_COUNT', '5'))  # Keep 5 files
+
+
+# ============================================================================
+# Feature Toggles
+# ============================================================================
 
 # Pipeline feature flags
 FETCH_LIFELOGS = _parse_bool(os.getenv('FETCH_LIFELOGS', 'true'))
@@ -124,7 +154,8 @@ def ensure_directories():
         MONTHLY_DIR,
         BEE_DIR,
         PSYCHOLOGIST_DIR,
-        JOURNAL_DIR
+        JOURNAL_DIR,
+        LOG_DIR  # Add logs directory
     ]
 
     for dir_path in directories:

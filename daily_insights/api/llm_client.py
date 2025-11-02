@@ -2,7 +2,10 @@
 
 from typing import Optional
 
+from daily_insights.logging_config import get_logger
 from daily_insights.config import LLM_PROVIDER
+
+logger = get_logger(__name__)
 
 
 def generate_clinical_notes(
@@ -41,12 +44,12 @@ def generate_clinical_notes(
 
     if provider_name == "openai":
         from daily_insights.api.openai_client import generate_with_openai
-        print("Using OpenAI provider")
+        logger.info("Using OpenAI provider")
         return generate_with_openai(system_prompt, transcript)
 
     elif provider_name == "ollama":
         from daily_insights.api.ollama_client import generate_with_chat
-        print("Using Ollama provider")
+        logger.info("Using Ollama provider")
         return generate_with_chat(system_prompt, transcript)
 
     else:
@@ -145,12 +148,12 @@ async def generate_clinical_notes_async(
 
     if provider_name == "openai":
         from daily_insights.api.openai_client import generate_with_openai_async
-        print("Using OpenAI provider [async]")
+        logger.info("Using OpenAI provider [async]")
         return await generate_with_openai_async(system_prompt, transcript)
 
     elif provider_name == "ollama":
         from daily_insights.api.ollama_client import generate_with_chat_async
-        print("Using Ollama provider [async]")
+        logger.info("Using Ollama provider [async]")
         return await generate_with_chat_async(system_prompt, transcript)
 
     else:

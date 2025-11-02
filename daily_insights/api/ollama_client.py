@@ -5,7 +5,10 @@ import requests
 from typing import Optional
 import aiohttp
 
+from daily_insights.logging_config import get_logger
 from daily_insights.config import OLLAMA_MODEL
+
+logger = get_logger(__name__)
 
 
 def generate_summary(prompt: str, model: Optional[str] = None) -> str:
@@ -33,7 +36,7 @@ def generate_summary(prompt: str, model: Optional[str] = None) -> str:
     'The day was positive and enjoyable...'
     """
     model_name = model or OLLAMA_MODEL
-    print(f"Sending to Ollama ({model_name}) for generation...")
+    logger.info("Sending to Ollama (%s) for generation", model_name)
 
     ollama_api = "http://localhost:11434/api/generate"
     payload = {"model": model_name, "prompt": prompt}
@@ -60,7 +63,7 @@ def generate_summary(prompt: str, model: Optional[str] = None) -> str:
         return output_text
 
     except requests.exceptions.RequestException as e:
-        print(f"Error calling Ollama API: {e}")
+        logger.error("Error calling Ollama API", exc_info=True)
         raise
 
 
@@ -95,7 +98,7 @@ def generate_with_chat(
     'Hello! How can I...'
     """
     model_name = model or OLLAMA_MODEL
-    print(f"Sending to Ollama ({model_name}) via chat API...")
+    logger.info("Sending to Ollama (%s) via chat API", model_name)
 
     ollama_chat_api = "http://localhost:11434/api/chat"
     payload = {
@@ -130,7 +133,7 @@ def generate_with_chat(
         return output_text
 
     except requests.exceptions.RequestException as e:
-        print(f"Error calling Ollama chat API: {e}")
+        logger.error("Error calling Ollama chat API", exc_info=True)
         raise
 
 
@@ -163,7 +166,7 @@ async def generate_summary_async(prompt: str, model: Optional[str] = None) -> st
     'The day was positive and enjoyable...'
     """
     model_name = model or OLLAMA_MODEL
-    print(f"Sending to Ollama ({model_name}) for generation [async]...")
+    logger.info("Sending to Ollama (%s) for generation [async]", model_name)
 
     ollama_api = "http://localhost:11434/api/generate"
     payload = {"model": model_name, "prompt": prompt}
@@ -190,7 +193,7 @@ async def generate_summary_async(prompt: str, model: Optional[str] = None) -> st
         return output_text
 
     except aiohttp.ClientError as e:
-        print(f"Error calling Ollama API: {e}")
+        logger.error("Error calling Ollama API", exc_info=True)
         raise
 
 
@@ -225,7 +228,7 @@ async def generate_with_chat_async(
     'Hello! How can I...'
     """
     model_name = model or OLLAMA_MODEL
-    print(f"Sending to Ollama ({model_name}) via chat API [async]...")
+    logger.info("Sending to Ollama (%s) via chat API [async]", model_name)
 
     ollama_chat_api = "http://localhost:11434/api/chat"
     payload = {
@@ -260,5 +263,5 @@ async def generate_with_chat_async(
         return output_text
 
     except aiohttp.ClientError as e:
-        print(f"Error calling Ollama chat API: {e}")
+        logger.error("Error calling Ollama chat API", exc_info=True)
         raise

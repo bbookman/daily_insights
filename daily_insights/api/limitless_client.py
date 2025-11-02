@@ -8,11 +8,14 @@ from dateutil import parser
 import aiohttp
 import asyncio
 
+from daily_insights.logging_config import get_logger
 from daily_insights.config import (
     CHATS_API_BASE,
     LIFELOGS_API_BASE,
     API_KEY
 )
+
+logger = get_logger(__name__)
 
 
 @backoff.on_exception(
@@ -78,7 +81,7 @@ def fetch_new_lifelogs(existing_dates: Set[str]) -> List[Dict]:
     >>> print(len(lifelogs))
     5
     """
-    print("\nStarting to fetch new lifelogs from Limitless...")
+    logger.info("Starting to fetch new lifelogs from Limitless")
 
     base_params = {
         "timezone": "America/New_York",
@@ -99,10 +102,10 @@ def fetch_new_lifelogs(existing_dates: Set[str]) -> List[Dict]:
             params["cursor"] = next_cursor
 
         try:
-            print(f"Fetching lifelogs page {page}...")
+            logger.info("Fetching lifelogs page %d", page)
             response = _make_lifelog_request(params)
         except requests.exceptions.RequestException as e:
-            print(f"Request failed on page {page}: {e}")
+            logger.error("Request failed on page %d", page, exc_info=True)
             break
 
         try:
@@ -113,10 +116,10 @@ def fetch_new_lifelogs(existing_dates: Set[str]) -> List[Dict]:
             ).get("nextCursor")
 
             if not lifelogs:
-                print("No lifelogs received. Ending pagination.")
+                logger.info("No lifelogs received, ending pagination")
                 break
 
-            print(f"Page {page}: Retrieved {len(lifelogs)} lifelogs.")
+            logger.info("Page %d: Retrieved %d lifelogs", page, len(lifelogs))
 
             for lifelog in lifelogs:
                 try:
@@ -124,9 +127,9 @@ def fetch_new_lifelogs(existing_dates: Set[str]) -> List[Dict]:
                     date_str = start_time.strftime("%Y-%m-%d")
 
                     if date_str in existing_dates:
-                        print(
-                            f"Found lifelog for existing date {date_str}. "
-                            "Stopping pagination."
+                        logger.info(
+                            "Found lifelog for existing date %s, stopping pagination",
+                            date_str
                         )
                         stop_paging = True
                         break
@@ -137,7 +140,7 @@ def fetch_new_lifelogs(existing_dates: Set[str]) -> List[Dict]:
                         seen_ids.add(lifelog_id)
 
                 except (KeyError, ValueError) as e:
-                    print(f"Error processing lifelog for date check: {e}")
+                    logger.warning("Error processing lifelog for date check: %s", e)
 
             if stop_paging:
                 break
@@ -145,13 +148,13 @@ def fetch_new_lifelogs(existing_dates: Set[str]) -> List[Dict]:
             if next_cursor:
                 page += 1
             else:
-                print("No more pages. Ending pagination.")
+                logger.info("No more pages, ending pagination")
                 break
         except json.JSONDecodeError as e:
-            print(f"Failed to parse JSON response on page {page}: {e}")
+            logger.error("Failed to parse JSON response on page %d", page, exc_info=True)
             break
 
-    print(f"Finished fetching {len(all_lifelogs)} total new lifelogs.")
+    logger.info("Finished fetching %d total new lifelogs", len(all_lifelogs))
     return all_lifelogs
 
 
@@ -169,7 +172,7 @@ def fetch_chats() -> List[Dict]:
     >>> print(len(chats))
     42
     """
-    print("\nStarting to fetch daily insights from chats...")
+    logger.info("Starting to fetch daily insights from chats")
     cursor = None
     headers = {
         "X-API-Key": API_KEY.strip(),
@@ -180,7 +183,7 @@ def fetch_chats() -> List[Dict]:
 
     while True:
         page_count += 1
-        print(f"Fetching page {page_count}...")
+        logger.info("Fetching page %d", page_count)
         params = {}
         if cursor:
             params["cursor"] = cursor
@@ -196,7 +199,7 @@ def fetch_chats() -> List[Dict]:
         if not cursor:
             break
 
-    print(f"Finished fetching {len(all_chats)} chats.")
+    logger.info("Finished fetching %d chats", len(all_chats))
     return all_chats
 
 
@@ -251,8 +254,10 @@ async def _make_lifelog_request_async(
                 raise
             # Exponential backoff
             wait_time = 2 ** attempt
-            print(f"Request failed (attempt {attempt + 1}/{max_retries}), "
-                  f"retrying in {wait_time}s: {e}")
+            logger.warning(
+                "Request failed (attempt %d/%d), retrying in %ds",
+                attempt + 1, max_retries, wait_time, exc_info=True
+            )
             await asyncio.sleep(wait_time)
 
 
@@ -277,7 +282,7 @@ async def fetch_new_lifelogs_async(existing_dates: Set[str]) -> List[Dict]:
     >>> print(len(lifelogs))
     5
     """
-    print("\nStarting to fetch new lifelogs from Limitless (async)...")
+    logger.info("Starting to fetch new lifelogs from Limitless (async)")
 
     base_params = {
         "timezone": "America/New_York",
@@ -299,10 +304,10 @@ async def fetch_new_lifelogs_async(existing_dates: Set[str]) -> List[Dict]:
                 params["cursor"] = next_cursor
 
             try:
-                print(f"Fetching lifelogs page {page}...")
+                logger.info("Fetching lifelogs page %d", page)
                 data = await _make_lifelog_request_async(session, params)
             except (aiohttp.ClientError, asyncio.TimeoutError) as e:
-                print(f"Request failed on page {page}: {e}")
+                logger.error("Request failed on page %d", page, exc_info=True)
                 break
 
             lifelogs = data.get("data", {}).get("lifelogs", [])
@@ -311,10 +316,10 @@ async def fetch_new_lifelogs_async(existing_dates: Set[str]) -> List[Dict]:
             ).get("nextCursor")
 
             if not lifelogs:
-                print("No lifelogs received. Ending pagination.")
+                logger.info("No lifelogs received, ending pagination")
                 break
 
-            print(f"Page {page}: Retrieved {len(lifelogs)} lifelogs.")
+            logger.info("Page %d: Retrieved %d lifelogs", page, len(lifelogs))
 
             for lifelog in lifelogs:
                 try:
@@ -322,9 +327,9 @@ async def fetch_new_lifelogs_async(existing_dates: Set[str]) -> List[Dict]:
                     date_str = start_time.strftime("%Y-%m-%d")
 
                     if date_str in existing_dates:
-                        print(
-                            f"Found lifelog for existing date {date_str}. "
-                            "Stopping pagination."
+                        logger.info(
+                            "Found lifelog for existing date %s, stopping pagination",
+                            date_str
                         )
                         stop_paging = True
                         break
@@ -335,7 +340,7 @@ async def fetch_new_lifelogs_async(existing_dates: Set[str]) -> List[Dict]:
                         seen_ids.add(lifelog_id)
 
                 except (KeyError, ValueError) as e:
-                    print(f"Error processing lifelog for date check: {e}")
+                    logger.warning("Error processing lifelog for date check: %s", e)
 
             if stop_paging:
                 break
@@ -343,10 +348,10 @@ async def fetch_new_lifelogs_async(existing_dates: Set[str]) -> List[Dict]:
             if next_cursor:
                 page += 1
             else:
-                print("No more pages. Ending pagination.")
+                logger.info("No more pages, ending pagination")
                 break
 
-    print(f"Finished fetching {len(all_lifelogs)} total new lifelogs.")
+    logger.info("Finished fetching %d total new lifelogs", len(all_lifelogs))
     return all_lifelogs
 
 
@@ -364,7 +369,7 @@ async def fetch_chats_async() -> List[Dict]:
     >>> print(len(chats))
     42
     """
-    print("\nStarting to fetch daily insights from chats (async)...")
+    logger.info("Starting to fetch daily insights from chats (async)")
     cursor = None
     headers = {
         "X-API-Key": API_KEY.strip(),
@@ -376,7 +381,7 @@ async def fetch_chats_async() -> List[Dict]:
     async with aiohttp.ClientSession() as session:
         while True:
             page_count += 1
-            print(f"Fetching page {page_count}...")
+            logger.info("Fetching page %d", page_count)
             params = {}
             if cursor:
                 params["cursor"] = cursor
@@ -397,5 +402,5 @@ async def fetch_chats_async() -> List[Dict]:
             if not cursor:
                 break
 
-    print(f"Finished fetching {len(all_chats)} chats.")
+    logger.info("Finished fetching %d chats", len(all_chats))
     return all_chats
