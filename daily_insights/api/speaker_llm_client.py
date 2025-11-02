@@ -9,79 +9,248 @@ from daily_insights.api.llm_client import generate_summary, generate_summary_asy
 logger = get_logger(__name__)
 
 
-def build_speaker_identification_prompt(
-    transcript: str,
-    speaker_profiles: Dict,
-    training_examples: List[Dict]
-) -> str:
+# ============================================================================
+# Helper Functions for Prompt Building
+# ============================================================================
+
+def _format_list_field(value, default: str = "") -> str:
     """
-    Build LLM prompt for speaker identification.
+    Format a field that might be a list or string.
 
     Parameters
     ----------
-    transcript : str
-        The conversation transcript with generic speaker labels
-    speaker_profiles : Dict
-        Dictionary of known speakers and their characteristics
-    training_examples : List[Dict]
-        List of example conversations with correct speaker labels
+    value
+        Field value (list or string)
+    default : str
+        Default value if empty
 
     Returns
     -------
     str
-        Formatted prompt for LLM speaker identification
+        Comma-separated string
 
     Example
     -------
-    >>> prompt = build_speaker_identification_prompt(
-    ...     "Speaker 1: Hi there\nSpeaker 2: Hello",
-    ...     {"Bruce": {"speech_patterns": {...}}},
-    ...     [{"snippet": "...", "speaker": "Bruce"}]
-    ... )
+    >>> _format_list_field(["topic1", "topic2"])
+    'topic1, topic2'
+    >>> _format_list_field("single")
+    'single'
     """
-    # Build speaker profiles section
-    profiles_text = "# Known Speakers\n\n"
+    if isinstance(value, list):
+        return ", ".join(value) if value else default
+    return str(value) if value else default
+
+
+def _build_speech_patterns_section(patterns: Dict) -> str:
+    """
+    Build speech patterns section for a speaker profile.
+
+    Parameters
+    ----------
+    patterns : Dict
+        Speech patterns dictionary
+
+    Returns
+    -------
+    str
+        Formatted speech patterns text
+
+    Example
+    -------
+    >>> patterns = {"vocabulary_level": "college", "speaking_style": "analytical"}
+    >>> text = _build_speech_patterns_section(patterns)
+    >>> "Vocabulary: college" in text
+    True
+    """
+    lines = []
+
+    if "vocabulary_level" in patterns:
+        lines.append(f"- Vocabulary: {patterns['vocabulary_level']}")
+
+    if "speaking_style" in patterns:
+        lines.append(f"- Style: {patterns['speaking_style']}")
+
+    if "common_topics" in patterns:
+        topics = _format_list_field(patterns["common_topics"])
+        if topics:
+            lines.append(f"- Common topics: {topics}")
+
+    if "distinctive_phrases" in patterns and patterns["distinctive_phrases"]:
+        phrases = _format_list_field(patterns["distinctive_phrases"])
+        if phrases:
+            lines.append(f"- Distinctive phrases: {phrases}")
+
+    return "\n".join(lines)
+
+
+def _build_speaker_profile(name: str, profile: Dict) -> str:
+    """
+    Build formatted text for a single speaker profile.
+
+    Parameters
+    ----------
+    name : str
+        Speaker name
+    profile : Dict
+        Speaker profile data
+
+    Returns
+    -------
+    str
+        Formatted profile text
+
+    Example
+    -------
+    >>> profile = {"relationship": "friend", "speech_patterns": {...}}
+    >>> text = _build_speaker_profile("Bruce", profile)
+    >>> "## Bruce" in text
+    True
+    """
+    lines = [f"## {name}"]
+
+    if "relationship" in profile:
+        lines.append(f"- Relationship: {profile['relationship']}")
+
+    if "speech_patterns" in profile:
+        pattern_text = _build_speech_patterns_section(profile["speech_patterns"])
+        if pattern_text:
+            lines.append(pattern_text)
+
+    return "\n".join(lines)
+
+
+def _build_profiles_section(speaker_profiles: Dict) -> str:
+    """
+    Build the known speakers section of the prompt.
+
+    Parameters
+    ----------
+    speaker_profiles : Dict
+        Dictionary of speaker profiles
+
+    Returns
+    -------
+    str
+        Formatted profiles section
+
+    Example
+    -------
+    >>> profiles = {"Bruce": {...}, "Ivette": {...}}
+    >>> text = _build_profiles_section(profiles)
+    >>> "# Known Speakers" in text
+    True
+    """
+    if not speaker_profiles:
+        return ""
+
+    lines = ["# Known Speakers", ""]
+
     for name, profile in speaker_profiles.items():
-        profiles_text += f"## {name}\n"
-        if "relationship" in profile:
-            profiles_text += f"- Relationship: {profile['relationship']}\n"
+        lines.append(_build_speaker_profile(name, profile))
+        lines.append("")  # Blank line between profiles
 
-        if "speech_patterns" in profile:
-            patterns = profile["speech_patterns"]
-            if "vocabulary_level" in patterns:
-                profiles_text += f"- Vocabulary: {patterns['vocabulary_level']}\n"
-            if "speaking_style" in patterns:
-                profiles_text += f"- Style: {patterns['speaking_style']}\n"
-            if "common_topics" in patterns:
-                topics = patterns["common_topics"]
-                if isinstance(topics, list):
-                    topics = ", ".join(topics)
-                profiles_text += f"- Common topics: {topics}\n"
-            if "distinctive_phrases" in patterns and patterns["distinctive_phrases"]:
-                phrases = patterns["distinctive_phrases"]
-                if isinstance(phrases, list):
-                    phrases = ", ".join(phrases)
-                profiles_text += f"- Distinctive phrases: {phrases}\n"
-        profiles_text += "\n"
+    return "\n".join(lines)
 
-    # Build training examples section
-    examples_text = ""
-    if training_examples:
-        examples_text = "# Training Examples\n\n"
-        for i, example in enumerate(training_examples[:10], 1):  # Use max 10 examples
-            examples_text += f"## Example {i}\n"
-            if "snippet" in example:
-                examples_text += f"```\n{example['snippet']}\n```\n"
-            if "speakers" in example:
-                examples_text += f"Speakers: {', '.join(example['speakers'])}\n"
-            elif "speaker" in example:
-                examples_text += f"Speaker: {example['speaker']}\n"
-            if "context" in example:
-                examples_text += f"Context: {example['context']}\n"
-            examples_text += "\n"
 
-    # Build the main prompt
-    prompt = f"""You are analyzing a conversation transcript to identify speakers.
+def _build_training_example(index: int, example: Dict) -> str:
+    """
+    Build formatted text for a single training example.
+
+    Parameters
+    ----------
+    index : int
+        Example number (1-indexed)
+    example : Dict
+        Training example data
+
+    Returns
+    -------
+    str
+        Formatted example text
+
+    Example
+    -------
+    >>> example = {"snippet": "Hello", "speaker": "Bruce"}
+    >>> text = _build_training_example(1, example)
+    >>> "## Example 1" in text
+    True
+    """
+    lines = [f"## Example {index}"]
+
+    if "snippet" in example:
+        lines.append(f"```\n{example['snippet']}\n```")
+
+    if "speakers" in example:
+        lines.append(f"Speakers: {', '.join(example['speakers'])}")
+    elif "speaker" in example:
+        lines.append(f"Speaker: {example['speaker']}")
+
+    if "context" in example:
+        lines.append(f"Context: {example['context']}")
+
+    return "\n".join(lines)
+
+
+def _build_examples_section(training_examples: List[Dict], max_examples: int = 10) -> str:
+    """
+    Build the training examples section of the prompt.
+
+    Parameters
+    ----------
+    training_examples : List[Dict]
+        List of training examples
+    max_examples : int
+        Maximum number of examples to include
+
+    Returns
+    -------
+    str
+        Formatted examples section
+
+    Example
+    -------
+    >>> examples = [{"snippet": "...", "speaker": "Bruce"}]
+    >>> text = _build_examples_section(examples)
+    >>> "# Training Examples" in text
+    True
+    """
+    if not training_examples:
+        return ""
+
+    lines = ["# Training Examples", ""]
+
+    for i, example in enumerate(training_examples[:max_examples], 1):
+        lines.append(_build_training_example(i, example))
+        lines.append("")  # Blank line between examples
+
+    return "\n".join(lines)
+
+
+def _build_prompt_template(profiles_text: str, examples_text: str, transcript: str) -> str:
+    """
+    Build the complete prompt template with all sections.
+
+    Parameters
+    ----------
+    profiles_text : str
+        Formatted speaker profiles section
+    examples_text : str
+        Formatted training examples section
+    transcript : str
+        Conversation transcript to analyze
+
+    Returns
+    -------
+    str
+        Complete formatted prompt
+
+    Example
+    -------
+    >>> prompt = _build_prompt_template("# Speakers", "# Examples", "transcript")
+    >>> "You are analyzing" in prompt
+    True
+    """
+    return f"""You are analyzing a conversation transcript to identify speakers.
 
 {profiles_text}
 
@@ -124,7 +293,50 @@ If you cannot confidently identify a speaker (confidence < 0.60), use "Unknown" 
 
 Provide your analysis as JSON:"""
 
-    return prompt
+
+def build_speaker_identification_prompt(
+    transcript: str,
+    speaker_profiles: Dict,
+    training_examples: List[Dict]
+) -> str:
+    """
+    Build LLM prompt for speaker identification.
+
+    Orchestrates prompt construction in clear steps:
+    1. Build speaker profiles section
+    2. Build training examples section
+    3. Assemble complete prompt template
+
+    Parameters
+    ----------
+    transcript : str
+        The conversation transcript with generic speaker labels
+    speaker_profiles : Dict
+        Dictionary of known speakers and their characteristics
+    training_examples : List[Dict]
+        List of example conversations with correct speaker labels
+
+    Returns
+    -------
+    str
+        Formatted prompt for LLM speaker identification
+
+    Example
+    -------
+    >>> prompt = build_speaker_identification_prompt(
+    ...     "Speaker 1: Hi there\nSpeaker 2: Hello",
+    ...     {"Bruce": {"speech_patterns": {...}}},
+    ...     [{"snippet": "...", "speaker": "Bruce"}]
+    ... )
+    """
+    # Step 1: Build speaker profiles section
+    profiles_text = _build_profiles_section(speaker_profiles)
+
+    # Step 2: Build training examples section
+    examples_text = _build_examples_section(training_examples)
+
+    # Step 3: Assemble complete prompt
+    return _build_prompt_template(profiles_text, examples_text, transcript)
 
 
 def parse_speaker_response(llm_output: str) -> List[Dict]:
