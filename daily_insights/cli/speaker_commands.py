@@ -3,9 +3,11 @@
 import json
 import sys
 from pathlib import Path
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Set
 from datetime import datetime
+from dataclasses import dataclass, field
 
+from daily_insights.logging_config import get_logger
 from daily_insights.services.speaker_service import (
     load_speaker_profiles,
     load_training_examples,
@@ -17,13 +19,618 @@ from daily_insights.services.speaker_service import (
 )
 from daily_insights.api.speaker_llm_client import analyze_speaker_patterns_with_llm
 
+logger = get_logger(__name__)
+
+# Configuration constants
+MIN_UTTERANCE_WORDS = 6
+MAX_SAMPLE_EXAMPLES = 3
+CONTEXT_LINES_BEFORE = 4
+CONTEXT_LINES_AFTER = 4
+SEPARATOR_WIDTH = 70
+
+
+# ============================================================================
+# Data Classes for Refactored label_training_transcript
+# ============================================================================
+
+@dataclass
+class FilterStatistics:
+    """Statistics from utterance filtering."""
+    original_count: int
+    filtered_count: int
+    skipped_count: int
+
+    def __str__(self) -> str:
+        return (
+            f"Found {self.original_count} speaker instances.\n"
+            f"Filtered to {self.filtered_count} substantial utterances "
+            f"(≥{MIN_UTTERANCE_WORDS} words).\n"
+            f"Skipped {self.skipped_count} brief utterances (<{MIN_UTTERANCE_WORDS} words)."
+        )
+
+
+@dataclass
+class SpeakerGroups:
+    """Grouped speaker instances with metadata."""
+    grouped: Dict[str, List[str]]  # speaker_label -> utterances
+    indices: Dict[str, List[int]]  # speaker_label -> indices in filtered list
+    labels: List[str]  # sorted unique speaker labels
+
+    @property
+    def speaker_count(self) -> int:
+        """Number of unique speaker labels."""
+        return len(self.labels)
+
+
+@dataclass
+class UserChoice:
+    """Result of user choice input."""
+    choice: str  # speaker name, "skip", or "quit"
+    is_quit: bool
+    is_skip: bool
+
+    @property
+    def is_valid_speaker(self) -> bool:
+        """Check if choice is a valid speaker name."""
+        return not self.is_quit and not self.is_skip
+
+
+@dataclass
+class SessionStatistics:
+    """Statistics from training session."""
+    new_examples_count: int
+    duplicates_removed: int
+    unique_examples_added: int
+    total_examples: int
+
+    def __str__(self) -> str:
+        return (
+            f"\n=== Training Session Complete ===\n"
+            f"New examples created: {self.new_examples_count}\n"
+            f"Duplicates removed: {self.duplicates_removed}\n"
+            f"Unique examples added: {self.unique_examples_added}\n"
+            f"Total training examples: {self.total_examples}"
+        )
+
+
+# ============================================================================
+# Helper Functions for label_training_transcript
+# ============================================================================
+
+def load_transcript_file(transcript_file: str) -> Optional[str]:
+    """
+    Load and validate transcript file.
+
+    Parameters
+    ----------
+    transcript_file : str
+        Path to transcript markdown file
+
+    Returns
+    -------
+    Optional[str]
+        Transcript content if successful, None otherwise
+
+    Example
+    -------
+    >>> content = load_transcript_file("lifelogs/2025-03-01.md")
+    >>> content is not None
+    True
+    """
+    file_path = Path(transcript_file)
+
+    if not file_path.exists():
+        logger.error("File not found: %s", transcript_file)
+        print(f"Error: File not found: {transcript_file}")
+        return None
+
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception as e:
+        logger.error("Error reading file: %s", transcript_file, exc_info=True)
+        print(f"Error reading file: {e}")
+        return None
+
+
+def validate_speaker_profiles() -> Optional[List[str]]:
+    """
+    Validate that speaker profiles exist and are configured.
+
+    Returns
+    -------
+    Optional[List[str]]
+        List of known speaker names if valid, None otherwise
+
+    Example
+    -------
+    >>> speakers = validate_speaker_profiles()
+    >>> isinstance(speakers, list)
+    True
+    """
+    profiles_data = load_speaker_profiles()
+    known_speakers = list(profiles_data.get("speakers", {}).keys())
+
+    if not known_speakers:
+        logger.error(
+            "No speaker profiles found. Create profiles in %s",
+            SPEAKER_PROFILES_FILE
+        )
+        print("Error: No speaker profiles found. Please create speaker profiles first.")
+        print(f"Edit {SPEAKER_PROFILES_FILE} to add speaker profiles.")
+        return None
+
+    return known_speakers
+
+
+def filter_substantial_utterances(
+    instances: List[Tuple[str, str]],
+    min_words: int = MIN_UTTERANCE_WORDS
+) -> Tuple[List[Tuple[str, str]], FilterStatistics]:
+    """
+    Filter speaker instances to keep only substantial utterances.
+
+    Parameters
+    ----------
+    instances : List[Tuple[str, str]]
+        List of (speaker_label, utterance) tuples
+    min_words : int, default=MIN_UTTERANCE_WORDS
+        Minimum word count for substantial utterances
+
+    Returns
+    -------
+    Tuple[List[Tuple[str, str]], FilterStatistics]
+        Filtered instances and statistics
+
+    Example
+    -------
+    >>> instances = [("Speaker 1", "Yes"), ("Speaker 2", "I agree with that")]
+    >>> filtered, stats = filter_substantial_utterances(instances, min_words=3)
+    >>> len(filtered)
+    1
+    """
+    filtered_instances = [
+        (speaker_label, utterance)
+        for speaker_label, utterance in instances
+        if len(utterance.split()) >= min_words
+    ]
+
+    stats = FilterStatistics(
+        original_count=len(instances),
+        filtered_count=len(filtered_instances),
+        skipped_count=len(instances) - len(filtered_instances)
+    )
+
+    logger.debug(
+        "Filtered utterances: %d original, %d filtered, %d skipped",
+        stats.original_count, stats.filtered_count, stats.skipped_count
+    )
+
+    return filtered_instances, stats
+
+
+def group_instances_by_speaker(
+    instances: List[Tuple[str, str]]
+) -> SpeakerGroups:
+    """
+    Group instances by speaker label with index tracking.
+
+    Parameters
+    ----------
+    instances : List[Tuple[str, str]]
+        List of (speaker_label, utterance) tuples
+
+    Returns
+    -------
+    SpeakerGroups
+        Grouped instances with metadata
+
+    Example
+    -------
+    >>> instances = [("Speaker 1", "Hello"), ("Speaker 2", "Hi")]
+    >>> groups = group_instances_by_speaker(instances)
+    >>> groups.speaker_count
+    2
+    """
+    grouped: Dict[str, List[str]] = {}
+    indices: Dict[str, List[int]] = {}
+
+    for idx, (speaker_label, utterance) in enumerate(instances):
+        if speaker_label not in grouped:
+            grouped[speaker_label] = []
+            indices[speaker_label] = []
+        grouped[speaker_label].append(utterance)
+        indices[speaker_label].append(idx)
+
+    return SpeakerGroups(
+        grouped=grouped,
+        indices=indices,
+        labels=sorted(grouped.keys())
+    )
+
+
+def _display_single_example(
+    sample_num: int,
+    utterance: str,
+    utterance_idx: int,
+    speaker_label: str,
+    all_instances: List[Tuple[str, str]]
+) -> None:
+    """Display a single example with context."""
+    print(f"\n  Example {sample_num + 1}:")
+    print("  " + "-" * SEPARATOR_WIDTH)
+
+    # Context before
+    context_start = max(0, utterance_idx - CONTEXT_LINES_BEFORE)
+    for ctx_idx in range(context_start, utterance_idx):
+        ctx_speaker, ctx_utterance = all_instances[ctx_idx]
+        print(f"     {ctx_speaker}: {ctx_utterance}")
+
+    # Target line (highlighted)
+    print(f"  -> {speaker_label}: {utterance}")
+
+    # Context after
+    context_end = min(len(all_instances), utterance_idx + CONTEXT_LINES_AFTER + 1)
+    for ctx_idx in range(utterance_idx + 1, context_end):
+        ctx_speaker, ctx_utterance = all_instances[ctx_idx]
+        print(f"     {ctx_speaker}: {ctx_utterance}")
+
+    print("  " + "-" * SEPARATOR_WIDTH)
+
+
+def display_speaker_examples(
+    speaker_label: str,
+    utterances: List[str],
+    indices: List[int],
+    all_instances: List[Tuple[str, str]],
+    max_samples: int = MAX_SAMPLE_EXAMPLES
+) -> None:
+    """
+    Display speaker examples with surrounding context.
+
+    Parameters
+    ----------
+    speaker_label : str
+        Speaker label being displayed
+    utterances : List[str]
+        List of utterances for this speaker
+    indices : List[int]
+        Indices of utterances in full instance list
+    all_instances : List[Tuple[str, str]]
+        Complete list of all filtered instances
+    max_samples : int, default=MAX_SAMPLE_EXAMPLES
+        Maximum number of examples to display
+
+    Example
+    -------
+    >>> display_speaker_examples("Speaker 1", ["Hello world"], [0], instances)
+    --- Speaker Label: Speaker 1 ---
+    Number of utterances: 1
+    ...
+    """
+    print(f"\n--- Speaker Label: {speaker_label} ---")
+    print(f"Number of utterances: {len(utterances)}")
+    print("\nSample utterances with context:")
+
+    num_samples = min(max_samples, len(utterances))
+
+    for sample_num in range(num_samples):
+        _display_single_example(
+            sample_num,
+            utterances[sample_num],
+            indices[sample_num],
+            speaker_label,
+            all_instances
+        )
+
+    if len(utterances) > num_samples:
+        print(f"\n  ... and {len(utterances) - num_samples} more utterances for this speaker")
+
+
+def get_user_speaker_choice(
+    speaker_label: str,
+    known_speakers: List[str],
+    suggestion: Optional[str] = None
+) -> UserChoice:
+    """
+    Prompt user to identify speaker with numbered menu.
+
+    Parameters
+    ----------
+    speaker_label : str
+        Generic speaker label to identify
+    known_speakers : List[str]
+        List of known speaker names
+    suggestion : Optional[str]
+        Suggested speaker based on heuristics
+
+    Returns
+    -------
+    UserChoice
+        User's choice with metadata
+
+    Example
+    -------
+    >>> choice = get_user_speaker_choice("Speaker 1", ["Bruce", "Ivette"])
+    >>> choice.is_valid_speaker
+    True
+    """
+    print(f"\nWho is '{speaker_label}'?")
+    if suggestion:
+        print(f"(Suggested: {suggestion})")
+
+    print("\nOptions:")
+    for idx, speaker in enumerate(known_speakers, 1):
+        marker = " *" if speaker == suggestion else ""
+        print(f"  {idx}. {speaker}{marker}")
+    print("  s. Skip")
+    print("  q. Quit")
+
+    while True:
+        user_input = input(f"\nEnter choice (1-{len(known_speakers)}, s, q): ").strip().lower()
+
+        if user_input == 'q':
+            logger.info("User chose to quit labeling session")
+            return UserChoice(choice="quit", is_quit=True, is_skip=False)
+
+        if user_input == 's':
+            logger.info("User chose to skip speaker: %s", speaker_label)
+            return UserChoice(choice="skip", is_quit=False, is_skip=True)
+
+        try:
+            choice_num = int(user_input)
+            if 1 <= choice_num <= len(known_speakers):
+                chosen_speaker = known_speakers[choice_num - 1]
+                logger.info("User chose speaker '%s' for label '%s'", chosen_speaker, speaker_label)
+                return UserChoice(choice=chosen_speaker, is_quit=False, is_skip=False)
+        except ValueError:
+            pass
+
+        print("Invalid choice. Please try again.")
+
+
+def create_training_examples_for_speaker(
+    speaker_label: str,
+    utterances: List[str],
+    transcript_file: str,
+    identified_speaker: str
+) -> List[Dict]:
+    """
+    Create training examples for an identified speaker.
+
+    Parameters
+    ----------
+    speaker_label : str
+        Original generic speaker label
+    utterances : List[str]
+        Utterances from this speaker
+    transcript_file : str
+        Source transcript file path
+    identified_speaker : str
+        The identified speaker name
+
+    Returns
+    -------
+    List[Dict]
+        Training example dictionaries
+
+    Example
+    -------
+    >>> examples = create_training_examples_for_speaker(
+    ...     "Speaker 1", ["Hello"], "file.md", "Bruce"
+    ... )
+    >>> len(examples)
+    1
+    """
+    examples = []
+
+    # Add up to 3 representative examples
+    for utterance in utterances[:3]:
+        examples.append({
+            "source": "manual",
+            "file": str(transcript_file),
+            "snippet": f"- {identified_speaker}: {utterance}",
+            "speaker": identified_speaker,
+            "labeled_date": datetime.now().isoformat()
+        })
+
+    logger.debug(
+        "Created %d training examples for speaker '%s' (label: '%s')",
+        len(examples), identified_speaker, speaker_label
+    )
+
+    return examples
+
+
+def interactive_labeling_session(
+    groups: SpeakerGroups,
+    all_instances: List[Tuple[str, str]],
+    known_speakers: List[str],
+    transcript_file: str,
+    existing_examples: List[Dict]
+) -> Tuple[List[Dict], Dict[str, str]]:
+    """
+    Run interactive session to label speaker instances.
+
+    Parameters
+    ----------
+    groups : SpeakerGroups
+        Grouped speaker instances
+    all_instances : List[Tuple[str, str]]
+        All filtered instances
+    known_speakers : List[str]
+        Known speaker names
+    transcript_file : str
+        Source transcript file path
+    existing_examples : List[Dict]
+        Existing training examples for early quit save
+
+    Returns
+    -------
+    Tuple[List[Dict], Dict[str, str]]
+        Newly created training examples and speaker label map
+
+    Example
+    -------
+    >>> examples, mapping = interactive_labeling_session(...)
+    >>> isinstance(examples, list)
+    True
+    """
+    new_examples = []
+    speaker_label_map = {}
+
+    for speaker_label in groups.labels:
+        utterances = groups.grouped[speaker_label]
+        indices = groups.indices[speaker_label]
+
+        # Display examples
+        display_speaker_examples(
+            speaker_label, utterances, indices, all_instances
+        )
+
+        # Get suggestion
+        suggestion = suggest_speaker(utterances, known_speakers)
+
+        # Get user choice
+        choice = get_user_speaker_choice(speaker_label, known_speakers, suggestion)
+
+        if choice.is_quit:
+            # Handle early quit with save option
+            if new_examples:
+                save_option = input(f"\nSave {len(new_examples)} labeled examples? (y/n): ").strip().lower()
+                if save_option == 'y':
+                    all_examples = existing_examples + new_examples
+                    save_training_examples(all_examples)
+                    logger.info("Saved %d training examples after early quit", len(all_examples))
+                    print(f"Saved {len(all_examples)} total training examples.")
+            break
+
+        if choice.is_skip:
+            print(f"Skipping {speaker_label}")
+            continue
+
+        # Valid speaker chosen
+        speaker_label_map[speaker_label] = choice.choice
+        print(f"✓ {speaker_label} → {choice.choice}")
+
+        # Create examples
+        examples = create_training_examples_for_speaker(
+            speaker_label, utterances, transcript_file, choice.choice
+        )
+        new_examples.extend(examples)
+
+        logger.info(
+            "Labeled '%s' as '%s' - created %d training examples",
+            speaker_label, choice.choice, len(examples)
+        )
+
+    return new_examples, speaker_label_map
+
+
+def deduplicate_examples(examples: List[Dict]) -> List[Dict]:
+    """
+    Remove duplicate training examples based on snippet content.
+
+    Parameters
+    ----------
+    examples : List[Dict]
+        List of training examples
+
+    Returns
+    -------
+    List[Dict]
+        Deduplicated examples
+
+    Example
+    -------
+    >>> examples = [{"snippet": "A"}, {"snippet": "A"}, {"snippet": "B"}]
+    >>> deduped = deduplicate_examples(examples)
+    >>> len(deduped)
+    2
+    """
+    seen_snippets = set()
+    unique_examples = []
+
+    for example in examples:
+        snippet = example.get("snippet", "")
+        if snippet not in seen_snippets:
+            seen_snippets.add(snippet)
+            unique_examples.append(example)
+
+    duplicates_removed = len(examples) - len(unique_examples)
+    if duplicates_removed > 0:
+        logger.debug("Removed %d duplicate training examples", duplicates_removed)
+
+    return unique_examples
+
+
+def save_training_session(
+    new_examples: List[Dict],
+    existing_examples: List[Dict]
+) -> SessionStatistics:
+    """
+    Save training examples and return statistics.
+
+    Parameters
+    ----------
+    new_examples : List[Dict]
+        Newly created examples from session
+    existing_examples : List[Dict]
+        Previously existing examples
+
+    Returns
+    -------
+    SessionStatistics
+        Session statistics
+
+    Example
+    -------
+    >>> stats = save_training_session(new_examples, existing_examples)
+    >>> stats.new_examples_count
+    10
+    """
+    if not new_examples:
+        logger.info("No new examples to save")
+        return SessionStatistics(0, 0, 0, len(existing_examples))
+
+    # Combine and deduplicate
+    all_examples = existing_examples + new_examples
+    unique_examples = deduplicate_examples(all_examples)
+
+    # Calculate statistics
+    duplicates_removed = len(all_examples) - len(unique_examples)
+    unique_added = len(unique_examples) - len(existing_examples)
+
+    # Save to file
+    save_training_examples(unique_examples)
+
+    stats = SessionStatistics(
+        new_examples_count=len(new_examples),
+        duplicates_removed=duplicates_removed,
+        unique_examples_added=unique_added,
+        total_examples=len(unique_examples)
+    )
+
+    logger.info(
+        "Training session saved: %d new, %d duplicates removed, %d unique added, %d total",
+        stats.new_examples_count, stats.duplicates_removed,
+        stats.unique_examples_added, stats.total_examples
+    )
+
+    return stats
+
 
 def label_training_transcript(transcript_file: str) -> None:
     """
     Interactive tool to label speakers in a training transcript.
 
-    This tool helps you manually label speaker instances in a transcript
-    to create training data for the speaker identification system.
+    Orchestrates the complete labeling workflow:
+    1. Load transcript file
+    2. Validate speaker profiles
+    3. Extract and filter instances
+    4. Group instances by speaker
+    5. Run interactive labeling session
+    6. Save training examples
 
     Automatically filters out brief utterances (fewer than 6 words) to focus
     on substantial dialogue rather than acknowledgments like "Yes", "OK", etc.
@@ -39,200 +646,62 @@ def label_training_transcript(transcript_file: str) -> None:
     # Interactive session to label speakers
     # Only shows utterances with 6+ words for labeling
     """
-    file_path = Path(transcript_file)
-
-    if not file_path.exists():
-        print(f"Error: File not found: {transcript_file}")
+    # Step 1: Load transcript
+    transcript_content = load_transcript_file(transcript_file)
+    if transcript_content is None:
         return
 
-    # Load the transcript
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            transcript_content = f.read()
-    except Exception as e:
-        print(f"Error reading file: {e}")
+    # Step 2: Validate profiles
+    known_speakers = validate_speaker_profiles()
+    if known_speakers is None:
         return
 
-    # Load existing profiles to know available speakers
-    profiles_data = load_speaker_profiles()
-    known_speakers = list(profiles_data.get("speakers", {}).keys())
-
-    if not known_speakers:
-        print("Error: No speaker profiles found. Please create speaker profiles first.")
-        print(f"Edit {SPEAKER_PROFILES_FILE} to add speaker profiles.")
-        return
-
+    # Display header
     print(f"\n=== Speaker Training Tool ===")
     print(f"File: {transcript_file}")
     print(f"Known speakers: {', '.join(known_speakers)}")
     print("\nThis tool will help you label speaker instances to create training data.\n")
 
-    # Extract speaker instances
+    # Step 3: Extract and filter instances
     instances = extract_speaker_instances(transcript_content)
-
     if not instances:
+        logger.warning("No speaker instances found in transcript")
         print("No speaker instances found in transcript.")
         return
 
-    # Filter out utterances with fewer than 6 words
-    filtered_instances = []
-    for speaker_label, utterance in instances:
-        word_count = len(utterance.split())
-        if word_count >= 6:
-            filtered_instances.append((speaker_label, utterance))
-
-    original_count = len(instances)
-    filtered_count = len(filtered_instances)
-    skipped_count = original_count - filtered_count
-
-    print(f"Found {original_count} speaker instances.")
-    print(f"Filtered to {filtered_count} substantial utterances (≥6 words).")
-    print(f"Skipped {skipped_count} brief utterances (<6 words).\n")
+    filtered_instances, filter_stats = filter_substantial_utterances(instances)
+    print(str(filter_stats))
 
     if not filtered_instances:
+        logger.warning("No substantial instances after filtering")
         print("No substantial speaker instances found after filtering.")
         return
 
-    # Load existing training examples
+    # Step 4: Group instances
+    groups = group_instances_by_speaker(filtered_instances)
+
+    # Step 5: Run labeling session
     existing_examples = load_training_examples()
+    new_examples, speaker_label_map = interactive_labeling_session(
+        groups, filtered_instances, known_speakers, transcript_file, existing_examples
+    )
 
-    # Track labeled examples from this session
-    new_examples = []
-
-    # Group instances by speaker label, but keep track of indices
-    grouped = {}
-    instance_indices = {}  # Maps (speaker_label, utterance) to index in filtered_instances list
-
-    for idx, (speaker_label, utterance) in enumerate(filtered_instances):
-        if speaker_label not in grouped:
-            grouped[speaker_label] = []
-            instance_indices[speaker_label] = []
-        grouped[speaker_label].append(utterance)
-        instance_indices[speaker_label].append(idx)
-
-    # For each unique speaker label, ask for identification
-    speaker_label_map = {}
-
-    for speaker_label in sorted(grouped.keys()):
-        utterances = grouped[speaker_label]
-        indices = instance_indices[speaker_label]
-
-        print(f"\n--- Speaker Label: {speaker_label} ---")
-        print(f"Number of utterances: {len(utterances)}")
-        print("\nSample utterances with context:")
-
-        # Show up to 3 sample utterances with context (reduced from 5 due to more output per sample)
-        num_samples = min(3, len(utterances))
-
-        for sample_num in range(num_samples):
-            print(f"\n  Example {sample_num + 1}:")
-            print("  " + "-" * 70)
-
-            # Get the index of this utterance in the filtered transcript
-            utterance_idx = indices[sample_num]
-
-            # Show 4 lines before
-            context_before = max(0, utterance_idx - 4)
-            for ctx_idx in range(context_before, utterance_idx):
-                ctx_speaker, ctx_utterance = filtered_instances[ctx_idx]
-                print(f"     {ctx_speaker}: {ctx_utterance}")
-
-            # Show the target line (highlighted)
-            target_utterance = utterances[sample_num]
-            print(f"  -> {speaker_label}: {target_utterance}")
-
-            # Show 4 lines after
-            context_after = min(len(filtered_instances), utterance_idx + 5)
-            for ctx_idx in range(utterance_idx + 1, context_after):
-                ctx_speaker, ctx_utterance = filtered_instances[ctx_idx]
-                print(f"     {ctx_speaker}: {ctx_utterance}")
-
-            print("  " + "-" * 70)
-
-        if len(utterances) > num_samples:
-            print(f"\n  ... and {len(utterances) - num_samples} more utterances for this speaker")
-
-        # Suggest a speaker based on simple heuristics
-        suggestion = suggest_speaker(utterances, known_speakers)
-
-        # Show numbered options for speakers
-        print(f"\nWho is '{speaker_label}'?")
-        if suggestion:
-            print(f"(Suggested: {suggestion})")
-        print("\nOptions:")
-        for idx, speaker in enumerate(known_speakers, 1):
-            marker = " *" if speaker == suggestion else ""
-            print(f"  {idx}. {speaker}{marker}")
-        print(f"  s. Skip")
-        print(f"  q. Quit")
-
-        prompt = f"\nEnter choice (1-{len(known_speakers)}, s, q): "
-
-        while True:
-            user_input = input(prompt).strip().lower()
-
-            if user_input == 'q':
-                print("\nQuitting...")
-                if new_examples:
-                    save_option = input(f"Save {len(new_examples)} labeled examples? (y/n): ").strip().lower()
-                    if save_option == 'y':
-                        all_examples = existing_examples + new_examples
-                        save_training_examples(all_examples)
-                        print(f"Saved {len(all_examples)} total training examples.")
-                return
-
-            if user_input == 's':
-                print(f"Skipping {speaker_label}")
-                break
-
-            # Check if input is a valid number
-            if user_input.isdigit():
-                choice_num = int(user_input)
-                if 1 <= choice_num <= len(known_speakers):
-                    selected_speaker = known_speakers[choice_num - 1]
-                    speaker_label_map[speaker_label] = selected_speaker
-                    print(f"✓ {speaker_label} → {selected_speaker}")
-
-                    # Add a few representative examples
-                    for utterance in utterances[:3]:  # Add up to 3 examples per speaker
-                        new_examples.append({
-                            "source": "manual",
-                            "file": str(transcript_file),
-                            "snippet": f"- {selected_speaker}: {utterance}",
-                            "speaker": selected_speaker,
-                            "labeled_date": datetime.now().isoformat()
-                        })
-
-                    break
-                else:
-                    print(f"Invalid choice. Please enter a number between 1 and {len(known_speakers)}.")
-            else:
-                print(f"Invalid input. Please enter a number, 's' to skip, or 'q' to quit.")
-
-    # Summary
-    print(f"\n=== Labeling Complete ===")
-    print(f"Labeled {len(speaker_label_map)} speaker types")
-    print(f"Created {len(new_examples)} training examples")
-
+    # Step 6: Save results
     if new_examples:
-        # Save the new examples
-        all_examples = existing_examples + new_examples
-        save_training_examples(all_examples)
-        print(f"\n✓ Saved {len(all_examples)} total training examples to file.")
+        session_stats = save_training_session(new_examples, existing_examples)
+        print(str(session_stats))
 
-        # Optionally update the transcript file with labels
+        # Optional: Update transcript file
         update_file = input(f"\nWould you like to update {transcript_file} with the labeled speakers? (y/n): ").strip().lower()
-
         if update_file == 'y':
             updated_content = transcript_content
             for original_label, identified_name in speaker_label_map.items():
-                # Replace speaker labels in transcript
                 updated_content = updated_content.replace(f"- {original_label}:", f"- {identified_name}:")
                 updated_content = updated_content.replace(f"**{original_label}:**", f"**{identified_name}:**")
 
+            file_path = Path(transcript_file)
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(updated_content)
-
             print(f"✓ Updated {transcript_file} with speaker labels")
 
 
