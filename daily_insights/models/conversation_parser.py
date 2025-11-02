@@ -242,6 +242,32 @@ def get_message_count(conversation: List[Dict]) -> int:
     return len(conversation)
 
 
+def get_average_message_length(conversation: List[Dict]) -> float:
+    """
+    Calculate average message length in conversation.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries
+
+    Returns
+    -------
+    Average character length of messages
+
+    Example
+    -------
+    >>> conversation = [{"content": "Hello"}, {"content": "Hi there!"}]
+    >>> avg = get_average_message_length(conversation)
+    >>> avg
+    6.5
+    """
+    if not conversation:
+        return 0.0
+
+    total_length = sum(len(d.get("content", "")) for d in conversation)
+    return total_length / len(conversation)
+
+
 def extract_transcript(conversation: List[Dict]) -> str:
     """
     Extract formatted transcript from conversation.

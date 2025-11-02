@@ -1,8 +1,10 @@
 """Therapy session detection and scoring logic."""
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+from daily_insights.logging_config import get_logger
 from daily_insights.config import (
     THERAPY_KEYWORDS,
     SCORE_DURATION_MATCH,
@@ -28,13 +30,420 @@ from daily_insights.models.conversation_parser import (
     is_journal_session,
     is_non_therapy_session,
     get_speaker_count,
-    get_message_count
+    get_message_count,
+    get_average_message_length
 )
+
+logger = get_logger(__name__)
+
+
+# ============================================================================
+# Data Classes for Scoring
+# ============================================================================
+
+@dataclass
+class ConversationMetrics:
+    """Extracted metrics from conversation."""
+    duration_minutes: int
+    start_hour: int
+    keyword_count: int
+    has_larry: bool
+    speaker_changes: int
+    speaker_count: int
+    message_count: int
+    avg_message_length: float
+
+
+@dataclass
+class ScoreComponent:
+    """Individual score component with reasoning."""
+    name: str
+    points: int
+    reason: str
+
+
+@dataclass
+class ScoreBreakdown:
+    """Complete score breakdown."""
+    total_score: int
+    components: List[ScoreComponent]
+    metrics: ConversationMetrics
+
+    def to_dict(self) -> Dict:
+        """
+        Convert to dictionary format for compatibility.
+
+        Returns
+        -------
+        Dict
+            Legacy breakdown format with all component scores
+
+        Example
+        -------
+        >>> breakdown = ScoreBreakdown(85, components, metrics)
+        >>> d = breakdown.to_dict()
+        >>> d["total_score"]
+        85
+        """
+        result = {"total": self.total_score}
+        for comp in self.components:
+            result[comp.name] = comp.points
+
+        # Add metric information for compatibility
+        result["duration_minutes"] = self.metrics.duration_minutes
+        result["keyword_count"] = self.metrics.keyword_count
+        result["speaker_count"] = self.metrics.speaker_count
+        result["message_count"] = self.metrics.message_count
+        result["is_journal"] = any(c.name == "penalty_journal" and c.points < 0 for c in self.components)
+        result["is_non_therapy"] = any(c.name == "penalty_non_therapy" and c.points < 0 for c in self.components)
+
+        return result
+
+
+# ============================================================================
+# Helper Functions for Scoring
+# ============================================================================
+
+def extract_conversation_metrics(conversation: List[Dict]) -> ConversationMetrics:
+    """
+    Extract all metrics needed for scoring.
+
+    Parameters
+    ----------
+    conversation : List[Dict]
+        Conversation dialogue list
+
+    Returns
+    -------
+    ConversationMetrics
+        Extracted metrics
+
+    Example
+    -------
+    >>> metrics = extract_conversation_metrics(conversation)
+    >>> metrics.duration_minutes
+    55
+    """
+    duration = calculate_duration_minutes(conversation)
+    start_hour = conversation[0]["datetime"].hour
+
+    # Keyword analysis
+    content_combined = " ".join(d["content"].lower() for d in conversation)
+    keyword_count = sum(
+        1 for kw in THERAPY_KEYWORDS if kw.lower() in content_combined
+    )
+
+    # Speaker analysis
+    has_larry = any(d["speaker"].lower() == "larry" for d in conversation)
+    speakers = [d["speaker"] for d in conversation]
+    speaker_changes = sum(
+        1 for i in range(1, len(speakers))
+        if speakers[i] != speakers[i-1]
+    ) if len(speakers) >= 2 else 0
+
+    speaker_count = get_speaker_count(conversation)
+    message_count = get_message_count(conversation)
+    avg_length = get_average_message_length(conversation)
+
+    return ConversationMetrics(
+        duration_minutes=duration,
+        start_hour=start_hour,
+        keyword_count=keyword_count,
+        has_larry=has_larry,
+        speaker_changes=speaker_changes,
+        speaker_count=speaker_count,
+        message_count=message_count,
+        avg_message_length=avg_length
+    )
+
+
+def score_duration(metrics: ConversationMetrics) -> ScoreComponent:
+    """
+    Score based on conversation duration.
+
+    Parameters
+    ----------
+    metrics : ConversationMetrics
+        Conversation metrics
+
+    Returns
+    -------
+    ScoreComponent
+        Duration score component
+
+    Example
+    -------
+    >>> component = score_duration(metrics)
+    >>> component.points
+    30
+    """
+    if 45 <= metrics.duration_minutes <= 75:
+        return ScoreComponent(
+            "duration",
+            SCORE_DURATION_MATCH,
+            f"Duration {metrics.duration_minutes}min matches therapy session (45-75min)"
+        )
+    return ScoreComponent(
+        "duration",
+        0,
+        f"Duration {metrics.duration_minutes}min outside typical range"
+    )
+
+
+def score_time_of_day(metrics: ConversationMetrics) -> ScoreComponent:
+    """
+    Score based on start time.
+
+    Parameters
+    ----------
+    metrics : ConversationMetrics
+        Conversation metrics
+
+    Returns
+    -------
+    ScoreComponent
+        Time of day score component
+
+    Example
+    -------
+    >>> component = score_time_of_day(metrics)
+    >>> component.points
+    15
+    """
+    if 12 <= metrics.start_hour < 18:
+        return ScoreComponent(
+            "afternoon",
+            SCORE_AFTERNOON,
+            f"Started at {metrics.start_hour}:00 (afternoon therapy time)"
+        )
+    return ScoreComponent(
+        "afternoon",
+        0,
+        f"Started at {metrics.start_hour}:00 (outside afternoon)"
+    )
+
+
+def score_keywords(metrics: ConversationMetrics) -> ScoreComponent:
+    """
+    Score based on therapy keyword matches.
+
+    Parameters
+    ----------
+    metrics : ConversationMetrics
+        Conversation metrics
+
+    Returns
+    -------
+    ScoreComponent
+        Keyword score component
+
+    Example
+    -------
+    >>> component = score_keywords(metrics)
+    >>> component.points
+    25
+    """
+    keyword_score = min(metrics.keyword_count * SCORE_KEYWORD, 50)
+    return ScoreComponent(
+        "keywords",
+        keyword_score,
+        f"Found {metrics.keyword_count} therapy keywords"
+    )
+
+
+def score_speaker_names(metrics: ConversationMetrics) -> ScoreComponent:
+    """
+    Score based on presence of Larry.
+
+    Parameters
+    ----------
+    metrics : ConversationMetrics
+        Conversation metrics
+
+    Returns
+    -------
+    ScoreComponent
+        Speaker name score component
+
+    Example
+    -------
+    >>> component = score_speaker_names(metrics)
+    >>> component.points
+    20
+    """
+    if metrics.has_larry:
+        return ScoreComponent(
+            "speaker_names",
+            SCORE_SPEAKER_NAMES,
+            "Larry (therapist) is a speaker"
+        )
+    return ScoreComponent(
+        "speaker_names",
+        0,
+        "Larry not detected as speaker"
+    )
+
+
+def score_conversation_dynamics(metrics: ConversationMetrics) -> ScoreComponent:
+    """
+    Score based on back-and-forth conversation pattern.
+
+    Parameters
+    ----------
+    metrics : ConversationMetrics
+        Conversation metrics
+
+    Returns
+    -------
+    ScoreComponent
+        Conversation dynamics score component
+
+    Example
+    -------
+    >>> component = score_conversation_dynamics(metrics)
+    >>> component.points
+    10
+    """
+    if metrics.speaker_changes >= 5:
+        return ScoreComponent(
+            "back_and_forth",
+            SCORE_BACK_AND_FORTH,
+            f"{metrics.speaker_changes} speaker changes indicates dialogue"
+        )
+    return ScoreComponent(
+        "back_and_forth",
+        0,
+        f"Only {metrics.speaker_changes} speaker changes"
+    )
+
+
+def calculate_penalties(metrics: ConversationMetrics, conversation: List[Dict]) -> List[ScoreComponent]:
+    """
+    Calculate all applicable penalties.
+
+    Parameters
+    ----------
+    metrics : ConversationMetrics
+        Conversation metrics
+    conversation : List[Dict]
+        Original conversation data for journal/non-therapy checks
+
+    Returns
+    -------
+    List[ScoreComponent]
+        List of penalty components
+
+    Example
+    -------
+    >>> penalties = calculate_penalties(metrics, conversation)
+    >>> sum(p.points for p in penalties)
+    -25
+    """
+    penalties = []
+
+    # Too many speakers
+    if metrics.speaker_count > MAX_SPEAKERS:
+        penalties.append(ScoreComponent(
+            "penalty_speakers",
+            PENALTY_TOO_MANY_SPEAKERS,
+            f"{metrics.speaker_count} speakers (max {MAX_SPEAKERS} for therapy)"
+        ))
+
+    # Duration penalties
+    if metrics.duration_minutes > 90:
+        penalties.append(ScoreComponent(
+            "penalty_too_long",
+            PENALTY_TOO_LONG,
+            f"Duration {metrics.duration_minutes}min too long (>90min)"
+        ))
+
+    if metrics.duration_minutes < 30:
+        penalties.append(ScoreComponent(
+            "penalty_too_short",
+            PENALTY_TOO_SHORT,
+            f"Duration {metrics.duration_minutes}min too short (<30min)"
+        ))
+
+    # Too many messages
+    if metrics.message_count > MAX_SPEAKERS:
+        penalties.append(ScoreComponent(
+            "penalty_messages",
+            PENALTY_TOO_MANY_MESSAGES,
+            f"{metrics.message_count} messages indicates fragmented conversation"
+        ))
+
+    # Journal session
+    if is_journal_session(conversation):
+        penalties.append(ScoreComponent(
+            "penalty_journal",
+            PENALTY_JOURNAL,
+            "Detected as journal/monologue session"
+        ))
+
+    # Non-therapy session
+    if is_non_therapy_session(conversation):
+        penalties.append(ScoreComponent(
+            "penalty_non_therapy",
+            PENALTY_NON_THERAPY,
+            "Detected as non-therapy conversation"
+        ))
+
+    return penalties
+
+
+def build_score_breakdown(
+    metrics: ConversationMetrics,
+    positive_components: List[ScoreComponent],
+    penalties: List[ScoreComponent]
+) -> ScoreBreakdown:
+    """
+    Build complete score breakdown from components.
+
+    Parameters
+    ----------
+    metrics : ConversationMetrics
+        Conversation metrics
+    positive_components : List[ScoreComponent]
+        List of positive score components
+    penalties : List[ScoreComponent]
+        List of penalty components
+
+    Returns
+    -------
+    ScoreBreakdown
+        Complete score breakdown with total
+
+    Example
+    -------
+    >>> breakdown = build_score_breakdown(metrics, positives, penalties)
+    >>> breakdown.total_score
+    85
+    """
+    all_components = positive_components + penalties
+    total_score = sum(comp.points for comp in all_components)
+
+    logger.debug(
+        "Score breakdown: %d points from %d components",
+        total_score,
+        len(all_components)
+    )
+
+    return ScoreBreakdown(
+        total_score=total_score,
+        components=all_components,
+        metrics=metrics
+    )
 
 
 def score_conversation(conversation: List[Dict]) -> Tuple[int, Dict]:
     """
     Score a conversation for likelihood of being a therapy session.
+
+    Orchestrates the complete scoring workflow:
+    1. Extract conversation metrics
+    2. Calculate positive scores
+    3. Calculate penalties
+    4. Build complete breakdown
 
     Args
     ----
@@ -51,104 +460,26 @@ def score_conversation(conversation: List[Dict]) -> Tuple[int, Dict]:
     >>> print(score)
     85
     """
-    score = 0
-    breakdown = {}
+    # Step 1: Extract metrics
+    metrics = extract_conversation_metrics(conversation)
 
-    duration = calculate_duration_minutes(conversation)
-    if 45 <= duration <= 75:
-        score += SCORE_DURATION_MATCH
-        breakdown["duration"] = SCORE_DURATION_MATCH
-    else:
-        breakdown["duration"] = 0
+    # Step 2: Calculate positive score components
+    positive_components = [
+        score_duration(metrics),
+        score_time_of_day(metrics),
+        score_keywords(metrics),
+        score_speaker_names(metrics),
+        score_conversation_dynamics(metrics)
+    ]
 
-    start_hour = conversation[0]["datetime"].hour
-    if 12 <= start_hour < 18:
-        score += SCORE_AFTERNOON
-        breakdown["afternoon"] = SCORE_AFTERNOON
-    else:
-        breakdown["afternoon"] = 0
+    # Step 3: Calculate penalties
+    penalties = calculate_penalties(metrics, conversation)
 
-    content_combined = " ".join(d["content"].lower() for d in conversation)
-    keyword_count = sum(
-        1 for kw in THERAPY_KEYWORDS if kw.lower() in content_combined
-    )
-    keyword_score = min(keyword_count * SCORE_KEYWORD, 50)
-    score += keyword_score
-    breakdown["keywords"] = keyword_score
-    breakdown["keyword_count"] = keyword_count
+    # Step 4: Build breakdown
+    breakdown_obj = build_score_breakdown(metrics, positive_components, penalties)
 
-    has_larry_as_speaker = any(
-        d["speaker"].lower() == "larry" for d in conversation
-    )
-
-    if has_larry_as_speaker:
-        score += SCORE_SPEAKER_NAMES
-        breakdown["speaker_names"] = SCORE_SPEAKER_NAMES
-    else:
-        breakdown["speaker_names"] = 0
-
-    speakers = [d["speaker"] for d in conversation]
-    if len(speakers) >= 10:
-        speaker_changes = sum(
-            1 for i in range(1, len(speakers))
-            if speakers[i] != speakers[i-1]
-        )
-        if speaker_changes >= 5:
-            score += SCORE_BACK_AND_FORTH
-            breakdown["back_and_forth"] = SCORE_BACK_AND_FORTH
-        else:
-            breakdown["back_and_forth"] = 0
-    else:
-        breakdown["back_and_forth"] = 0
-
-    speaker_count = get_speaker_count(conversation)
-    if speaker_count > MAX_SPEAKERS:
-        score += PENALTY_TOO_MANY_SPEAKERS
-        breakdown["penalty_speakers"] = PENALTY_TOO_MANY_SPEAKERS
-    else:
-        breakdown["penalty_speakers"] = 0
-    breakdown["speaker_count"] = speaker_count
-
-    if duration > 90:
-        score += PENALTY_TOO_LONG
-        breakdown["penalty_too_long"] = PENALTY_TOO_LONG
-    else:
-        breakdown["penalty_too_long"] = 0
-
-    if duration < 30:
-        score += PENALTY_TOO_SHORT
-        breakdown["penalty_too_short"] = PENALTY_TOO_SHORT
-    else:
-        breakdown["penalty_too_short"] = 0
-
-    message_count = get_message_count(conversation)
-    if message_count > MAX_SPEAKERS:
-        score += PENALTY_TOO_MANY_MESSAGES
-        breakdown["penalty_messages"] = PENALTY_TOO_MANY_MESSAGES
-    else:
-        breakdown["penalty_messages"] = 0
-    breakdown["message_count"] = message_count
-
-    if is_journal_session(conversation):
-        score += PENALTY_JOURNAL
-        breakdown["penalty_journal"] = PENALTY_JOURNAL
-        breakdown["is_journal"] = True
-    else:
-        breakdown["penalty_journal"] = 0
-        breakdown["is_journal"] = False
-
-    if is_non_therapy_session(conversation):
-        score += PENALTY_NON_THERAPY
-        breakdown["penalty_non_therapy"] = PENALTY_NON_THERAPY
-        breakdown["is_non_therapy"] = True
-    else:
-        breakdown["penalty_non_therapy"] = 0
-        breakdown["is_non_therapy"] = False
-
-    breakdown["total"] = score
-    breakdown["duration_minutes"] = duration
-
-    return score, breakdown
+    # Convert to legacy format
+    return breakdown_obj.total_score, breakdown_obj.to_dict()
 
 
 def detect_therapy_sessions(
