@@ -2,7 +2,17 @@
 
 import asyncio
 
-from daily_insights.config import ensure_directories
+from daily_insights.config import (
+    ensure_directories,
+    FETCH_LIFELOGS,
+    FETCH_DAILY_INSIGHTS,
+    PROCESS_BEE_TRANSCRIPTIONS,
+    PROCESS_JOURNAL_ENTRIES,
+    PROCESS_THERAPY_SESSIONS,
+    CREATE_WEEKLY_SUMMARIES,
+    CREATE_MONTHLY_SUMMARIES,
+    LABEL_SPEAKERS
+)
 from daily_insights.services.lifelog_service import (
     fetch_and_save_lifelogs,
     fetch_and_save_lifelogs_async
@@ -43,17 +53,35 @@ def main() -> None:
     """
     ensure_directories()
 
-    fetch_and_save_lifelogs()
+    if FETCH_LIFELOGS:
+        fetch_and_save_lifelogs()
+    else:
+        print("⏭️  Skipping lifelog fetching (FETCH_LIFELOGS=False)")
 
-    fetch_and_save_daily_insights()
+    if FETCH_DAILY_INSIGHTS:
+        fetch_and_save_daily_insights()
+    else:
+        print("⏭️  Skipping daily insights fetching (FETCH_DAILY_INSIGHTS=False)")
 
-    process_bee_transcriptions()
+    if PROCESS_BEE_TRANSCRIPTIONS:
+        process_bee_transcriptions()
+    else:
+        print("⏭️  Skipping bee transcription processing (PROCESS_BEE_TRANSCRIPTIONS=False)")
 
-    build_weekly_summaries()
+    if CREATE_WEEKLY_SUMMARIES:
+        build_weekly_summaries()
+    else:
+        print("⏭️  Skipping weekly summaries (CREATE_WEEKLY_SUMMARIES=False)")
 
-    build_monthly_summaries()
+    if CREATE_MONTHLY_SUMMARIES:
+        build_monthly_summaries()
+    else:
+        print("⏭️  Skipping monthly summaries (CREATE_MONTHLY_SUMMARIES=False)")
 
-    process_therapy_sessions()
+    if PROCESS_THERAPY_SESSIONS:
+        process_therapy_sessions()
+    else:
+        print("⏭️  Skipping therapy session processing (PROCESS_THERAPY_SESSIONS=False)")
 
     # Display comprehensive pipeline statistics
     print("\n")
@@ -86,24 +114,53 @@ async def main_async() -> None:
 
     # Stage 1: Fetch data in parallel
     print("\n[Stage 1] Fetching data from APIs...")
-    await asyncio.gather(
-        fetch_and_save_lifelogs_async(),
-        fetch_and_save_daily_insights_async()
-    )
+    fetch_tasks = []
+    if FETCH_LIFELOGS:
+        fetch_tasks.append(fetch_and_save_lifelogs_async())
+    else:
+        print("⏭️  Skipping lifelog fetching (FETCH_LIFELOGS=False)")
+
+    if FETCH_DAILY_INSIGHTS:
+        fetch_tasks.append(fetch_and_save_daily_insights_async())
+    else:
+        print("⏭️  Skipping daily insights fetching (FETCH_DAILY_INSIGHTS=False)")
+
+    if fetch_tasks:
+        await asyncio.gather(*fetch_tasks)
 
     # Stage 2: Process files in parallel (independent operations)
     print("\n[Stage 2] Processing transcription files...")
-    await asyncio.gather(
-        process_bee_transcriptions_async(),
-        process_therapy_sessions_async()
-    )
+    process_tasks = []
+
+    if PROCESS_BEE_TRANSCRIPTIONS:
+        process_tasks.append(process_bee_transcriptions_async())
+    else:
+        print("⏭️  Skipping bee transcription processing (PROCESS_BEE_TRANSCRIPTIONS=False)")
+
+    if PROCESS_THERAPY_SESSIONS:
+        process_tasks.append(process_therapy_sessions_async())
+    else:
+        print("⏭️  Skipping therapy session processing (PROCESS_THERAPY_SESSIONS=False)")
+
+    if process_tasks:
+        await asyncio.gather(*process_tasks)
 
     # Stage 3: Generate summaries in parallel (depend on daily files existing)
     print("\n[Stage 3] Generating summaries...")
-    await asyncio.gather(
-        build_weekly_summaries_async(),
-        build_monthly_summaries_async()
-    )
+    summary_tasks = []
+
+    if CREATE_WEEKLY_SUMMARIES:
+        summary_tasks.append(build_weekly_summaries_async())
+    else:
+        print("⏭️  Skipping weekly summaries (CREATE_WEEKLY_SUMMARIES=False)")
+
+    if CREATE_MONTHLY_SUMMARIES:
+        summary_tasks.append(build_monthly_summaries_async())
+    else:
+        print("⏭️  Skipping monthly summaries (CREATE_MONTHLY_SUMMARIES=False)")
+
+    if summary_tasks:
+        await asyncio.gather(*summary_tasks)
 
     # Display comprehensive pipeline statistics
     print("\n")

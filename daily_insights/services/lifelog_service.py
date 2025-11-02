@@ -6,7 +6,7 @@ from typing import Dict, List, Set
 from dateutil import parser
 import asyncio
 
-from daily_insights.config import LIFELOGS_DIR
+from daily_insights.config import LIFELOGS_DIR, LABEL_SPEAKERS
 from daily_insights.api.limitless_client import fetch_new_lifelogs, fetch_new_lifelogs_async
 from daily_insights.utils.file_utils import append_file_async, write_file_async
 from daily_insights.utils.date_utils import should_process_date
@@ -251,20 +251,23 @@ async def save_lifelogs_async(lifelogs: List[Dict]) -> None:
 
         combined_content = "".join(content_parts)
 
-        # Apply speaker identification
-        try:
-            print(f"Identifying speakers in {date_str}...")
-            speaker_mappings = await identify_speakers_async(combined_content)
+        # Apply speaker identification if enabled
+        if LABEL_SPEAKERS:
+            try:
+                print(f"Identifying speakers in {date_str}...")
+                speaker_mappings = await identify_speakers_async(combined_content)
 
-            if speaker_mappings:
-                print(f"Found {len(speaker_mappings)} speaker mappings for {date_str}")
-                combined_content = apply_speaker_labels(combined_content, speaker_mappings)
-            else:
-                print(f"No speaker mappings generated for {date_str}")
+                if speaker_mappings:
+                    print(f"Found {len(speaker_mappings)} speaker mappings for {date_str}")
+                    combined_content = apply_speaker_labels(combined_content, speaker_mappings)
+                else:
+                    print(f"No speaker mappings generated for {date_str}")
 
-        except Exception as e:
-            print(f"Warning: Speaker identification failed for {date_str}: {e}")
-            # Continue with original content if speaker identification fails
+            except Exception as e:
+                print(f"Warning: Speaker identification failed for {date_str}: {e}")
+                # Continue with original content if speaker identification fails
+        else:
+            print(f"⏭️  Skipping speaker identification for {date_str} (LABEL_SPEAKERS=False)")
 
         # Write or append based on whether file exists
         if is_new_file:

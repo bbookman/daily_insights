@@ -88,6 +88,30 @@ MAX_MESSAGES = int(os.getenv('MAX_MESSAGES', '100'))
 MAX_SPEAKERS = int(os.getenv('MAX_SPEAKERS', '3'))
 
 # ============================================================================
+# Feature Toggles
+# ============================================================================
+
+def _parse_bool(value: str, default: bool = True) -> bool:
+    """
+    Parse boolean value from environment variable.
+
+    Accepts: true/false, yes/no, 1/0, on/off (case-insensitive)
+    """
+    if not value:
+        return default
+    return value.lower() in ('true', 'yes', '1', 'on')
+
+# Pipeline feature flags
+FETCH_LIFELOGS = _parse_bool(os.getenv('FETCH_LIFELOGS', 'true'))
+FETCH_DAILY_INSIGHTS = _parse_bool(os.getenv('FETCH_DAILY_INSIGHTS', 'true'))
+PROCESS_BEE_TRANSCRIPTIONS = _parse_bool(os.getenv('PROCESS_BEE_TRANSCRIPTIONS', 'true'))
+PROCESS_JOURNAL_ENTRIES = _parse_bool(os.getenv('PROCESS_JOURNAL_ENTRIES', 'true'))
+PROCESS_THERAPY_SESSIONS = _parse_bool(os.getenv('PROCESS_THERAPY_SESSIONS', 'true'))
+CREATE_WEEKLY_SUMMARIES = _parse_bool(os.getenv('CREATE_WEEKLY_SUMMARIES', 'true'))
+CREATE_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_MONTHLY_SUMMARIES', 'true'))
+LABEL_SPEAKERS = _parse_bool(os.getenv('LABEL_SPEAKERS', 'true'))
+
+# ============================================================================
 # Utility Functions
 # ============================================================================
 
