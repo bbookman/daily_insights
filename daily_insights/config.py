@@ -88,6 +88,22 @@ MAX_MESSAGES = int(os.getenv('MAX_MESSAGES', '100'))
 MAX_SPEAKERS = int(os.getenv('MAX_SPEAKERS', '3'))
 
 # ============================================================================
+# Journal Detection Parameters
+# ============================================================================
+
+# Minimum messages after "journal" keyword for sustained content
+JOURNAL_MIN_MESSAGES = int(os.getenv('JOURNAL_MIN_MESSAGES', '5'))
+
+# Minimum word count for journal session
+JOURNAL_MIN_WORDS = int(os.getenv('JOURNAL_MIN_WORDS', '100'))
+
+# Valid speaker labels for journal entries
+JOURNAL_VALID_SPEAKERS = [k.strip() for k in os.getenv('JOURNAL_VALID_SPEAKERS', 'Bruce,Unknown').split(',') if k.strip()]
+
+# End marker phrases for journal completion detection
+JOURNAL_END_MARKERS = [k.strip() for k in os.getenv('JOURNAL_END_MARKERS', 'end journal,journal end').split(',') if k.strip()]
+
+# ============================================================================
 # Utility Functions (Helper functions used by configuration)
 # ============================================================================
 

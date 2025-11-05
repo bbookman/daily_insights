@@ -135,38 +135,96 @@ def calculate_duration_minutes(conversation: List[Dict]) -> float:
 
 def is_journal_session(conversation: List[Dict]) -> bool:
     """
-    Check if conversation is a journal session (monologue).
+    Check if conversation is a journal session with strict validation.
+
+    NEW LOGIC (v2.0): Requires ALL conditions to be met:
+    1. Contains "journal" keyword (mandatory entry point)
+    2. Sustained content after keyword (min messages + words)
+    3. Valid speaker identity (configured speaker labels)
+    4. High speaker dominance (>90% monologue)
+
+    This replaces the previous permissive OR-logic that caused 90% false positives.
 
     Args
     ----
-    conversation: List of dialogue dictionaries
+    conversation: List of dialogue dictionaries with keys: speaker, content, datetime
 
     Returns
     -------
-    True if conversation appears to be a journal session
+    bool
+        True if ALL journal criteria are met, False otherwise
 
     Example
     -------
-    >>> conversation = [{"speaker": "Bruce", "content": "journal..."}]
-    >>> is_journal = is_journal_session(conversation)
-    >>> print(is_journal)
+    >>> # True positive - legitimate journal entry
+    >>> conv = [
+    ...     {"speaker": "Bruce", "content": "Journal entry for today", "datetime": dt},
+    ...     {"speaker": "Bruce", "content": "I want to reflect on my week", "datetime": dt},
+    ...     # ... 8 more messages totaling 150 words
+    ... ]
+    >>> is_journal_session(conv)
     True
+
+    >>> # False positive (old logic would flag) - brief utterance
+    >>> conv = [{"speaker": "Bruce", "content": "Hmm.", "datetime": dt}]
+    >>> is_journal_session(conv)
+    False  # No "journal" keyword
+
+    >>> # False positive (old logic would flag) - keyword mention in conversation
+    >>> conv = [
+    ...     {"speaker": "Bruce", "content": "I wanted to journal about that", "datetime": dt},
+    ...     {"speaker": "Alice", "content": "That sounds good", "datetime": dt}
+    ... ]
+    >>> is_journal_session(conv)
+    False  # Wrong speaker or insufficient content
     """
+    from daily_insights.config import (
+        JOURNAL_MIN_MESSAGES,
+        JOURNAL_MIN_WORDS,
+        JOURNAL_VALID_SPEAKERS,
+        JOURNAL_END_MARKERS
+    )
+
+    # STEP 1: Mandatory keyword check
     content_combined = " ".join(d["content"].lower() for d in conversation)
-    if "journal" in content_combined:
-        return True
+    if "journal" not in content_combined:
+        return False  # Hard requirement - no keyword, no journal
 
-    speakers = [d["speaker"] for d in conversation]
-    if not speakers:
-        return False
+    # STEP 2: Find journal start position (first occurrence of "journal")
+    journal_start_index = 0
+    for i, msg in enumerate(conversation):
+        if "journal" in msg["content"].lower():
+            journal_start_index = i
+            break
 
-    speaker_counts = Counter(speakers)
-    max_speaker_count = max(speaker_counts.values())
+    # STEP 3: Extract and validate sustained content
+    journal_content = conversation[journal_start_index:]
 
-    if max_speaker_count / len(speakers) > 0.8:
-        return True
+    if len(journal_content) < JOURNAL_MIN_MESSAGES:
+        return False  # Insufficient consecutive messages
 
-    return False
+    total_words = count_words(journal_content)
+    if total_words < JOURNAL_MIN_WORDS:
+        return False  # Content too brief
+
+    # STEP 4: Validate speaker identity
+    primary_speaker = get_primary_speaker(journal_content)
+    if primary_speaker not in JOURNAL_VALID_SPEAKERS:
+        return False  # Wrong speaker
+
+    speaker_counts = Counter(d["speaker"] for d in journal_content)
+    speaker_ratio = speaker_counts[primary_speaker] / len(journal_content)
+    if speaker_ratio < 0.90:  # Very high threshold (90%)
+        return False  # Not clearly a monologue
+
+    # STEP 5: Optional end marker detection (for logging/confidence)
+    if JOURNAL_END_MARKERS:
+        has_end_marker = detect_end_marker(conversation, JOURNAL_END_MARKERS)
+        # Could log this for debugging/confidence assessment
+        # Currently not used to block detection
+
+    # STEP 6: All checks passed
+    return True
 
 
 def is_non_therapy_session(conversation: List[Dict]) -> bool:
@@ -294,3 +352,122 @@ def extract_transcript(conversation: List[Dict]) -> str:
         content = dialogue["content"]
         lines.append(f"- {speaker} ({time}): {content}")
     return "\n".join(lines)
+
+
+def count_words(conversation: List[Dict]) -> int:
+    """
+    Count total words across all messages in conversation.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries
+
+    Returns
+    -------
+    int
+        Total word count
+
+    Example
+    -------
+    >>> conv = [{"content": "Hello world"}, {"content": "How are you"}]
+    >>> count_words(conv)
+    5
+    """
+    total = 0
+    for msg in conversation:
+        content = msg.get("content", "")
+        words = content.split()
+        total += len(words)
+    return total
+
+
+def get_primary_speaker(conversation: List[Dict]) -> str:
+    """
+    Identify the speaker who talks most in conversation.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries
+
+    Returns
+    -------
+    str
+        Name of primary speaker
+
+    Example
+    -------
+    >>> conv = [{"speaker": "A"}, {"speaker": "B"}, {"speaker": "A"}]
+    >>> get_primary_speaker(conv)
+    'A'
+    """
+    speaker_counts = Counter(d["speaker"] for d in conversation)
+    if not speaker_counts:
+        return ""
+    primary_speaker, _ = speaker_counts.most_common(1)[0]
+    return primary_speaker
+
+
+def detect_end_marker(conversation: List[Dict], marker_phrases: List[str]) -> bool:
+    """
+    Detect if conversation ends with any configured end marker phrase.
+
+    Uses flexible regex matching to handle natural speech variations.
+    Examines the last 20% of conversation or minimum 5 messages.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries
+    marker_phrases: List of end marker phrases (e.g., ["end journal", "journal end"])
+
+    Returns
+    -------
+    bool
+        True if any marker phrase detected in conversation tail, False otherwise
+
+    Example
+    -------
+    >>> conv = [
+    ...     {"content": "Journal entry about my day"},
+    ...     {"content": "That's all for today"},
+    ...     {"content": "Okay end journal"}
+    ... ]
+    >>> detect_end_marker(conv, ["end journal", "journal end"])
+    True
+
+    >>> conv = [{"content": "Just some random thoughts"}]
+    >>> detect_end_marker(conv, ["end journal"])
+    False
+    """
+    import re
+
+    # Examine last 20% of conversation or minimum 5 messages
+    tail_size = max(5, int(len(conversation) * 0.2))
+    tail_messages = conversation[-tail_size:]
+
+    # Combine tail into single text
+    tail_text = " ".join(msg["content"] for msg in tail_messages)
+    tail_text = tail_text.lower()
+
+    # Check each configured phrase
+    for phrase in marker_phrases:
+        if not phrase:
+            continue
+
+        words = phrase.lower().split()
+        if not words:
+            continue
+
+        # Build bidirectional regex (phrase can appear in either order)
+        # Example: "end journal" matches both:
+        #   - "okay end of my journal entry"
+        #   - "journal entry is at an end"
+        forward_pattern = r'\b' + r'\b.*\b'.join(re.escape(w) for w in words) + r'\b'
+        reverse_pattern = r'\b' + r'\b.*\b'.join(re.escape(w) for w in reversed(words)) + r'\b'
+
+        # Check if either pattern matches
+        if re.search(forward_pattern, tail_text):
+            return True
+        if re.search(reverse_pattern, tail_text):
+            return True
+
+    return False
