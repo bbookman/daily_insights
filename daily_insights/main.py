@@ -42,6 +42,10 @@ from daily_insights.services.therapy_service import (
     process_therapy_sessions,
     process_therapy_sessions_async
 )
+from daily_insights.services.journal_service import (
+    process_journal_entries,
+    process_journal_entries_async
+)
 from daily_insights.utils.pipeline_stats import display_pipeline_summary
 
 # Initialize logging at module level (before any logging occurs)
@@ -86,6 +90,11 @@ def main() -> None:
         process_bee_transcriptions()
     else:
         logger.info("Skipping bee transcription processing (PROCESS_BEE_TRANSCRIPTIONS=False)")
+
+    if PROCESS_JOURNAL_ENTRIES:
+        process_journal_entries()
+    else:
+        logger.info("Skipping journal entry processing (PROCESS_JOURNAL_ENTRIES=False)")
 
     if CREATE_WEEKLY_SUMMARIES:
         build_weekly_summaries()
@@ -155,6 +164,11 @@ async def main_async() -> None:
         process_tasks.append(process_bee_transcriptions_async())
     else:
         logger.info("Skipping bee transcription processing (PROCESS_BEE_TRANSCRIPTIONS=False)")
+
+    if PROCESS_JOURNAL_ENTRIES:
+        process_tasks.append(process_journal_entries_async())
+    else:
+        logger.info("Skipping journal entry processing (PROCESS_JOURNAL_ENTRIES=False)")
 
     if PROCESS_THERAPY_SESSIONS:
         process_tasks.append(process_therapy_sessions_async())
