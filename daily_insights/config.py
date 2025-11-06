@@ -48,44 +48,30 @@ BEE_PROMPT_FILE = PROJECT_ROOT / os.getenv('BEE_PROMPT_FILE', 'prompts/bee_daily
 PSYCHOLOGIST_PROMPT_FILE = PROJECT_ROOT / os.getenv('PSYCHOLOGIST_PROMPT_FILE', 'prompts/psycho_analysis.txt')
 
 # ============================================================================
-# Therapy Detection Parameters
+# Therapy Detection Parameters (MVP Phase 0)
 # ============================================================================
 
-# Keywords for therapy session detection
-THERAPY_KEYWORDS = [k.strip() for k in os.getenv('THERAPY_KEYWORDS', '').split(',') if k.strip()]
-NON_THERAPY_KEYWORDS = [k.strip() for k in os.getenv('NON_THERAPY_KEYWORDS', '').split(',') if k.strip()]
+# Therapist name(s) - comma-separated list of therapist names
+# Example: "larry" or "larry,sarah,dr. smith"
+THERAPIST_NAMES = [k.strip() for k in os.getenv('THERAPIST_NAMES', 'larry').split(',') if k.strip()]
 
-# Conversation grouping
+# Therapy keywords - comma-separated list of therapy-related words
+# Example: "therapy,therapist,counseling"
+THERAPY_KEYWORDS = [k.strip() for k in os.getenv('THERAPY_KEYWORDS', 'therapy,therapist').split(',') if k.strip()]
+
+# Minimum duration (in minutes) for a conversation to be considered therapy
+# Default: 30 minutes
+THERAPY_MIN_DURATION = int(os.getenv('THERAPY_MIN_DURATION', '30'))
+
+# ============================================================================
+# Conversation Grouping (Used by multiple features)
+# ============================================================================
+
+# Maximum time gap (in minutes) between messages to group them as same conversation
 CONVERSATION_GAP_MINUTES = int(os.getenv('CONVERSATION_GAP_MINUTES', '15'))
 
-# Scoring parameters for therapy detection
-SCORE_DURATION_MATCH = int(os.getenv('SCORE_DURATION_MATCH', '30'))
-SCORE_AFTERNOON = int(os.getenv('SCORE_AFTERNOON', '10'))
-SCORE_KEYWORD = int(os.getenv('SCORE_KEYWORD', '15'))
-SCORE_SPEAKER_NAMES = int(os.getenv('SCORE_SPEAKER_NAMES', '20'))
-SCORE_BACK_AND_FORTH = int(os.getenv('SCORE_BACK_AND_FORTH', '15'))
-
-# Penalty parameters for therapy detection
-PENALTY_TOO_MANY_SPEAKERS = int(os.getenv('PENALTY_TOO_MANY_SPEAKERS', '-20'))
-PENALTY_TOO_LONG = int(os.getenv('PENALTY_TOO_LONG', '-15'))
-PENALTY_TOO_SHORT = int(os.getenv('PENALTY_TOO_SHORT', '-20'))
-PENALTY_TOO_MANY_MESSAGES = int(os.getenv('PENALTY_TOO_MANY_MESSAGES', '-10'))
-PENALTY_JOURNAL = int(os.getenv('PENALTY_JOURNAL', '-30'))
-PENALTY_NON_THERAPY = int(os.getenv('PENALTY_NON_THERAPY', '-25'))
-
-# Confidence threshold for therapy session detection
-CONFIDENCE_THRESHOLD = int(os.getenv('CONFIDENCE_THRESHOLD', '50'))
-
-# Therapy session duration thresholds (in minutes)
-MAX_DURATION = int(os.getenv('MAX_DURATION', '75'))
-MIN_DURATION = int(os.getenv('MIN_DURATION', '30'))
-
-# Message count thresholds for therapy sessions
-MIN_MESSAGES = int(os.getenv('MIN_MESSAGES', '8'))
-MAX_MESSAGES = int(os.getenv('MAX_MESSAGES', '100'))
-
-# Maximum number of speakers in a therapy session
-MAX_SPEAKERS = int(os.getenv('MAX_SPEAKERS', '3'))
+# Non-therapy keywords for exclusion (kept for backward compatibility)
+NON_THERAPY_KEYWORDS = [k.strip() for k in os.getenv('NON_THERAPY_KEYWORDS', '').split(',') if k.strip()]
 
 # ============================================================================
 # Journal Detection Parameters

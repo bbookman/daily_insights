@@ -227,6 +227,74 @@ def is_journal_session(conversation: List[Dict]) -> bool:
     return True
 
 
+def is_therapy_session(conversation: List[Dict]) -> bool:
+    """
+    MVP: Detect therapy sessions with minimal criteria.
+
+    Phase 0 implementation with only 3 checks:
+    1. Duration >= configured minimum (default 30 minutes)
+    2. Therapist name OR therapy keywords present
+    3. Not a journal session (reuse existing function)
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: speaker, content, datetime
+
+    Returns
+    -------
+    bool
+        True if all MVP therapy criteria are met, False otherwise
+
+    Example
+    -------
+    >>> # True positive - legitimate therapy session
+    >>> conv = [
+    ...     {"speaker": "Larry", "content": "How are you feeling today?", "datetime": dt1},
+    ...     {"speaker": "Bruce", "content": "I've been thinking about my anxiety", "datetime": dt2},
+    ...     # ... 40+ minutes of back-and-forth dialogue
+    ... ]
+    >>> is_therapy_session(conv)
+    True
+
+    >>> # False - too short
+    >>> conv = [{"speaker": "Larry", "content": "Quick check-in", "datetime": dt}]
+    >>> is_therapy_session(conv)
+    False
+
+    >>> # False - journal entry (excluded)
+    >>> conv = [{"speaker": "Bruce", "content": "Journal: Today I talked to my therapist", "datetime": dt}]
+    >>> is_therapy_session(conv)
+    False
+    """
+    from daily_insights.config import (
+        THERAPIST_NAMES,
+        THERAPY_KEYWORDS,
+        THERAPY_MIN_DURATION
+    )
+
+    # Check 1: Minimum duration
+    duration = calculate_duration_minutes(conversation)
+    if duration < THERAPY_MIN_DURATION:
+        return False
+
+    # Check 2: Therapist indicator (name OR keyword)
+    speakers = {d["speaker"].lower() for d in conversation}
+    has_therapist_name = any(name.lower() in speakers for name in THERAPIST_NAMES)
+
+    if not has_therapist_name:
+        content = " ".join(d["content"].lower() for d in conversation)
+        has_keyword = any(kw.lower() in content for kw in THERAPY_KEYWORDS)
+        if not has_keyword:
+            return False
+
+    # Check 3: Not a journal (reuse existing function)
+    if is_journal_session(conversation):
+        return False
+
+    # Passed all MVP checks
+    return True
+
+
 def is_non_therapy_session(conversation: List[Dict]) -> bool:
     """
     Check if conversation contains non-therapy indicators.

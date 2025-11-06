@@ -13,13 +13,68 @@ from daily_insights.config import (
     PSYCHOLOGIST_PROMPT_FILE,
     LLM_PROVIDER
 )
-from daily_insights.models.therapy_detection import detect_therapy_sessions
-from daily_insights.models.conversation_parser import extract_transcript
+from daily_insights.models.conversation_parser import (
+    parse_lifelog_dialogue,
+    group_into_conversations,
+    is_therapy_session,
+    extract_transcript,
+    calculate_duration_minutes
+)
 from daily_insights.api.llm_client import generate_clinical_notes, generate_clinical_notes_async
 from daily_insights.utils.file_utils import (
     read_prompt_file, write_file,
     read_file_async, write_file_async
 )
+
+
+def detect_therapy_sessions_mvp(lifelog_file: Path, verbose: bool = False):
+    """
+    MVP therapy detection - wrapper for new is_therapy_session() function.
+
+    Replaces old complex scoring system with simple 3-check MVP approach.
+
+    Args
+    ----
+    lifelog_file: Path to lifelog file
+    verbose: Whether to print detection details
+
+    Returns
+    -------
+    List of therapy session dicts with conversation, start_time, end_time, duration_minutes
+
+    Example
+    -------
+    >>> sessions = detect_therapy_sessions_mvp(Path("lifelogs/2025-10-28.md"))
+    >>> print(len(sessions))
+    1
+    """
+    # Parse lifelog into conversations
+    dialogues = parse_lifelog_dialogue(lifelog_file)
+    conversations = group_into_conversations(dialogues)
+
+    therapy_sessions = []
+
+    for conversation in conversations:
+        if is_therapy_session(conversation):
+            # Build session metadata
+            start_time = conversation[0]["time_str"]
+            end_time = conversation[-1]["time_str"]
+            duration = calculate_duration_minutes(conversation)
+
+            session = {
+                "conversation": conversation,
+                "start_time": start_time,
+                "end_time": end_time,
+                "duration_minutes": duration,
+                "score": "MVP"  # No scoring in MVP, just pass/fail
+            }
+
+            therapy_sessions.append(session)
+
+            if verbose:
+                print(f"Found therapy session: {start_time} - {end_time} ({duration:.0f} min)")
+
+    return therapy_sessions
 
 
 def load_processed_tracker() -> Dict:
@@ -111,7 +166,7 @@ def process_therapy_sessions(force_recheck: bool = False) -> None:
 
         lifelogs_checked += 1
 
-        sessions = detect_therapy_sessions(lifelog_file, verbose=False)
+        sessions = detect_therapy_sessions_mvp(lifelog_file, verbose=False)
 
         tracker[date_str] = {
             "checked_at": datetime.now().isoformat(),
@@ -131,8 +186,7 @@ def process_therapy_sessions(force_recheck: bool = False) -> None:
             print(
                 f"  Session {i}: {session['start_time']} - "
                 f"{session['end_time']} "
-                f"({session['duration_minutes']:.0f} min, "
-                f"score: {session['score']})"
+                f"({session['duration_minutes']:.0f} min)"
             )
 
             transcript = extract_transcript(session["conversation"])
@@ -168,7 +222,7 @@ def process_therapy_sessions(force_recheck: bool = False) -> None:
                     f"{session['end_time']}\n"
                     f"**Duration:** {session['duration_minutes']:.0f} "
                     "minutes\n"
-                    f"**Detection Score:** {session['score']}\n\n"
+                    f"**Detection:** MVP Phase 0\n\n"
                     "---\n\n"
                     "{output_text}"
                 ).format(output_text=output_text)
@@ -297,7 +351,7 @@ async def process_therapy_sessions_async(force_recheck: bool = False) -> None:
 
         lifelogs_checked += 1
 
-        sessions = detect_therapy_sessions(lifelog_file, verbose=False)
+        sessions = detect_therapy_sessions_mvp(lifelog_file, verbose=False)
 
         tracker[date_str] = {
             "checked_at": datetime.now().isoformat(),
@@ -317,8 +371,7 @@ async def process_therapy_sessions_async(force_recheck: bool = False) -> None:
             print(
                 f"  Session {i}: {session['start_time']} - "
                 f"{session['end_time']} "
-                f"({session['duration_minutes']:.0f} min, "
-                f"score: {session['score']})"
+                f"({session['duration_minutes']:.0f} min)"
             )
 
             transcript = extract_transcript(session["conversation"])
@@ -355,7 +408,7 @@ async def process_therapy_sessions_async(force_recheck: bool = False) -> None:
                     f"{session['end_time']}\n"
                     f"**Duration:** {session['duration_minutes']:.0f} "
                     "minutes\n"
-                    f"**Detection Score:** {session['score']}\n\n"
+                    f"**Detection:** MVP Phase 0\n\n"
                     "---\n\n"
                     "{output_text}"
                 ).format(output_text=output_text)
