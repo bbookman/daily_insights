@@ -17,10 +17,10 @@ API_KEY = "b37686e8-921a-4884-b0cd-7fa11523348f"  # replace with your actual key
 INSIGHTS_DIR = "./daily"
 LIFELOGS_DIR = "./lifelogs"
 PROMPTS_DIR = "./prompts"
-WEEKLY_DIR = "./weekly"
+WEEKLY_INSIGHTS_DIR = "./weekly"
 PSYCHOLOGIST_DIR = "./psychologist"
 
-WEEKLY_PROMPT_FILE = os.path.join(PROMPTS_DIR, "weekly_prompt.txt")
+WEEKLY_INSIGHTS_PROMPT = os.path.join(PROMPTS_DIR, "weekly_prompt.txt")
 PSYCHOLOGIST_PROMPT_FILE = os.path.join(PROMPTS_DIR, "psycho_analysis.txt")
 OLLAMA_MODEL = "qwen2.5"  # change to your preferred local model
 OLLAMA_API = "http://localhost:11434/api/generate"
@@ -28,7 +28,7 @@ OLLAMA_API = "http://localhost:11434/api/generate"
 os.makedirs(INSIGHTS_DIR, exist_ok=True)
 os.makedirs(LIFELOGS_DIR, exist_ok=True)
 os.makedirs(PROMPTS_DIR, exist_ok=True)
-os.makedirs(WEEKLY_DIR, exist_ok=True)
+os.makedirs(WEEKLY_INSIGHTS_DIR, exist_ok=True)
 os.makedirs(PSYCHOLOGIST_DIR, exist_ok=True)
 
 # === Step 1: Fetch Limitless Lifelogs ===
@@ -247,7 +247,7 @@ def build_weekly_summaries():
 
         start_date = week[0]
         end_date = week[-1]
-        weekly_filename = os.path.join(WEEKLY_DIR, f"{start_date}_to_{end_date}-weekly.md")
+        weekly_filename = os.path.join(WEEKLY_INSIGHTS_DIR, f"{start_date}_to_{end_date}-weekly.md")
 
         if os.path.exists(weekly_filename):
             print(f"Skipping existing weekly summary: {weekly_filename}")
@@ -256,10 +256,10 @@ def build_weekly_summaries():
         print(f"Building weekly summary for: {start_date} to {end_date}")
 
         # Read prompt
-        if not os.path.exists(WEEKLY_PROMPT_FILE):
-            print(f"Weekly prompt file missing: {WEEKLY_PROMPT_FILE}")
+        if not os.path.exists(WEEKLY_INSIGHTS_PROMPT):
+            print(f"Weekly prompt file missing: {WEEKLY_INSIGHTS_PROMPT}")
             return
-        with open(WEEKLY_PROMPT_FILE, "r", encoding="utf-8") as f:
+        with open(WEEKLY_INSIGHTS_PROMPT, "r", encoding="utf-8") as f:
             prompt_text = f.read()
 
         # Read daily summaries

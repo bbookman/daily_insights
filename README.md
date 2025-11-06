@@ -82,13 +82,13 @@ LABEL_SPEAKERS=true              # Identify and label speakers in transcripts
 ### Directory Paths
 
 ```bash
-LIFELOGS_DIR=lifelogs         # Raw lifelog transcripts
-INSIGHTS_DIR=daily            # Daily insights and bee processing
-WEEKLY_DIR=weekly             # Weekly summary reports
-MONTHLY_DIR=monthly           # Monthly summary reports
-BEE_DIR=bee                   # Bee transcription files
-PSYCHOLOGIST_DIR=psychologist # Therapy session analyses
-JOURNAL_DIR=journal           # Journal entries
+LIFELOGS_DIR=lifelogs                # Raw lifelog transcripts
+INSIGHTS_DIR=daily                   # Daily insights and bee processing
+WEEKLY_INSIGHTS_DIR=weekly           # Weekly summary reports
+MONTHLY_INSIGHTS_DIR=monthly         # Monthly summary reports
+BEE_DIR=bee                          # Bee transcription files
+PSYCHOLOGIST_DIR=psychologist        # Therapy session analyses
+JOURNAL_DIR=journal                  # Journal entries
 ```
 
 ### Therapy Detection (Optional)

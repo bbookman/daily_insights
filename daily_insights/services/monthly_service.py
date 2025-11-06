@@ -6,9 +6,9 @@ from typing import Dict, List
 import asyncio
 
 from daily_insights.config import (
-    WEEKLY_DIR,
-    MONTHLY_DIR,
-    MONTHLY_PROMPT_FILE
+    WEEKLY_INSIGHTS_DIR,
+    MONTHLY_INSIGHTS_DIR,
+    MONTHLY_INSIGHTS_PROMPT
 )
 from daily_insights.api.llm_client import generate_summary, generate_summary_async
 from daily_insights.utils.date_utils import (
@@ -76,7 +76,7 @@ def build_monthly_summaries() -> None:
     print("\nStarting to build monthly summaries...")
 
     # Step 1: Discover weekly files and filter out today
-    all_weekly_files = sorted(Path(WEEKLY_DIR).glob("*-weekly.md"))
+    all_weekly_files = sorted(Path(WEEKLY_INSIGHTS_DIR).glob("*-weekly.md"))
     weekly_files = [f for f in all_weekly_files if not week_contains_today(f.name)]
 
     if len(all_weekly_files) > len(weekly_files):
@@ -105,7 +105,7 @@ def build_monthly_summaries() -> None:
             print(f"Skipping incomplete month {month}: only {len(week_files)} weeks")
             continue
 
-        monthly_filename = os.path.join(MONTHLY_DIR, f"{month}.md")
+        monthly_filename = os.path.join(MONTHLY_INSIGHTS_DIR, f"{month}.md")
 
         # Step 4: Check if already exists (one-time generation)
         if os.path.exists(monthly_filename):
@@ -115,9 +115,9 @@ def build_monthly_summaries() -> None:
         print(f"Building monthly summary for {month} ({len(week_files)} weeks)")
 
         # Step 5: Load prompt
-        prompt_text = read_prompt_file(MONTHLY_PROMPT_FILE)
+        prompt_text = read_prompt_file(MONTHLY_INSIGHTS_PROMPT)
         if not prompt_text:
-            print(f"Monthly prompt file missing or empty: {MONTHLY_PROMPT_FILE}")
+            print(f"Monthly prompt file missing or empty: {MONTHLY_INSIGHTS_PROMPT}")
             return
 
         # Step 6: Read and combine weekly summaries
@@ -187,7 +187,7 @@ async def build_monthly_summaries_async() -> None:
     print("\nStarting to build monthly summaries (async)...")
 
     # Step 1: Discover weekly files and filter out today
-    all_weekly_files = sorted(Path(WEEKLY_DIR).glob("*-weekly.md"))
+    all_weekly_files = sorted(Path(WEEKLY_INSIGHTS_DIR).glob("*-weekly.md"))
     weekly_files = [f for f in all_weekly_files if not week_contains_today(f.name)]
 
     if len(all_weekly_files) > len(weekly_files):
@@ -210,9 +210,9 @@ async def build_monthly_summaries_async() -> None:
     print(f"Grouped into {len(months_dict)} months")
 
     # Step 3: Load prompt once
-    prompt_text = await read_prompt_file_async(MONTHLY_PROMPT_FILE)
+    prompt_text = await read_prompt_file_async(MONTHLY_INSIGHTS_PROMPT)
     if not prompt_text:
-        print(f"Monthly prompt file missing or empty: {MONTHLY_PROMPT_FILE}")
+        print(f"Monthly prompt file missing or empty: {MONTHLY_INSIGHTS_PROMPT}")
         return
 
     # Step 4: Process each month
@@ -222,7 +222,7 @@ async def build_monthly_summaries_async() -> None:
             print(f"Skipping incomplete month {month}: only {len(week_files)} weeks")
             return
 
-        monthly_filename = os.path.join(MONTHLY_DIR, f"{month}.md")
+        monthly_filename = os.path.join(MONTHLY_INSIGHTS_DIR, f"{month}.md")
 
         # Check if already exists (one-time generation)
         if os.path.exists(monthly_filename):

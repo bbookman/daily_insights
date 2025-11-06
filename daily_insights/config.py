@@ -32,8 +32,8 @@ OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama3.2')
 
 LIFELOGS_DIR = PROJECT_ROOT / os.getenv('LIFELOGS_DIR', 'lifelogs')
 INSIGHTS_DIR = PROJECT_ROOT / os.getenv('INSIGHTS_DIR', 'daily')
-WEEKLY_DIR = PROJECT_ROOT / os.getenv('WEEKLY_DIR', 'weekly')
-MONTHLY_DIR = PROJECT_ROOT / os.getenv('MONTHLY_DIR', 'monthly')
+WEEKLY_INSIGHTS_DIR = PROJECT_ROOT / os.getenv('WEEKLY_INSIGHTS_DIR', 'weekly')
+MONTHLY_INSIGHTS_DIR = PROJECT_ROOT / os.getenv('MONTHLY_INSIGHTS_DIR', 'monthly')
 BEE_DIR = PROJECT_ROOT / os.getenv('BEE_DIR', 'bee')
 PSYCHOLOGIST_DIR = PROJECT_ROOT / os.getenv('PSYCHOLOGIST_DIR', 'psychologist')
 JOURNAL_DIR = PROJECT_ROOT / os.getenv('JOURNAL_DIR', 'journal')
@@ -42,8 +42,8 @@ JOURNAL_DIR = PROJECT_ROOT / os.getenv('JOURNAL_DIR', 'journal')
 # Prompt File Paths
 # ============================================================================
 
-WEEKLY_PROMPT_FILE = PROJECT_ROOT / os.getenv('WEEKLY_PROMPT_FILE', 'prompts/weekly_prompt.txt')
-MONTHLY_PROMPT_FILE = PROJECT_ROOT / os.getenv('MONTHLY_PROMPT_FILE', 'prompts/monthly.txt')
+WEEKLY_INSIGHTS_PROMPT = PROJECT_ROOT / os.getenv('WEEKLY_INSIGHTS_PROMPT', 'prompts/weekly_prompt.txt')
+MONTHLY_INSIGHTS_PROMPT = PROJECT_ROOT / os.getenv('MONTHLY_INSIGHTS_PROMPT', 'prompts/monthly.txt')
 BEE_PROMPT_FILE = PROJECT_ROOT / os.getenv('BEE_PROMPT_FILE', 'prompts/bee_daily.txt')
 PSYCHOLOGIST_PROMPT_FILE = PROJECT_ROOT / os.getenv('PSYCHOLOGIST_PROMPT_FILE', 'prompts/psycho_analysis.txt')
 
@@ -166,8 +166,8 @@ def ensure_directories():
     directories = [
         LIFELOGS_DIR,
         INSIGHTS_DIR,
-        WEEKLY_DIR,
-        MONTHLY_DIR,
+        WEEKLY_INSIGHTS_DIR,
+        MONTHLY_INSIGHTS_DIR,
         BEE_DIR,
         PSYCHOLOGIST_DIR,
         JOURNAL_DIR,

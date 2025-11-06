@@ -8,8 +8,8 @@ from typing import Dict, List, Optional, Tuple
 from daily_insights.config import (
     LIFELOGS_DIR,
     INSIGHTS_DIR,
-    WEEKLY_DIR,
-    MONTHLY_DIR,
+    WEEKLY_INSIGHTS_DIR,
+    MONTHLY_INSIGHTS_DIR,
     PSYCHOLOGIST_DIR,
     JOURNAL_DIR
 )
@@ -105,7 +105,7 @@ class PipelineStatistics:
         -------
         Dict with weekly summary statistics
         """
-        weekly_files = sorted(Path(WEEKLY_DIR).glob("*-weekly.md"))
+        weekly_files = sorted(Path(WEEKLY_INSIGHTS_DIR).glob("*-weekly.md"))
 
         if not weekly_files:
             return {
@@ -140,17 +140,17 @@ class PipelineStatistics:
         -------
         Dict with monthly summary statistics
         """
-        monthly_files = list(Path(MONTHLY_DIR).glob("*.md"))
+        monthly_files = list(Path(MONTHLY_INSIGHTS_DIR).glob("*.md"))
 
         # Group weekly files to determine pending months
-        weekly_files = sorted(Path(WEEKLY_DIR).glob("*-weekly.md"))
+        weekly_files = sorted(Path(WEEKLY_INSIGHTS_DIR).glob("*-weekly.md"))
         months_dict = group_weeks_by_month(weekly_files)
 
         complete_months = len(monthly_files)
         pending_months = []
 
         for month, week_files in sorted(months_dict.items()):
-            monthly_file = Path(MONTHLY_DIR) / f"{month}.md"
+            monthly_file = Path(MONTHLY_INSIGHTS_DIR) / f"{month}.md"
             if not monthly_file.exists() and len(week_files) < 4:
                 weeks_needed = 4 - len(week_files)
                 pending_months.append((month, len(week_files), weeks_needed))

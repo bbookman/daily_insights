@@ -7,8 +7,8 @@ import asyncio
 
 from daily_insights.config import (
     INSIGHTS_DIR,
-    WEEKLY_DIR,
-    WEEKLY_PROMPT_FILE
+    WEEKLY_INSIGHTS_DIR,
+    WEEKLY_INSIGHTS_PROMPT
 )
 from daily_insights.api.limitless_client import fetch_chats, fetch_chats_async
 from daily_insights.api.llm_client import generate_summary, generate_summary_async
@@ -117,7 +117,7 @@ def build_weekly_summaries() -> None:
         start_date = week[0]
         end_date = week[-1]
         weekly_filename = os.path.join(
-            WEEKLY_DIR, f"{start_date}_to_{end_date}-weekly.md"
+            WEEKLY_INSIGHTS_DIR, f"{start_date}_to_{end_date}-weekly.md"
         )
 
         if os.path.exists(weekly_filename):
@@ -126,7 +126,7 @@ def build_weekly_summaries() -> None:
 
         print(f"Building weekly summary for: {start_date} to {end_date}")
 
-        prompt_text = read_prompt_file(WEEKLY_PROMPT_FILE)
+        prompt_text = read_prompt_file(WEEKLY_INSIGHTS_PROMPT)
         if not prompt_text:
             return
 
@@ -255,7 +255,7 @@ async def build_weekly_summaries_async() -> None:
         start_date = week[0]
         end_date = week[-1]
         weekly_filename = os.path.join(
-            WEEKLY_DIR, f"{start_date}_to_{end_date}-weekly.md"
+            WEEKLY_INSIGHTS_DIR, f"{start_date}_to_{end_date}-weekly.md"
         )
 
         if os.path.exists(weekly_filename):
@@ -264,7 +264,7 @@ async def build_weekly_summaries_async() -> None:
 
         print(f"Building weekly summary for: {start_date} to {end_date}")
 
-        prompt_text = await read_prompt_file_async(WEEKLY_PROMPT_FILE)
+        prompt_text = await read_prompt_file_async(WEEKLY_INSIGHTS_PROMPT)
         if not prompt_text:
             return
 
