@@ -10,7 +10,8 @@ from daily_insights.config import (
     INSIGHTS_DIR,
     WEEKLY_DIR,
     MONTHLY_DIR,
-    PSYCHOLOGIST_DIR
+    PSYCHOLOGIST_DIR,
+    JOURNAL_DIR
 )
 from daily_insights.utils.date_utils import (
     parse_week_filename,
@@ -29,7 +30,8 @@ class PipelineStatistics:
             "daily_insights": {},
             "weekly_summaries": {},
             "monthly_summaries": {},
-            "therapy_sessions": {}
+            "therapy_sessions": {},
+            "journal_entries": {}
         }
 
     def collect_lifelog_stats(self) -> Dict:
@@ -180,6 +182,52 @@ class PipelineStatistics:
             "detection_rate": detection_rate
         }
 
+    def collect_journal_entry_stats(self) -> Dict:
+        """
+        Collect statistics for journal entries.
+
+        Returns
+        -------
+        Dict with journal entry statistics
+        """
+        journal_files = list(Path(JOURNAL_DIR).glob("*_journal.md"))
+
+        if not journal_files:
+            return {
+                "total": 0,
+                "new": 0,
+                "date_range": None,
+                "coverage_days": 0,
+                "detection_rate": 0
+            }
+
+        # Extract dates from filenames (YYYY-MM-DD_journal.md)
+        dates = []
+        for f in journal_files:
+            try:
+                # Extract date part before _journal.md
+                date_str = f.stem.replace("_journal", "")
+                dates.append(datetime.strptime(date_str, "%Y-%m-%d"))
+            except ValueError:
+                continue
+
+        dates.sort()
+
+        # Calculate detection rate
+        lifelog_count = len(list(Path(LIFELOGS_DIR).glob("*.md")))
+        detection_rate = (len(journal_files) / lifelog_count * 100) if lifelog_count > 0 else 0
+
+        return {
+            "total": len(journal_files),
+            "new": 0,  # Tracked externally by journal process
+            "date_range": (
+                dates[0].strftime("%b %d, %Y"),
+                dates[-1].strftime("%b %d, %Y")
+            ) if dates else None,
+            "coverage_days": len(dates),
+            "detection_rate": detection_rate
+        }
+
     def collect_all_stats(self) -> Dict:
         """
         Collect statistics for all pipeline stages.
@@ -193,7 +241,8 @@ class PipelineStatistics:
             "daily_insights": self.collect_daily_insights_stats(),
             "weekly_summaries": self.collect_weekly_summary_stats(),
             "monthly_summaries": self.collect_monthly_summary_stats(),
-            "therapy_sessions": self.collect_therapy_session_stats()
+            "therapy_sessions": self.collect_therapy_session_stats(),
+            "journal_entries": self.collect_journal_entry_stats()
         }
 
     def format_summary(self, stats: Optional[Dict] = None) -> str:
@@ -268,6 +317,18 @@ class PipelineStatistics:
         lines.append(f"  • New: {ts['new']} sessions")
         if ts["detection_rate"] > 0:
             lines.append(f"  • Detection Rate: {ts['detection_rate']:.1f}% of lifelogs")
+        lines.append("")
+
+        # Journal Entries
+        je = stats["journal_entries"]
+        lines.append("📓 JOURNAL ENTRIES")
+        lines.append(f"  • Total: {je['total']} entries")
+        lines.append(f"  • New: {je['new']} entries")
+        if je["date_range"]:
+            lines.append(f"  • Date Range: {je['date_range'][0]} - {je['date_range'][1]}")
+            lines.append(f"  • Coverage: {je['coverage_days']} days")
+        if je["detection_rate"] > 0:
+            lines.append(f"  • Detection Rate: {je['detection_rate']:.1f}% of lifelogs")
         lines.append("")
 
         return "\n".join(lines)
