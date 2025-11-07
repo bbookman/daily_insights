@@ -48,20 +48,46 @@ BEE_PROMPT_FILE = PROJECT_ROOT / os.getenv('BEE_PROMPT_FILE', 'prompts/bee_daily
 PSYCHOLOGIST_PROMPT_FILE = PROJECT_ROOT / os.getenv('PSYCHOLOGIST_PROMPT_FILE', 'prompts/psycho_analysis.txt')
 
 # ============================================================================
-# Therapy Detection Parameters (MVP Phase 0)
+# Therapy Detection Parameters (MVP Phase 0 + Enhancements)
 # ============================================================================
 
-# Therapist name(s) - comma-separated list of therapist names
-# Example: "larry" or "larry,sarah,dr. smith"
-THERAPIST_NAMES = [k.strip() for k in os.getenv('THERAPIST_NAMES', 'larry').split(',') if k.strip()]
+# Phase 2.5: Speaker purity validation
+# Comma-separated list of ONLY speakers allowed in therapy sessions
+# Any conversation with speakers not in this list will be rejected
+# Example: "Bruce,Larry,Unknown" or "John,Dr. Smith"
+EXPECTED_SPEAKERS_THERAPY_SESSION = [
+    k.strip()
+    for k in os.getenv('EXPECTED_SPEAKERS_THERAPY_SESSION', '').split(',')
+    if k.strip()
+]
 
 # Therapy keywords - comma-separated list of therapy-related words
 # Example: "therapy,therapist,counseling"
 THERAPY_KEYWORDS = [k.strip() for k in os.getenv('THERAPY_KEYWORDS', 'therapy,therapist').split(',') if k.strip()]
 
+# Minimum number of therapy keywords required for detection (Phase 2 enhancement)
+# Prevents false positives from single generic keyword matches
+# Default: 2 (require multiple therapy-related terms)
+THERAPY_KEYWORD_MIN = int(os.getenv('THERAPY_KEYWORD_MIN', '2'))
+
 # Minimum duration (in minutes) for a conversation to be considered therapy
 # Default: 30 minutes
 THERAPY_MIN_DURATION = int(os.getenv('THERAPY_MIN_DURATION', '30'))
+
+# Maximum duration (in minutes) for a conversation to be considered therapy
+# Prevents false positives from very long conversations spanning multiple activities
+# Default: 120 minutes (2 hours) - set to 0 to disable
+THERAPY_MAX_DURATION = int(os.getenv('THERAPY_MAX_DURATION', '120'))
+
+# Exclusion keywords - reject conversations containing any of these terms
+# Prevents false positives from administrative, political, or social contexts
+# Comma-separated list of keywords that indicate non-therapy conversations
+THERAPY_EXCLUSION_KEYWORDS = [
+    kw.strip() for kw in os.getenv(
+        'THERAPY_EXCLUSION_KEYWORDS',
+        'eligibility,interview,application,appeal,claim,trump,election,protest,voting,airport,customs,border'
+    ).split(',') if kw.strip()
+]
 
 # ============================================================================
 # Conversation Grouping (Used by multiple features)
@@ -69,9 +95,6 @@ THERAPY_MIN_DURATION = int(os.getenv('THERAPY_MIN_DURATION', '30'))
 
 # Maximum time gap (in minutes) between messages to group them as same conversation
 CONVERSATION_GAP_MINUTES = int(os.getenv('CONVERSATION_GAP_MINUTES', '15'))
-
-# Non-therapy keywords for exclusion (kept for backward compatibility)
-NON_THERAPY_KEYWORDS = [k.strip() for k in os.getenv('NON_THERAPY_KEYWORDS', '').split(',') if k.strip()]
 
 # ============================================================================
 # Journal Detection Parameters

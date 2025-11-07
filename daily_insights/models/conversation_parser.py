@@ -6,10 +6,7 @@ from pathlib import Path
 from typing import Dict, List
 from collections import Counter
 
-from daily_insights.config import (
-    CONVERSATION_GAP_MINUTES,
-    NON_THERAPY_KEYWORDS
-)
+from daily_insights.config import CONVERSATION_GAP_MINUTES
 
 
 def parse_lifelog_dialogue(filepath: Path) -> List[Dict]:
@@ -227,14 +224,142 @@ def is_journal_session(conversation: List[Dict]) -> bool:
     return True
 
 
+def check_speaker_purity(conversation: List[Dict]) -> bool:
+    """
+    Check if conversation contains ONLY expected speakers (Phase 2.5 enhancement).
+
+    Rejects therapy sessions that include unexpected participants to prevent
+    false positives from multi-person conversations or group settings.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: speaker
+
+    Returns
+    -------
+    bool
+        True if all speakers are in expected list, False otherwise
+
+    Example
+    -------
+    >>> # EXPECTED_SPEAKERS_THERAPY_SESSION = ["Bruce", "Larry", "Unknown"]
+    >>> conv = [
+    ...     {"speaker": "Bruce", "content": "I've been feeling anxious"},
+    ...     {"speaker": "Larry", "content": "Tell me more about that"}
+    ... ]
+    >>> check_speaker_purity(conv)
+    True  # Both speakers in expected list
+
+    >>> conv = [
+    ...     {"speaker": "Bruce", "content": "I've been feeling anxious"},
+    ...     {"speaker": "Ivette", "content": "Are you okay?"}
+    ... ]
+    >>> check_speaker_purity(conv)
+    False  # "Ivette" not in expected list
+    """
+    from daily_insights.config import EXPECTED_SPEAKERS_THERAPY_SESSION
+
+    if not EXPECTED_SPEAKERS_THERAPY_SESSION:
+        return False  # Must be explicitly configured
+
+    speakers_present = {d["speaker"].lower() for d in conversation}
+    expected_speakers = {s.lower() for s in EXPECTED_SPEAKERS_THERAPY_SESSION}
+
+    # All speakers must be in expected list (subset check)
+    return speakers_present.issubset(expected_speakers)
+
+
+def check_exclusion_keywords(conversation: List[Dict]) -> bool:
+    """
+    Check if conversation contains exclusion keywords (Phase 2.9 enhancement).
+
+    Rejects conversations containing keywords that indicate non-therapy contexts
+    such as administrative interviews, political discussions, or travel.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: content
+
+    Returns
+    -------
+    bool
+        False if ANY exclusion keyword found (reject session)
+        True if no exclusions (pass check)
+
+    Example
+    -------
+    >>> # THERAPY_EXCLUSION_KEYWORDS = ["eligibility", "interview", "trump", "election"]
+    >>> conv = [{"content": "This interview will determine your eligibility"}]
+    >>> check_exclusion_keywords(conv)
+    False  # Contains "interview" and "eligibility"
+
+    >>> conv = [{"content": "I've been feeling anxious lately"}]
+    >>> check_exclusion_keywords(conv)
+    True  # No exclusion keywords present
+    """
+    from daily_insights.config import THERAPY_EXCLUSION_KEYWORDS
+
+    if not THERAPY_EXCLUSION_KEYWORDS:
+        return True  # No exclusions configured, pass check
+
+    content_combined = " ".join(d["content"].lower() for d in conversation)
+
+    # Reject if any exclusion keyword is present
+    return not any(kw.lower() in content_combined for kw in THERAPY_EXCLUSION_KEYWORDS)
+
+
+def check_keyword_density(conversation: List[Dict]) -> bool:
+    """
+    Check if multiple therapy keywords are present (Phase 2 enhancement).
+
+    Prevents false positives from single generic keyword matches by requiring
+    a minimum number of distinct therapy-related terms to be present.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: content
+
+    Returns
+    -------
+    bool
+        True if keyword count >= THERAPY_KEYWORD_MIN, False otherwise
+
+    Example
+    -------
+    >>> # THERAPY_KEYWORDS = ["therapy", "therapist", "anxiety", "depression"]
+    >>> # THERAPY_KEYWORD_MIN = 2
+    >>> conv = [
+    ...     {"content": "I talked to my therapist about anxiety today"},
+    ...     {"content": "The session was helpful"}
+    ... ]
+    >>> check_keyword_density(conv)
+    True  # Contains "therapist" and "anxiety" (2 keywords)
+
+    >>> conv = [{"content": "I'm feeling anxious about the presentation"}]
+    >>> check_keyword_density(conv)
+    False  # Contains only "anxious" (1 keyword)
+    """
+    from daily_insights.config import THERAPY_KEYWORDS, THERAPY_KEYWORD_MIN
+
+    content_combined = " ".join(d["content"].lower() for d in conversation)
+    keyword_count = sum(
+        1 for kw in THERAPY_KEYWORDS
+        if kw.lower() in content_combined
+    )
+    return keyword_count >= THERAPY_KEYWORD_MIN
+
+
 def is_therapy_session(conversation: List[Dict]) -> bool:
     """
-    MVP: Detect therapy sessions with minimal criteria.
+    Detect therapy sessions with strict criteria (Phase 0 + 2 + 2.5 + 2.7 + 2.9).
 
-    Phase 0 implementation with only 3 checks:
-    1. Duration >= configured minimum (default 30 minutes)
-    2. Therapist name OR therapy keywords present
-    3. Not a journal session (reuse existing function)
+    All checks must pass (Boolean AND):
+    1a. Duration >= configured minimum (default 40 minutes)
+    1b. Duration <= configured maximum (default 120 minutes, if enabled)
+    2. Speaker purity: ONLY expected speakers present (Phase 2.5)
+    3. Keyword density: Multiple therapy keywords present (Phase 2)
+    4. Not a journal session
+    5. No exclusion keywords present (Phase 2.9)
 
     Args
     ----
@@ -243,84 +368,65 @@ def is_therapy_session(conversation: List[Dict]) -> bool:
     Returns
     -------
     bool
-        True if all MVP therapy criteria are met, False otherwise
+        True if ALL 5 criteria are met, False otherwise
 
     Example
     -------
     >>> # True positive - legitimate therapy session
+    >>> # EXPECTED_SPEAKERS = ["Bruce", "Larry", "Unknown"]
     >>> conv = [
-    ...     {"speaker": "Larry", "content": "How are you feeling today?", "datetime": dt1},
-    ...     {"speaker": "Bruce", "content": "I've been thinking about my anxiety", "datetime": dt2},
+    ...     {"speaker": "Larry", "content": "How are you feeling about your anxiety and depression?", "datetime": dt1},
+    ...     {"speaker": "Bruce", "content": "I've been thinking about my disorder", "datetime": dt2},
     ...     # ... 40+ minutes of back-and-forth dialogue
     ... ]
     >>> is_therapy_session(conv)
-    True
+    True  # Duration OK, speakers OK, keywords OK, not journal
 
-    >>> # False - too short
-    >>> conv = [{"speaker": "Larry", "content": "Quick check-in", "datetime": dt}]
+    >>> # False - unexpected speaker present
+    >>> conv = [
+    ...     {"speaker": "Larry", "content": "How are you feeling?", "datetime": dt1},
+    ...     {"speaker": "Ivette", "content": "He's been anxious", "datetime": dt2}
+    ... ]
     >>> is_therapy_session(conv)
-    False
+    False  # "Ivette" not in expected speakers
 
-    >>> # False - journal entry (excluded)
-    >>> conv = [{"speaker": "Bruce", "content": "Journal: Today I talked to my therapist", "datetime": dt}]
+    >>> # False - insufficient keywords
+    >>> conv = [
+    ...     {"speaker": "Larry", "content": "How are you?", "datetime": dt1},
+    ...     {"speaker": "Bruce", "content": "I'm feeling okay", "datetime": dt2}
+    ... ]
     >>> is_therapy_session(conv)
-    False
+    False  # Less than 2 therapy keywords
     """
-    from daily_insights.config import (
-        THERAPIST_NAMES,
-        THERAPY_KEYWORDS,
-        THERAPY_MIN_DURATION
-    )
+    from daily_insights.config import THERAPY_MIN_DURATION, THERAPY_MAX_DURATION
 
-    # Check 1: Minimum duration
+    # Check 1a: Minimum duration
     duration = calculate_duration_minutes(conversation)
     if duration < THERAPY_MIN_DURATION:
         return False
 
-    # Check 2: Therapist indicator (name OR keyword)
-    speakers = {d["speaker"].lower() for d in conversation}
-    has_therapist_name = any(name.lower() in speakers for name in THERAPIST_NAMES)
+    # Check 1b: Maximum duration (Phase 2.7) - if enabled (non-zero)
+    if THERAPY_MAX_DURATION > 0 and duration > THERAPY_MAX_DURATION:
+        return False
 
-    if not has_therapist_name:
-        content = " ".join(d["content"].lower() for d in conversation)
-        has_keyword = any(kw.lower() in content for kw in THERAPY_KEYWORDS)
-        if not has_keyword:
-            return False
+    # Check 2: Speaker purity (Phase 2.5) - ONLY expected speakers present
+    if not check_speaker_purity(conversation):
+        return False
 
-    # Check 3: Not a journal (reuse existing function)
+    # Check 3: Keyword density (Phase 2) - Multiple therapy keywords required
+    if not check_keyword_density(conversation):
+        return False
+
+    # Check 4: Not a journal (reuse existing function)
     if is_journal_session(conversation):
         return False
 
-    # Passed all MVP checks
+    # Check 5: No exclusion keywords (Phase 2.9) - Reject administrative/political contexts
+    if not check_exclusion_keywords(conversation):
+        return False
+
+    # All 5 checks passed
     return True
-
-
-def is_non_therapy_session(conversation: List[Dict]) -> bool:
-    """
-    Check if conversation contains non-therapy indicators.
-
-    Args
-    ----
-    conversation: List of dialogue dictionaries
-
-    Returns
-    -------
-    True if conversation contains non-therapy keywords
-
-    Example
-    -------
-    >>> conversation = [{"content": "alexa stop playing music"}]
-    >>> is_non_therapy = is_non_therapy_session(conversation)
-    >>> print(is_non_therapy)
-    True
-    """
-    content_combined = " ".join(d["content"].lower() for d in conversation)
-
-    for keyword in NON_THERAPY_KEYWORDS:
-        if keyword.lower() in content_combined:
-            return True
-
-    return False
 
 
 def get_speaker_count(conversation: List[Dict]) -> int:
