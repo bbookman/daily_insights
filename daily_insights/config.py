@@ -36,6 +36,7 @@ WEEKLY_INSIGHTS_DIR = PROJECT_ROOT / os.getenv('WEEKLY_INSIGHTS_DIR', 'weekly')
 MONTHLY_INSIGHTS_DIR = PROJECT_ROOT / os.getenv('MONTHLY_INSIGHTS_DIR', 'monthly')
 BEE_DIR = PROJECT_ROOT / os.getenv('BEE_DIR', 'bee')
 PSYCHOLOGIST_DIR = PROJECT_ROOT / os.getenv('PSYCHOLOGIST_DIR', 'psychologist')
+THERAPY_MONTHLY_DIR = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_DIR', 'therapy_monthly')
 JOURNAL_DIR = PROJECT_ROOT / os.getenv('JOURNAL_DIR', 'journal')
 
 # ============================================================================
@@ -46,6 +47,7 @@ WEEKLY_INSIGHTS_PROMPT = PROJECT_ROOT / os.getenv('WEEKLY_INSIGHTS_PROMPT', 'pro
 MONTHLY_INSIGHTS_PROMPT = PROJECT_ROOT / os.getenv('MONTHLY_INSIGHTS_PROMPT', 'prompts/monthly.txt')
 BEE_PROMPT_FILE = PROJECT_ROOT / os.getenv('BEE_PROMPT_FILE', 'prompts/bee_daily.txt')
 PSYCHOLOGIST_PROMPT_FILE = PROJECT_ROOT / os.getenv('PSYCHOLOGIST_PROMPT_FILE', 'prompts/psycho_analysis.txt')
+THERAPY_MONTHLY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_PROMPT', 'prompts/therapy_monthly.txt')
 
 # ============================================================================
 # Therapy Detection Parameters (MVP Phase 0 + Enhancements)
@@ -113,6 +115,14 @@ JOURNAL_VALID_SPEAKERS = [k.strip() for k in os.getenv('JOURNAL_VALID_SPEAKERS',
 JOURNAL_END_MARKERS = [k.strip() for k in os.getenv('JOURNAL_END_MARKERS', 'end journal,journal end').split(',') if k.strip()]
 
 # ============================================================================
+# Therapy Monthly Summary Parameters
+# ============================================================================
+
+# Minimum therapy sessions required to generate a monthly summary
+# Default: 1 (generate summary even with a single session)
+THERAPY_MONTHLY_MIN_SESSIONS = int(os.getenv('THERAPY_MONTHLY_MIN_SESSIONS', '1'))
+
+# ============================================================================
 # Utility Functions (Helper functions used by configuration)
 # ============================================================================
 
@@ -164,6 +174,7 @@ PROCESS_JOURNAL_ENTRIES = _parse_bool(os.getenv('PROCESS_JOURNAL_ENTRIES', 'true
 PROCESS_THERAPY_SESSIONS = _parse_bool(os.getenv('PROCESS_THERAPY_SESSIONS', 'true'))
 CREATE_WEEKLY_SUMMARIES = _parse_bool(os.getenv('CREATE_WEEKLY_SUMMARIES', 'true'))
 CREATE_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_MONTHLY_SUMMARIES', 'true'))
+CREATE_THERAPY_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_THERAPY_MONTHLY_SUMMARIES', 'true'))
 LABEL_SPEAKERS = _parse_bool(os.getenv('LABEL_SPEAKERS', 'true'))
 
 # ============================================================================
@@ -179,6 +190,7 @@ def ensure_directories():
         MONTHLY_INSIGHTS_DIR,
         BEE_DIR,
         PSYCHOLOGIST_DIR,
+        THERAPY_MONTHLY_DIR,
         JOURNAL_DIR,
         LOG_DIR  # Add logs directory
     ]

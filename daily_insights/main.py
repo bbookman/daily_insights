@@ -12,6 +12,7 @@ from daily_insights.config import (
     PROCESS_THERAPY_SESSIONS,
     CREATE_WEEKLY_SUMMARIES,
     CREATE_MONTHLY_SUMMARIES,
+    CREATE_THERAPY_MONTHLY_SUMMARIES,
     LABEL_SPEAKERS,
     LOG_LEVEL,
     LOG_FILE,
@@ -41,6 +42,10 @@ from daily_insights.services.monthly_service import (
 from daily_insights.services.therapy_service import (
     process_therapy_sessions,
     process_therapy_sessions_async
+)
+from daily_insights.services.therapy_monthly_service import (
+    build_therapy_monthly_summaries,
+    build_therapy_monthly_summaries_async
 )
 from daily_insights.services.journal_service import (
     process_journal_entries,
@@ -105,6 +110,11 @@ def main() -> None:
         build_monthly_summaries()
     else:
         logger.info("Skipping monthly summaries (CREATE_MONTHLY_SUMMARIES=False)")
+
+    if CREATE_THERAPY_MONTHLY_SUMMARIES:
+        build_therapy_monthly_summaries()
+    else:
+        logger.info("Skipping therapy monthly summaries (CREATE_THERAPY_MONTHLY_SUMMARIES=False)")
 
     if PROCESS_THERAPY_SESSIONS:
         process_therapy_sessions()
@@ -191,6 +201,11 @@ async def main_async() -> None:
         summary_tasks.append(build_monthly_summaries_async())
     else:
         logger.info("Skipping monthly summaries (CREATE_MONTHLY_SUMMARIES=False)")
+
+    if CREATE_THERAPY_MONTHLY_SUMMARIES:
+        summary_tasks.append(build_therapy_monthly_summaries_async())
+    else:
+        logger.info("Skipping therapy monthly summaries (CREATE_THERAPY_MONTHLY_SUMMARIES=False)")
 
     if summary_tasks:
         await asyncio.gather(*summary_tasks)
