@@ -38,6 +38,7 @@ BEE_DIR = PROJECT_ROOT / os.getenv('BEE_DIR', 'bee')
 THERAPY_DIR = PROJECT_ROOT / os.getenv('THERAPY_DIR', 'psychologist')
 THERAPY_MONTHLY_DIR = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_DIR', 'therapy_monthly')
 JOURNAL_DIR = PROJECT_ROOT / os.getenv('JOURNAL_DIR', 'journal')
+DOCTOR_DIR = PROJECT_ROOT / os.getenv('DOCTOR_DIR', 'doctor')
 
 # ============================================================================
 # Prompt File Paths
@@ -48,6 +49,7 @@ MONTHLY_INSIGHTS_PROMPT = PROJECT_ROOT / os.getenv('MONTHLY_INSIGHTS_PROMPT', 'p
 BEE_PROMPT_FILE = PROJECT_ROOT / os.getenv('BEE_PROMPT_FILE', 'prompts/bee_daily.txt')
 THERAPY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_PROMPT', 'prompts/psycho_analysis.txt')
 THERAPY_MONTHLY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_PROMPT', 'prompts/therapy_monthly.txt')
+DOCTOR_PROMPT = PROJECT_ROOT / os.getenv('DOCTOR_PROMPT', 'prompts/doctor_visit.txt')
 
 # ============================================================================
 # Therapy Detection Parameters (MVP Phase 0 + Enhancements)
@@ -90,6 +92,74 @@ THERAPY_EXCLUSION_KEYWORDS = [
         'eligibility,interview,application,appeal,claim,trump,election,protest,voting,airport,customs,border'
     ).split(',') if kw.strip()
 ]
+
+# ============================================================================
+# Doctor Visit Detection Parameters
+# ============================================================================
+
+# Expected speakers for doctor visits - comma-separated list
+# Example: "Bruce,Unknown" or "John,Dr. Smith"
+EXPECTED_SPEAKERS_DOCTOR_VISIT = [
+    k.strip()
+    for k in os.getenv('EXPECTED_SPEAKERS_DOCTOR_VISIT', 'Bruce,Unknown').split(',')
+    if k.strip()
+]
+
+# Doctor visit keywords - comma-separated list of medical-related words
+DOCTOR_KEYWORDS = [
+    k.strip()
+    for k in os.getenv(
+        'DOCTOR_KEYWORDS',
+        'doctor,physician,specialist,appointment,checkup,prescription,symptoms,diagnosis,medical,clinic,hospital'
+    ).split(',')
+    if k.strip()
+]
+
+# Minimum number of doctor keywords required for detection
+# Prevents false positives from single generic keyword matches
+DOCTOR_KEYWORD_MIN = int(os.getenv('DOCTOR_KEYWORD_MIN', '2'))
+
+# Minimum duration (in minutes) for a conversation to be considered a doctor visit
+# Default: 10 minutes
+DOCTOR_MIN_DURATION = int(os.getenv('DOCTOR_MIN_DURATION', '10'))
+
+# Maximum duration (in minutes) for a conversation to be considered a doctor visit
+# Prevents false positives from very long conversations
+# Default: 90 minutes - set to 0 to disable
+DOCTOR_MAX_DURATION = int(os.getenv('DOCTOR_MAX_DURATION', '90'))
+
+# Exclusion keywords - reject conversations containing any of these terms
+# Prevents false positives from mental health/psychiatry visits
+DOCTOR_EXCLUSION_KEYWORDS = [
+    kw.strip() for kw in os.getenv(
+        'DOCTOR_EXCLUSION_KEYWORDS',
+        'psychiatrist,therapy,therapist,counseling,psychologist,mental health'
+    ).split(',') if kw.strip()
+]
+
+# ============================================================================
+# Doctor Visit Confidence Scoring Weights
+# ============================================================================
+
+# Weight for examination-specific keywords (physical exam, diagnostic terms)
+# Positive indicator of actual doctor visit vs. casual health discussion
+DOCTOR_CONFIDENCE_WEIGHT_EXAMINATION = float(os.getenv('DOCTOR_CONFIDENCE_WEIGHT_EXAMINATION', '0.3'))
+
+# Weight for health metrics keywords (weight, blood pressure, glucose)
+# Negative indicator - often appears in personal logging, not actual visits
+DOCTOR_CONFIDENCE_WEIGHT_HEALTH_METRICS = float(os.getenv('DOCTOR_CONFIDENCE_WEIGHT_HEALTH_METRICS', '-0.2'))
+
+# Weight for discussion pattern keywords (e.g., "doctor said", "appointment with")
+# Negative indicator - discussing visits rather than being in a visit
+DOCTOR_CONFIDENCE_WEIGHT_DISCUSSION_PATTERN = float(os.getenv('DOCTOR_CONFIDENCE_WEIGHT_DISCUSSION_PATTERN', '-0.3'))
+
+# Weight for bidirectional Q&A patterns (patient and provider both asking/answering)
+# Positive indicator of actual clinical conversation vs. one-way advice
+DOCTOR_CONFIDENCE_WEIGHT_BIDIRECTIONAL_QA = float(os.getenv('DOCTOR_CONFIDENCE_WEIGHT_BIDIRECTIONAL_QA', '0.3'))
+
+# Weight for duration in optimal range (sweet spot based on DOCTOR_MIN_DURATION and DOCTOR_MAX_DURATION)
+# Positive indicator when duration is in typical doctor visit range
+DOCTOR_CONFIDENCE_WEIGHT_DURATION_OPTIMAL = float(os.getenv('DOCTOR_CONFIDENCE_WEIGHT_DURATION_OPTIMAL', '0.2'))
 
 # ============================================================================
 # Conversation Grouping (Used by multiple features)
@@ -181,6 +251,7 @@ FETCH_DAILY_INSIGHTS = _parse_bool(os.getenv('FETCH_DAILY_INSIGHTS', 'true'))
 PROCESS_BEE_TRANSCRIPTIONS = _parse_bool(os.getenv('PROCESS_BEE_TRANSCRIPTIONS', 'true'))
 PROCESS_JOURNAL_ENTRIES = _parse_bool(os.getenv('PROCESS_JOURNAL_ENTRIES', 'true'))
 PROCESS_THERAPY_SESSIONS = _parse_bool(os.getenv('PROCESS_THERAPY_SESSIONS', 'true'))
+PROCESS_DOCTOR_VISITS = _parse_bool(os.getenv('PROCESS_DOCTOR_VISITS', 'true'))
 CREATE_WEEKLY_SUMMARIES = _parse_bool(os.getenv('CREATE_WEEKLY_SUMMARIES', 'true'))
 CREATE_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_MONTHLY_SUMMARIES', 'true'))
 CREATE_THERAPY_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_THERAPY_MONTHLY_SUMMARIES', 'true'))
@@ -201,6 +272,7 @@ def ensure_directories():
         THERAPY_DIR,
         THERAPY_MONTHLY_DIR,
         JOURNAL_DIR,
+        DOCTOR_DIR,
         LOG_DIR  # Add logs directory
     ]
 

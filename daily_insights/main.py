@@ -10,6 +10,7 @@ from daily_insights.config import (
     PROCESS_BEE_TRANSCRIPTIONS,
     PROCESS_JOURNAL_ENTRIES,
     PROCESS_THERAPY_SESSIONS,
+    PROCESS_DOCTOR_VISITS,
     CREATE_WEEKLY_SUMMARIES,
     CREATE_MONTHLY_SUMMARIES,
     CREATE_THERAPY_MONTHLY_SUMMARIES,
@@ -50,6 +51,10 @@ from daily_insights.services.therapy_monthly_service import (
 from daily_insights.services.journal_service import (
     process_journal_entries,
     process_journal_entries_async
+)
+from daily_insights.services.doctor_visit_service import (
+    process_doctor_visits,
+    process_doctor_visits_async
 )
 from daily_insights.utils.pipeline_stats import display_pipeline_summary
 
@@ -121,6 +126,11 @@ def main() -> None:
     else:
         logger.info("Skipping therapy session processing (PROCESS_THERAPY_SESSIONS=False)")
 
+    if PROCESS_DOCTOR_VISITS:
+        process_doctor_visits()
+    else:
+        logger.info("Skipping doctor visit processing (PROCESS_DOCTOR_VISITS=False)")
+
     # Display comprehensive pipeline statistics
     logger.info("Pipeline execution completed")
     display_pipeline_summary()
@@ -184,6 +194,11 @@ async def main_async() -> None:
         process_tasks.append(process_therapy_sessions_async())
     else:
         logger.info("Skipping therapy session processing (PROCESS_THERAPY_SESSIONS=False)")
+
+    if PROCESS_DOCTOR_VISITS:
+        process_tasks.append(process_doctor_visits_async())
+    else:
+        logger.info("Skipping doctor visit processing (PROCESS_DOCTOR_VISITS=False)")
 
     if process_tasks:
         await asyncio.gather(*process_tasks)

@@ -1,0 +1,117 @@
+DOCTOR VISIT DETECTION VALIDATION REPORT (MVP)
+================================================================================
+Generated: 2025-11-08 15:25:46
+Total Visits Detected: 6
+
+CONFIGURATION (MVP - Boolean AND Logic with Exclusion Keywords):
+  EXPECTED_SPEAKERS_DOCTOR_VISIT: ['Bruce', 'Mark', 'Unknown']
+  DOCTOR_KEYWORDS: ['doctor', 'physician', 'specialist', 'appointment', 'checkup', 'prescription', 'symptoms', 'diagnosis', 'medical', 'clinic', 'hospital', 'diabetes', 'A1C', 'weight', 'weigh', 'pulse', 'blood', 'pressure', 'examine', 'exam', 'examined', 'examination', 'diagnosed', 'physical', 'prescribed', 'treatment', 'medical office', 'nurse practitioner']
+  DOCTOR_KEYWORD_MIN: 5
+  DOCTOR_MIN_DURATION: 30 minutes
+  DOCTOR_MAX_DURATION: 70 minutes
+  DOCTOR_EXCLUSION_KEYWORDS: ['psychiatrist', 'therapy', 'therapist', 'counseling', 'psychologist', 'mental health', 'my weight was', 'I weigh', 'blood glucose was', 'going to see', 'appointment with', 'doctor said', 'doctor told']
+
+DETECTED VISITS:
+--------------------------------------------------------------------------------
+
+Visit 1:
+  Date: 2025-05-13
+  File: 2025-05-13.md
+  Time: 8:54 AM - 9:29 AM
+  Duration: 35.0 minutes
+  Messages: 305
+  Speakers: Bruce, Unknown
+  Validation Checks:
+    Speaker Purity: PASS
+    Keyword Density: PASS
+    Exclusion Check: PASS
+    Not Therapy Session: PASS
+    Not Journal Session: PASS
+  Confidence Score: 0.80
+  Matched Keywords (10): doctor, physician, appointment, diagnosis, medical, weigh, blood, pressure, diagnosed, nurse practitioner
+  First Message: All right, it's time to report my health, well-being.
+
+Visit 2:
+  Date: 2025-05-19
+  File: 2025-05-19.md
+  Time: 8:33 PM - 9:09 PM
+  Duration: 36.0 minutes
+  Messages: 191
+  Speakers: Bruce, Unknown
+  Validation Checks:
+    Speaker Purity: PASS
+    Keyword Density: PASS
+    Exclusion Check: PASS
+    Not Therapy Session: PASS
+    Not Journal Session: PASS
+  Confidence Score: 0.80
+  Matched Keywords (7): doctor, appointment, weight, weigh, blood, exam, physical
+  First Message: Hello.
+
+Visit 3:
+  Date: 2025-07-19
+  File: 2025-07-19.md
+  Time: 8:44 PM - 9:51 PM
+  Duration: 67.0 minutes
+  Messages: 581
+  Speakers: Bruce, Unknown
+  Validation Checks:
+    Speaker Purity: PASS
+    Keyword Density: PASS
+    Exclusion Check: PASS
+    Not Therapy Session: PASS
+    Not Journal Session: PASS
+  Confidence Score: 1.00
+  Matched Keywords (13): doctor, appointment, symptoms, medical, clinic, hospital, diabetes, weigh, blood, pressure, examine, exam, treatment
+  First Message: press one.
+
+Visit 4:
+  Date: 2025-07-23
+  File: 2025-07-23.md
+  Time: 8:54 AM - 9:55 AM
+  Duration: 61.0 minutes
+  Messages: 406
+  Speakers: Bruce, Unknown
+  Validation Checks:
+    Speaker Purity: PASS
+    Keyword Density: PASS
+    Exclusion Check: PASS
+    Not Therapy Session: PASS
+    Not Journal Session: PASS
+  Confidence Score: 0.80
+  Matched Keywords (12): doctor, specialist, appointment, prescription, clinic, diabetes, A1C, blood, pressure, exam, diagnosed, physical
+  First Message: Oh, yeah. Let's do that.
+
+Visit 5:
+  Date: 2025-08-04
+  File: 2025-08-04.md
+  Time: 10:29 AM - 11:28 AM
+  Duration: 59.0 minutes
+  Messages: 191
+  Speakers: Bruce, Unknown
+  Validation Checks:
+    Speaker Purity: PASS
+    Keyword Density: PASS
+    Exclusion Check: PASS
+    Not Therapy Session: PASS
+    Not Journal Session: PASS
+  Confidence Score: 1.00
+  Matched Keywords (8): doctor, prescription, A1C, blood, pressure, exam, physical, prescribed
+  First Message: I have a word for you, please.
+
+Visit 6:
+  Date: 2025-08-04
+  File: 2025-08-04.md
+  Time: 2:45 PM - 3:38 PM
+  Duration: 53.0 minutes
+  Messages: 367
+  Speakers: Bruce, Unknown
+  Validation Checks:
+    Speaker Purity: PASS
+    Keyword Density: PASS
+    Exclusion Check: PASS
+    Not Therapy Session: PASS
+    Not Journal Session: PASS
+  Confidence Score: 1.00
+  Matched Keywords (5): doctor, appointment, weight, weigh, exam
+  First Message: Benetton, how are you doing?

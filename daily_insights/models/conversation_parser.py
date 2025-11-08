@@ -308,6 +308,262 @@ def check_exclusion_keywords(conversation: List[Dict]) -> bool:
     return not any(kw.lower() in content_combined for kw in THERAPY_EXCLUSION_KEYWORDS)
 
 
+def check_doctor_exclusion_keywords(conversation: List[Dict]) -> bool:
+    """
+    Check if conversation contains doctor visit exclusion keywords.
+
+    Rejects conversations containing keywords that indicate mental health/psychiatry
+    visits that should be handled separately from general medical visits.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: content
+
+    Returns
+    -------
+    bool
+        False if ANY exclusion keyword found (reject as doctor visit)
+        True if no exclusions (pass check)
+
+    Example
+    -------
+    >>> # DOCTOR_EXCLUSION_KEYWORDS = ["psychiatrist", "therapy", "therapist"]
+    >>> conv = [{"content": "I saw my psychiatrist today"}]
+    >>> check_doctor_exclusion_keywords(conv)
+    False  # Contains "psychiatrist"
+
+    >>> conv = [{"content": "I saw my cardiologist today"}]
+    >>> check_doctor_exclusion_keywords(conv)
+    True  # No exclusion keywords present
+    """
+    from daily_insights.config import DOCTOR_EXCLUSION_KEYWORDS
+
+    if not DOCTOR_EXCLUSION_KEYWORDS:
+        return True  # No exclusions configured, pass check
+
+    content_combined = " ".join(d["content"].lower() for d in conversation)
+
+    # Reject if any exclusion keyword is present
+    return not any(kw.lower() in content_combined for kw in DOCTOR_EXCLUSION_KEYWORDS)
+
+
+def check_doctor_keyword_density(conversation: List[Dict]) -> bool:
+    """
+    Check if multiple doctor visit keywords are present.
+
+    Prevents false positives from single generic keyword matches by requiring
+    a minimum number of distinct medical-related terms to be present.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: content
+
+    Returns
+    -------
+    bool
+        True if keyword count >= DOCTOR_KEYWORD_MIN, False otherwise
+
+    Example
+    -------
+    >>> # DOCTOR_KEYWORDS = ["doctor", "physician", "prescription", "symptoms"]
+    >>> # DOCTOR_KEYWORD_MIN = 2
+    >>> conv = [
+    ...     {"content": "I went to the doctor and got a prescription"},
+    ...     {"content": "My symptoms are improving"}
+    ... ]
+    >>> check_doctor_keyword_density(conv)
+    True  # Contains "doctor", "prescription", and "symptoms" (3 keywords)
+
+    >>> conv = [{"content": "I need to make a doctor appointment"}]
+    >>> check_doctor_keyword_density(conv)
+    False  # Contains only "doctor" (1 keyword)
+    """
+    from daily_insights.config import DOCTOR_KEYWORDS, DOCTOR_KEYWORD_MIN
+
+    content_combined = " ".join(d["content"].lower() for d in conversation)
+    keyword_count = sum(
+        1 for kw in DOCTOR_KEYWORDS
+        if kw.lower() in content_combined
+    )
+    return keyword_count >= DOCTOR_KEYWORD_MIN
+
+
+def check_doctor_speaker_purity(conversation: List[Dict]) -> bool:
+    """
+    Check if conversation contains ONLY expected speakers for doctor visits.
+
+    Rejects doctor visits that include unexpected participants to prevent
+    false positives from multi-person conversations.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: speaker
+
+    Returns
+    -------
+    bool
+        True if all speakers are in expected list, False otherwise
+
+    Example
+    -------
+    >>> # EXPECTED_SPEAKERS_DOCTOR_VISIT = ["Bruce", "Unknown"]
+    >>> conv = [
+    ...     {"speaker": "Bruce", "content": "My symptoms started last week"},
+    ...     {"speaker": "Unknown", "content": "Let me examine you"}
+    ... ]
+    >>> check_doctor_speaker_purity(conv)
+    True  # Both speakers in expected list
+
+    >>> conv = [
+    ...     {"speaker": "Bruce", "content": "My symptoms started last week"},
+    ...     {"speaker": "Ivette", "content": "Are you okay?"}
+    ... ]
+    >>> check_doctor_speaker_purity(conv)
+    False  # "Ivette" not in expected list
+    """
+    from daily_insights.config import EXPECTED_SPEAKERS_DOCTOR_VISIT
+
+    if not EXPECTED_SPEAKERS_DOCTOR_VISIT:
+        return False  # Must be explicitly configured
+
+    speakers_present = {d["speaker"].lower() for d in conversation}
+    expected_speakers = {s.lower() for s in EXPECTED_SPEAKERS_DOCTOR_VISIT}
+
+    # All speakers must be in expected list (subset check)
+    return speakers_present.issubset(expected_speakers)
+
+
+def calculate_doctor_visit_confidence(conversation: List[Dict]) -> float:
+    """
+    Calculate confidence score for doctor visit detection (0.0 to 1.0).
+
+    Uses weighted scoring based on multiple indicators:
+    - Examination keywords: +weight (physical exam, diagnosis terms)
+    - Health metrics keywords: -weight (personal health logging)
+    - Discussion patterns: -weight (talking about visits, not being in one)
+    - Bidirectional Q&A: +weight (clinical conversation patterns)
+    - Duration sweet spot: +weight (typical visit duration range)
+
+    All weights are configurable via environment variables.
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: content, speaker, datetime
+
+    Returns
+    -------
+    float
+        Confidence score from 0.0 (unlikely) to 1.0 (certain)
+        Score is clamped to [0.0, 1.0] range
+
+    Example
+    -------
+    >>> # Actual doctor visit (high confidence)
+    >>> conv = [
+    ...     {"content": "The doctor examined my throat", "speaker": "Bruce"},
+    ...     {"content": "Let me check your blood pressure", "speaker": "Unknown"},
+    ...     {"content": "It's 120/80, looks good", "speaker": "Unknown"}
+    ... ]
+    >>> score = calculate_doctor_visit_confidence(conv)
+    >>> score > 0.5  # High confidence
+    True
+
+    >>> # Personal health logging (low confidence)
+    >>> conv = [
+    ...     {"content": "My weight was 188 pounds today", "speaker": "Bruce"},
+    ...     {"content": "Blood glucose was 130", "speaker": "Bruce"}
+    ... ]
+    >>> score = calculate_doctor_visit_confidence(conv)
+    >>> score < 0.3  # Low confidence
+    True
+    """
+    from daily_insights.config import (
+        DOCTOR_CONFIDENCE_WEIGHT_EXAMINATION,
+        DOCTOR_CONFIDENCE_WEIGHT_HEALTH_METRICS,
+        DOCTOR_CONFIDENCE_WEIGHT_DISCUSSION_PATTERN,
+        DOCTOR_CONFIDENCE_WEIGHT_BIDIRECTIONAL_QA,
+        DOCTOR_CONFIDENCE_WEIGHT_DURATION_OPTIMAL,
+        DOCTOR_MIN_DURATION,
+        DOCTOR_MAX_DURATION
+    )
+
+    # Start with baseline score
+    confidence = 0.5
+
+    # Combine all content for keyword checking
+    content_combined = " ".join(d["content"].lower() for d in conversation)
+
+    # 1. Examination-specific keywords (positive indicator)
+    examination_keywords = [
+        'examine', 'exam', 'examined', 'examination',
+        'physical', 'diagnosed', 'prescription', 'prescribed',
+        'treatment', 'clinic', 'hospital', 'checkup'
+    ]
+    if any(kw in content_combined for kw in examination_keywords):
+        confidence += DOCTOR_CONFIDENCE_WEIGHT_EXAMINATION
+
+    # 2. Health metrics keywords (negative indicator - personal logging)
+    health_metrics_keywords = [
+        'my weight was', 'i weigh', 'weight was',
+        'blood glucose was', 'glucose was',
+        'a1c was', 'my a1c'
+    ]
+    if any(pattern in content_combined for pattern in health_metrics_keywords):
+        confidence += DOCTOR_CONFIDENCE_WEIGHT_HEALTH_METRICS
+
+    # 3. Discussion patterns (negative indicator - talking about visits)
+    discussion_patterns = [
+        'doctor said', 'doctor told', 'physician said',
+        'appointment with', 'going to see', 'saw my doctor',
+        'my doctor', 'the doctor that'
+    ]
+    if any(pattern in content_combined for pattern in discussion_patterns):
+        confidence += DOCTOR_CONFIDENCE_WEIGHT_DISCUSSION_PATTERN
+
+    # 4. Bidirectional Q&A patterns (positive indicator)
+    # Check if both speakers ask questions and provide answers
+    speakers = list(set(d["speaker"] for d in conversation))
+    if len(speakers) >= 2:
+        # Check for questions and answers from multiple speakers
+        question_indicators = ['?', 'what', 'how', 'when', 'where', 'why', 'can you', 'do you']
+        has_bidirectional_qa = False
+
+        for speaker in speakers:
+            speaker_content = " ".join(
+                d["content"].lower() for d in conversation
+                if d["speaker"] == speaker
+            )
+            if any(indicator in speaker_content for indicator in question_indicators):
+                has_bidirectional_qa = True
+                break
+
+        if has_bidirectional_qa:
+            confidence += DOCTOR_CONFIDENCE_WEIGHT_BIDIRECTIONAL_QA
+
+    # 5. Duration in optimal range (positive indicator)
+    duration = calculate_duration_minutes(conversation)
+
+    # Calculate sweet spot from configured min/max
+    # Sweet spot is middle 50% of the range
+    if DOCTOR_MAX_DURATION > 0:
+        duration_range = DOCTOR_MAX_DURATION - DOCTOR_MIN_DURATION
+        sweet_spot_min = DOCTOR_MIN_DURATION + (duration_range * 0.25)
+        sweet_spot_max = DOCTOR_MIN_DURATION + (duration_range * 0.75)
+
+        if sweet_spot_min <= duration <= sweet_spot_max:
+            confidence += DOCTOR_CONFIDENCE_WEIGHT_DURATION_OPTIMAL
+    else:
+        # If no max duration, sweet spot is 2x-4x the minimum
+        sweet_spot_min = DOCTOR_MIN_DURATION * 2
+        sweet_spot_max = DOCTOR_MIN_DURATION * 4
+
+        if sweet_spot_min <= duration <= sweet_spot_max:
+            confidence += DOCTOR_CONFIDENCE_WEIGHT_DURATION_OPTIMAL
+
+    # Clamp confidence to [0.0, 1.0] range
+    return max(0.0, min(1.0, confidence))
+
+
 def check_keyword_density(conversation: List[Dict]) -> bool:
     """
     Check if multiple therapy keywords are present (Phase 2 enhancement).
@@ -347,6 +603,92 @@ def check_keyword_density(conversation: List[Dict]) -> bool:
         if kw.lower() in content_combined
     )
     return keyword_count >= THERAPY_KEYWORD_MIN
+
+
+def is_doctor_visit(conversation: List[Dict]) -> bool:
+    """
+    Detect doctor visits with strict criteria (MVP approach).
+
+    All checks must pass (Boolean AND):
+    1a. Duration >= configured minimum (default 10 minutes)
+    1b. Duration <= configured maximum (default 90 minutes, if enabled)
+    2. Speaker purity: ONLY expected speakers present
+    3. Keyword density: Multiple doctor-related keywords present
+    4. Not a therapy session
+    5. Not a journal session
+    6. No exclusion keywords present (psychiatrist, mental health, etc.)
+
+    Args
+    ----
+    conversation: List of dialogue dictionaries with keys: speaker, content, datetime
+
+    Returns
+    -------
+    bool
+        True if ALL criteria are met, False otherwise
+
+    Example
+    -------
+    >>> # True positive - legitimate doctor visit
+    >>> # EXPECTED_SPEAKERS_DOCTOR_VISIT = ["Bruce", "Unknown"]
+    >>> conv = [
+    ...     {"speaker": "Unknown", "content": "What brings you in today?", "datetime": dt1},
+    ...     {"speaker": "Bruce", "content": "I've had these symptoms for a week", "datetime": dt2},
+    ...     {"speaker": "Unknown", "content": "Let me examine you and write a prescription", "datetime": dt3},
+    ...     # ... 15+ minutes of medical dialogue
+    ... ]
+    >>> is_doctor_visit(conv)
+    True  # Duration OK, speakers OK, keywords OK, not therapy/journal, no exclusions
+
+    >>> # False - psychiatrist visit (should be excluded)
+    >>> conv = [
+    ...     {"speaker": "Unknown", "content": "How is your mental health?", "datetime": dt1},
+    ...     {"speaker": "Bruce", "content": "I saw my psychiatrist yesterday", "datetime": dt2}
+    ... ]
+    >>> is_doctor_visit(conv)
+    False  # Contains exclusion keyword "psychiatrist"
+
+    >>> # False - therapy session
+    >>> conv = [
+    ...     {"speaker": "Larry", "content": "How are you feeling about your anxiety?", "datetime": dt1},
+    ...     {"speaker": "Bruce", "content": "Better since therapy started", "datetime": dt2}
+    ... ]
+    >>> is_doctor_visit(conv)
+    False  # Detected as therapy session
+    """
+    from daily_insights.config import DOCTOR_MIN_DURATION, DOCTOR_MAX_DURATION
+
+    # Check 1a: Minimum duration
+    duration = calculate_duration_minutes(conversation)
+    if duration < DOCTOR_MIN_DURATION:
+        return False
+
+    # Check 1b: Maximum duration (if enabled, non-zero)
+    if DOCTOR_MAX_DURATION > 0 and duration > DOCTOR_MAX_DURATION:
+        return False
+
+    # Check 2: Speaker purity - ONLY expected speakers present
+    if not check_doctor_speaker_purity(conversation):
+        return False
+
+    # Check 3: Keyword density - Multiple doctor-related keywords required
+    if not check_doctor_keyword_density(conversation):
+        return False
+
+    # Check 4: Not a therapy session (reuse existing function)
+    if is_therapy_session(conversation):
+        return False
+
+    # Check 5: Not a journal session (reuse existing function)
+    if is_journal_session(conversation):
+        return False
+
+    # Check 6: No exclusion keywords (psychiatrist, mental health, etc.)
+    if not check_doctor_exclusion_keywords(conversation):
+        return False
+
+    # All 6 checks passed
+    return True
 
 
 def is_therapy_session(conversation: List[Dict]) -> bool:
