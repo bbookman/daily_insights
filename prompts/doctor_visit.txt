@@ -11,6 +11,13 @@ EXAMPLE OF CORRECT OUTPUT (DO THIS):
 
 Now write your medical visit summary following this structure:
 
+## Vital Signs
+[Do not include if not discussed.  DO NOT MAKE UP, OR INVENT VITAL SIGNS. If not discussed, write "None documented in this visit." ]
+Reported Weight:
+Reported Blood Pressure:
+Reported Blood Glucose:
+Reported A1C:
+
 ## Chief Complaint
 
 What brought the patient to the appointment:

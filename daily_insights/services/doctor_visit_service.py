@@ -224,10 +224,7 @@ def process_doctor_visits(force_recheck: bool = False) -> None:
                 analysis_content = (
                     f"# Doctor Visit Summary - {date_str}\n\n"
                     f"**Visit Time:** {visit['start_time']} - "
-                    f"{visit['end_time']}\n"
-                    f"**Duration:** {visit['duration_minutes']:.0f} "
-                    "minutes\n"
-                    f"**Detection:** MVP\n\n"
+                    f"{visit['end_time']}\n\n"
                     "---\n\n"
                     "{output_text}"
                 ).format(output_text=output_text)
@@ -410,10 +407,7 @@ async def process_doctor_visits_async(force_recheck: bool = False) -> None:
                 analysis_content = (
                     f"# Doctor Visit Summary - {date_str}\n\n"
                     f"**Visit Time:** {visit['start_time']} - "
-                    f"{visit['end_time']}\n"
-                    f"**Duration:** {visit['duration_minutes']:.0f} "
-                    "minutes\n"
-                    f"**Detection:** MVP\n\n"
+                    f"{visit['end_time']}\n\n"
                     "---\n\n"
                     "{output_text}"
                 ).format(output_text=output_text)
