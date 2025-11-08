@@ -9,8 +9,8 @@ import asyncio
 
 from daily_insights.config import (
     LIFELOGS_DIR,
-    PSYCHOLOGIST_DIR,
-    PSYCHOLOGIST_PROMPT_FILE,
+    THERAPY_DIR,
+    THERAPY_PROMPT,
     LLM_PROVIDER
 )
 from daily_insights.models.conversation_parser import (
@@ -91,7 +91,7 @@ def load_processed_tracker() -> Dict:
     >>> print(len(tracker))
     42
     """
-    tracker_file = os.path.join(PSYCHOLOGIST_DIR, "processed_lifelogs.json")
+    tracker_file = os.path.join(THERAPY_DIR, "processed_lifelogs.json")
     if os.path.exists(tracker_file):
         with open(tracker_file, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -116,7 +116,7 @@ def save_processed_tracker(tracker: Dict) -> None:
     >>> save_processed_tracker(tracker)
     # Saves tracker to JSON file
     """
-    tracker_file = os.path.join(PSYCHOLOGIST_DIR, "processed_lifelogs.json")
+    tracker_file = os.path.join(THERAPY_DIR, "processed_lifelogs.json")
     with open(tracker_file, "w", encoding="utf-8") as f:
         json.dump(tracker, f, indent=2, sort_keys=True)
 
@@ -143,7 +143,7 @@ def process_therapy_sessions(force_recheck: bool = False) -> None:
     if force_recheck:
         print("Force recheck enabled - will reprocess all lifelogs")
 
-    prompt_text = read_prompt_file(PSYCHOLOGIST_PROMPT_FILE)
+    prompt_text = read_prompt_file(THERAPY_PROMPT)
     if not prompt_text:
         return
 
@@ -207,12 +207,12 @@ def process_therapy_sessions(force_recheck: bool = False) -> None:
 
                 if len(sessions) > 1:
                     output_file = os.path.join(
-                        PSYCHOLOGIST_DIR,
+                        THERAPY_DIR,
                         f"{date_str}-psychologist-session{i}.md"
                     )
                 else:
                     output_file = os.path.join(
-                        PSYCHOLOGIST_DIR,
+                        THERAPY_DIR,
                         f"{date_str}-psychologist.md"
                     )
 
@@ -268,7 +268,7 @@ async def load_processed_tracker_async() -> Dict:
     >>> print(len(tracker))
     42
     """
-    tracker_file = os.path.join(PSYCHOLOGIST_DIR, "processed_lifelogs.json")
+    tracker_file = os.path.join(THERAPY_DIR, "processed_lifelogs.json")
     if os.path.exists(tracker_file):
         content = await read_file_async(tracker_file)
         return json.loads(content)
@@ -293,7 +293,7 @@ async def save_processed_tracker_async(tracker: Dict) -> None:
     >>> await save_processed_tracker_async(tracker)
     # Saves tracker to JSON file
     """
-    tracker_file = os.path.join(PSYCHOLOGIST_DIR, "processed_lifelogs.json")
+    tracker_file = os.path.join(THERAPY_DIR, "processed_lifelogs.json")
     content = json.dumps(tracker, indent=2, sort_keys=True)
     await write_file_async(tracker_file, content)
 
@@ -321,11 +321,11 @@ async def process_therapy_sessions_async(force_recheck: bool = False) -> None:
         print("Force recheck enabled - will reprocess all lifelogs")
 
     # Read prompt file
-    if not os.path.exists(PSYCHOLOGIST_PROMPT_FILE):
-        print(f"ERROR: Prompt file missing: {PSYCHOLOGIST_PROMPT_FILE}")
+    if not os.path.exists(THERAPY_PROMPT):
+        print(f"ERROR: Prompt file missing: {THERAPY_PROMPT}")
         return
 
-    prompt_text = await read_file_async(PSYCHOLOGIST_PROMPT_FILE)
+    prompt_text = await read_file_async(THERAPY_PROMPT)
 
     tracker = await load_processed_tracker_async()
     initial_tracker_size = len(tracker)
@@ -393,12 +393,12 @@ async def process_therapy_sessions_async(force_recheck: bool = False) -> None:
 
                 if len(sessions) > 1:
                     output_file = os.path.join(
-                        PSYCHOLOGIST_DIR,
+                        THERAPY_DIR,
                         f"{date_str}-psychologist-session{i}.md"
                     )
                 else:
                     output_file = os.path.join(
-                        PSYCHOLOGIST_DIR,
+                        THERAPY_DIR,
                         f"{date_str}-psychologist.md"
                     )
 

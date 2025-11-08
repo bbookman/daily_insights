@@ -18,10 +18,10 @@ INSIGHTS_DIR = "./daily"
 LIFELOGS_DIR = "./lifelogs"
 PROMPTS_DIR = "./prompts"
 WEEKLY_INSIGHTS_DIR = "./weekly"
-PSYCHOLOGIST_DIR = "./psychologist"
+THERAPY_DIR = "./psychologist"
 
 WEEKLY_INSIGHTS_PROMPT = os.path.join(PROMPTS_DIR, "weekly_prompt.txt")
-PSYCHOLOGIST_PROMPT_FILE = os.path.join(PROMPTS_DIR, "psycho_analysis.txt")
+THERAPY_PROMPT = os.path.join(PROMPTS_DIR, "psycho_analysis.txt")
 OLLAMA_MODEL = "qwen2.5"  # change to your preferred local model
 OLLAMA_API = "http://localhost:11434/api/generate"
 
@@ -29,7 +29,7 @@ os.makedirs(INSIGHTS_DIR, exist_ok=True)
 os.makedirs(LIFELOGS_DIR, exist_ok=True)
 os.makedirs(PROMPTS_DIR, exist_ok=True)
 os.makedirs(WEEKLY_INSIGHTS_DIR, exist_ok=True)
-os.makedirs(PSYCHOLOGIST_DIR, exist_ok=True)
+os.makedirs(THERAPY_DIR, exist_ok=True)
 
 # === Step 1: Fetch Limitless Lifelogs ===
 def get_existing_lifelog_dates() -> Set[str]:
@@ -639,7 +639,7 @@ def load_processed_tracker() -> Dict:
 
     Returns dict mapping date -> processing metadata.
     """
-    tracker_file = os.path.join(PSYCHOLOGIST_DIR, "processed_lifelogs.json")
+    tracker_file = os.path.join(THERAPY_DIR, "processed_lifelogs.json")
     if os.path.exists(tracker_file):
         with open(tracker_file, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -653,7 +653,7 @@ def save_processed_tracker(tracker: Dict) -> None:
     Args:
         tracker: Dict mapping date -> processing metadata
     """
-    tracker_file = os.path.join(PSYCHOLOGIST_DIR, "processed_lifelogs.json")
+    tracker_file = os.path.join(THERAPY_DIR, "processed_lifelogs.json")
     with open(tracker_file, "w", encoding="utf-8") as f:
         json.dump(tracker, f, indent=2, sort_keys=True)
 
@@ -671,12 +671,12 @@ def process_therapy_sessions(force_recheck: bool = False):
         print("Force recheck enabled - will reprocess all lifelogs")
 
     # Check if prompt file exists
-    if not os.path.exists(PSYCHOLOGIST_PROMPT_FILE):
-        print(f"Psychologist prompt file missing: {PSYCHOLOGIST_PROMPT_FILE}")
+    if not os.path.exists(THERAPY_PROMPT):
+        print(f"Psychologist prompt file missing: {THERAPY_PROMPT}")
         return
 
     # Read prompt
-    with open(PSYCHOLOGIST_PROMPT_FILE, "r", encoding="utf-8") as f:
+    with open(THERAPY_PROMPT, "r", encoding="utf-8") as f:
         prompt_text = f.read()
 
     # Load tracking data
@@ -754,10 +754,10 @@ def process_therapy_sessions(force_recheck: bool = False):
                 # Save analysis
                 # If multiple sessions on same day, append session number
                 if len(sessions) > 1:
-                    output_file = os.path.join(PSYCHOLOGIST_DIR,
+                    output_file = os.path.join(THERAPY_DIR,
                                              f"{date_str}-psychologist-session{i}.md")
                 else:
-                    output_file = os.path.join(PSYCHOLOGIST_DIR,
+                    output_file = os.path.join(THERAPY_DIR,
                                              f"{date_str}-psychologist.md")
 
                 with open(output_file, "w", encoding="utf-8") as f:

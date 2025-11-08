@@ -35,7 +35,7 @@ INSIGHTS_DIR = PROJECT_ROOT / os.getenv('INSIGHTS_DIR', 'daily')
 WEEKLY_INSIGHTS_DIR = PROJECT_ROOT / os.getenv('WEEKLY_INSIGHTS_DIR', 'weekly')
 MONTHLY_INSIGHTS_DIR = PROJECT_ROOT / os.getenv('MONTHLY_INSIGHTS_DIR', 'monthly')
 BEE_DIR = PROJECT_ROOT / os.getenv('BEE_DIR', 'bee')
-PSYCHOLOGIST_DIR = PROJECT_ROOT / os.getenv('PSYCHOLOGIST_DIR', 'psychologist')
+THERAPY_DIR = PROJECT_ROOT / os.getenv('THERAPY_DIR', 'psychologist')
 THERAPY_MONTHLY_DIR = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_DIR', 'therapy_monthly')
 JOURNAL_DIR = PROJECT_ROOT / os.getenv('JOURNAL_DIR', 'journal')
 
@@ -46,7 +46,7 @@ JOURNAL_DIR = PROJECT_ROOT / os.getenv('JOURNAL_DIR', 'journal')
 WEEKLY_INSIGHTS_PROMPT = PROJECT_ROOT / os.getenv('WEEKLY_INSIGHTS_PROMPT', 'prompts/weekly_prompt.txt')
 MONTHLY_INSIGHTS_PROMPT = PROJECT_ROOT / os.getenv('MONTHLY_INSIGHTS_PROMPT', 'prompts/monthly.txt')
 BEE_PROMPT_FILE = PROJECT_ROOT / os.getenv('BEE_PROMPT_FILE', 'prompts/bee_daily.txt')
-PSYCHOLOGIST_PROMPT_FILE = PROJECT_ROOT / os.getenv('PSYCHOLOGIST_PROMPT_FILE', 'prompts/psycho_analysis.txt')
+THERAPY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_PROMPT', 'prompts/psycho_analysis.txt')
 THERAPY_MONTHLY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_PROMPT', 'prompts/therapy_monthly.txt')
 
 # ============================================================================
@@ -113,6 +113,15 @@ JOURNAL_VALID_SPEAKERS = [k.strip() for k in os.getenv('JOURNAL_VALID_SPEAKERS',
 
 # End marker phrases for journal completion detection
 JOURNAL_END_MARKERS = [k.strip() for k in os.getenv('JOURNAL_END_MARKERS', 'end journal,journal end').split(',') if k.strip()]
+
+# ============================================================================
+# Monthly Summary Parameters
+# ============================================================================
+
+# Minimum weekly summaries required to generate a monthly summary
+# Default: 4 (a complete month typically has 4-5 weeks)
+# Set to 3 or lower to generate summaries for months with fewer weeks
+MONTHLY_MIN_WEEKS = int(os.getenv('MONTHLY_MIN_WEEKS', '4'))
 
 # ============================================================================
 # Therapy Monthly Summary Parameters
@@ -189,7 +198,7 @@ def ensure_directories():
         WEEKLY_INSIGHTS_DIR,
         MONTHLY_INSIGHTS_DIR,
         BEE_DIR,
-        PSYCHOLOGIST_DIR,
+        THERAPY_DIR,
         THERAPY_MONTHLY_DIR,
         JOURNAL_DIR,
         LOG_DIR  # Add logs directory

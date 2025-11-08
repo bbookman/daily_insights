@@ -10,7 +10,7 @@ from daily_insights.config import (
     INSIGHTS_DIR,
     WEEKLY_INSIGHTS_DIR,
     MONTHLY_INSIGHTS_DIR,
-    PSYCHOLOGIST_DIR,
+    THERAPY_DIR,
     JOURNAL_DIR
 )
 from daily_insights.utils.date_utils import (
@@ -170,7 +170,7 @@ class PipelineStatistics:
         -------
         Dict with therapy session statistics
         """
-        session_files = list(Path(PSYCHOLOGIST_DIR).glob("*-psychologist*.md"))
+        session_files = list(Path(THERAPY_DIR).glob("*-psychologist*.md"))
 
         # Calculate detection rate
         lifelog_count = len(list(Path(LIFELOGS_DIR).glob("*.md")))

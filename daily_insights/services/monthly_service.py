@@ -8,7 +8,8 @@ import asyncio
 from daily_insights.config import (
     WEEKLY_INSIGHTS_DIR,
     MONTHLY_INSIGHTS_DIR,
-    MONTHLY_INSIGHTS_PROMPT
+    MONTHLY_INSIGHTS_PROMPT,
+    MONTHLY_MIN_WEEKS
 )
 from daily_insights.api.llm_client import generate_summary, generate_summary_async
 from daily_insights.utils.date_utils import (
@@ -55,7 +56,7 @@ def build_monthly_summaries() -> None:
     1. Scan ./weekly/ for all weekly summary files
     2. Filter out weeks containing today (incomplete data)
     3. Group by calendar month using start_date
-    4. Skip incomplete months (< 4 weeks)
+    4. Skip incomplete months (< MONTHLY_MIN_WEEKS)
     5. For each complete month:
        a. Check if monthly summary already exists
        b. Skip if exists (one-time generation rule)
@@ -100,9 +101,9 @@ def build_monthly_summaries() -> None:
 
     # Step 3: Process each month
     for month, week_files in sorted(months_dict.items()):
-        # Skip incomplete months (< 4 weeks)
-        if len(week_files) < 4:
-            print(f"Skipping incomplete month {month}: only {len(week_files)} weeks")
+        # Skip incomplete months (< MONTHLY_MIN_WEEKS)
+        if len(week_files) < MONTHLY_MIN_WEEKS:
+            print(f"Skipping incomplete month {month}: only {len(week_files)} weeks, need {MONTHLY_MIN_WEEKS}")
             continue
 
         monthly_filename = os.path.join(MONTHLY_INSIGHTS_DIR, f"{month}.md")
@@ -166,7 +167,7 @@ async def build_monthly_summaries_async() -> None:
     1. Scan ./weekly/ for all weekly summary files
     2. Filter out weeks containing today (incomplete data)
     3. Group by calendar month using start_date
-    4. Skip incomplete months (< 4 weeks)
+    4. Skip incomplete months (< MONTHLY_MIN_WEEKS)
     5. For each complete month:
        a. Check if monthly summary already exists
        b. Skip if exists (one-time generation rule)
@@ -217,9 +218,9 @@ async def build_monthly_summaries_async() -> None:
 
     # Step 4: Process each month
     async def process_month(month: str, week_files: List[Path]) -> None:
-        # Skip incomplete months (< 4 weeks)
-        if len(week_files) < 4:
-            print(f"Skipping incomplete month {month}: only {len(week_files)} weeks")
+        # Skip incomplete months (< MONTHLY_MIN_WEEKS)
+        if len(week_files) < MONTHLY_MIN_WEEKS:
+            print(f"Skipping incomplete month {month}: only {len(week_files)} weeks, need {MONTHLY_MIN_WEEKS}")
             return
 
         monthly_filename = os.path.join(MONTHLY_INSIGHTS_DIR, f"{month}.md")

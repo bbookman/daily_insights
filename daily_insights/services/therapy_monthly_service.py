@@ -8,7 +8,7 @@ from collections import defaultdict
 import asyncio
 
 from daily_insights.config import (
-    PSYCHOLOGIST_DIR,
+    THERAPY_DIR,
     THERAPY_MONTHLY_DIR,
     THERAPY_MONTHLY_PROMPT,
     THERAPY_MONTHLY_MIN_SESSIONS
@@ -85,7 +85,7 @@ def build_therapy_monthly_summaries() -> None:
     Build monthly therapy summaries from individual therapy sessions.
 
     Algorithm:
-    1. Scan PSYCHOLOGIST_DIR for all therapy session files
+    1. Scan THERAPY_DIR for all therapy session files
     2. Group by calendar month using session date
     3. Skip incomplete months (< THERAPY_MONTHLY_MIN_SESSIONS sessions)
     4. For each complete month:
@@ -108,7 +108,7 @@ def build_therapy_monthly_summaries() -> None:
     print("\nStarting to build monthly therapy summaries...")
 
     # Step 1: Discover therapy session files
-    all_therapy_files = sorted(Path(PSYCHOLOGIST_DIR).glob("*-psychologist*.md"))
+    all_therapy_files = sorted(Path(THERAPY_DIR).glob("*-psychologist*.md"))
 
     if not all_therapy_files:
         print("No therapy session files found. Skipping monthly therapy generation.")
@@ -188,7 +188,7 @@ async def build_therapy_monthly_summaries_async() -> None:
     Async version: Build monthly therapy summaries from individual therapy sessions.
 
     Algorithm:
-    1. Scan PSYCHOLOGIST_DIR for all therapy session files
+    1. Scan THERAPY_DIR for all therapy session files
     2. Group by calendar month using session date
     3. Skip incomplete months (< THERAPY_MONTHLY_MIN_SESSIONS sessions)
     4. For each complete month:
@@ -211,7 +211,7 @@ async def build_therapy_monthly_summaries_async() -> None:
     print("\nStarting to build monthly therapy summaries (async)...")
 
     # Step 1: Discover therapy session files
-    all_therapy_files = sorted(Path(PSYCHOLOGIST_DIR).glob("*-psychologist*.md"))
+    all_therapy_files = sorted(Path(THERAPY_DIR).glob("*-psychologist*.md"))
 
     if not all_therapy_files:
         print("No therapy session files found. Skipping monthly therapy generation.")

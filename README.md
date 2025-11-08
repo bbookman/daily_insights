@@ -87,7 +87,7 @@ INSIGHTS_DIR=daily                   # Daily insights and bee processing
 WEEKLY_INSIGHTS_DIR=weekly           # Weekly summary reports
 MONTHLY_INSIGHTS_DIR=monthly         # Monthly summary reports
 BEE_DIR=bee                          # Bee transcription files
-PSYCHOLOGIST_DIR=psychologist        # Therapy session analyses
+THERAPY_DIR=psychologist             # Therapy session analyses
 JOURNAL_DIR=journal                  # Journal entries
 ```
 
@@ -198,7 +198,7 @@ Automatically identifies therapy sessions in lifelogs using scoring algorithm.
 2. Configure detection parameters in `.env`
 3. Enable with `PROCESS_THERAPY_SESSIONS=true`
 
-**Output:** `psychologist/YYYY-MM-DD-psychologist.md` - Analyzed session transcripts
+**Output:** Saved in `THERAPY_DIR` (default: `psychologist/`) as `YYYY-MM-DD-psychologist.md` - Analyzed session transcripts
 
 **Algorithm:** Scores conversations based on:
 - Duration (30-75 minutes optimal)
