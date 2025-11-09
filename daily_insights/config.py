@@ -38,6 +38,7 @@ BEE_DIR = PROJECT_ROOT / os.getenv('BEE_DIR', 'bee')
 THERAPY_DIR = PROJECT_ROOT / os.getenv('THERAPY_DIR', 'psychologist')
 THERAPY_MONTHLY_DIR = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_DIR', 'therapy_monthly')
 JOURNAL_DIR = PROJECT_ROOT / os.getenv('JOURNAL_DIR', 'journal')
+JOURNAL_MONTHLY_DIR = PROJECT_ROOT / os.getenv('JOURNAL_MONTHLY_DIR', 'journal_monthly')
 DOCTOR_DIR = PROJECT_ROOT / os.getenv('DOCTOR_DIR', 'doctor')
 
 # ============================================================================
@@ -49,6 +50,7 @@ MONTHLY_INSIGHTS_PROMPT = PROJECT_ROOT / os.getenv('MONTHLY_INSIGHTS_PROMPT', 'p
 BEE_PROMPT_FILE = PROJECT_ROOT / os.getenv('BEE_PROMPT_FILE', 'prompts/bee_daily.txt')
 THERAPY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_PROMPT', 'prompts/psycho_analysis.txt')
 THERAPY_MONTHLY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_PROMPT', 'prompts/therapy_monthly.txt')
+JOURNAL_MONTHLY_PROMPT = PROJECT_ROOT / os.getenv('JOURNAL_MONTHLY_PROMPT', 'prompts/journal_monthly.txt')
 DOCTOR_PROMPT = PROJECT_ROOT / os.getenv('DOCTOR_PROMPT', 'prompts/doctor_visit.txt')
 
 # ============================================================================
@@ -255,6 +257,7 @@ PROCESS_DOCTOR_VISITS = _parse_bool(os.getenv('PROCESS_DOCTOR_VISITS', 'true'))
 CREATE_WEEKLY_SUMMARIES = _parse_bool(os.getenv('CREATE_WEEKLY_SUMMARIES', 'true'))
 CREATE_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_MONTHLY_SUMMARIES', 'true'))
 CREATE_THERAPY_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_THERAPY_MONTHLY_SUMMARIES', 'true'))
+CREATE_JOURNAL_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_JOURNAL_MONTHLY_SUMMARIES', 'true'))
 LABEL_SPEAKERS = _parse_bool(os.getenv('LABEL_SPEAKERS', 'true'))
 
 # ============================================================================
@@ -272,6 +275,7 @@ def ensure_directories():
         THERAPY_DIR,
         THERAPY_MONTHLY_DIR,
         JOURNAL_DIR,
+        JOURNAL_MONTHLY_DIR,
         DOCTOR_DIR,
         LOG_DIR  # Add logs directory
     ]
