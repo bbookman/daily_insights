@@ -496,31 +496,542 @@ def process_biographical_extraction(
     llm_function : callable
         LLM function to use
     """
-    # TODO: Implement in Phase 3
-    # This will:
-    # 1. Detect biographical content
-    # 2. If detected, extract content
-    # 3. Create or append to biography file
-    pass
+    try:
+        logger.info(f"Processing biographical extraction for {source_type} from {date}")
+
+        # Step 1: Detect biographical content
+        detection_result = detect_biographical_content(
+            raw_transcript,
+            source_type,
+            date,
+            detection_prompt,
+            llm_function
+        )
+
+        # If no biographical content detected, return early
+        if detection_result is None:
+            logger.info(f"No biographical content detected in {source_type} from {date}")
+            return
+
+        # Step 2: Extract biographical content using appropriate prompt
+        subject_name = detection_result['subject_name']
+        category_str = detection_result['category']
+        depth_str = detection_result['depth']
+
+        logger.info(f"Extracting biographical content for '{subject_name}' "
+                   f"({category_str}, {depth_str})")
+
+        # Select appropriate extraction prompt based on depth
+        if depth_str == 'full':
+            extraction_prompt = full_prompt
+            depth_enum = ContentDepth.FULL
+        else:  # lightweight
+            extraction_prompt = light_prompt
+            depth_enum = ContentDepth.LIGHTWEIGHT
+
+        # Extract the biographical content
+        extracted_content = extract_biographical_content(
+            raw_transcript,
+            depth_enum,
+            extraction_prompt,
+            llm_function
+        )
+
+        # Step 3: Create or append to biography file
+        category_enum = BiographyCategory(category_str)
+
+        # Check if biography already exists
+        if biography_exists(subject_name, category_enum, biographies_dir):
+            # Append to existing biography
+            logger.info(f"Appending to existing biography for '{subject_name}'")
+            append_to_biography(
+                subject_name,
+                category_enum,
+                extracted_content,
+                date,
+                source_type,
+                biographies_dir
+            )
+        else:
+            # Create new biography
+            logger.info(f"Creating new biography for '{subject_name}'")
+            create_biography_file(
+                subject_name,
+                category_enum,
+                extracted_content,
+                date,
+                source_type,
+                biographies_dir
+            )
+
+        logger.info(f"Successfully processed biographical content for '{subject_name}'")
+
+    except Exception as e:
+        logger.error(f"Error processing biographical extraction: {e}")
+        raise
 
 
-def process_all_biographies(
-    biographies_dir: Path,
-    detection_prompt: str,
-    full_prompt: str,
-    light_prompt: str,
-    synthesis_prompt: str,
-    llm_function
-) -> None:
+def process_biographies_from_journals() -> None:
     """
-    Main biographical processing pipeline.
+    Process biographical content from journal entries.
 
-    Workflow:
-    1. Scan for unprocessed transcripts
-    2. Extract biographical content
-    3. Update biography files
-    4. Batch synthesize updates
+    This function scans journal entries and processes any biographical
+    content found in them. It's designed to run after journal formatting.
+
+    The function will:
+    1. Find processed journal entries
+    2. For each entry, extract raw transcript from original lifelog
+    3. Run biographical detection and extraction
+    4. Create or update biography files as needed
     """
-    # TODO: Implement in Phase 3
-    # This is the main entry point that will be called from pipeline
-    pass
+    from daily_insights.config import (
+        BIOGRAPHIES_DIR,
+        BIOGRAPHY_DETECTION_PROMPT,
+        BIOGRAPHY_PROMPT,
+        BIOGRAPHY_LIGHT_PROMPT,
+        JOURNAL_DIR
+    )
+    from daily_insights.api.llm_client import generate_summary
+    from daily_insights.services.journal_service import extract_transcript
+
+    try:
+        logger.info("Starting biographical processing from journal entries...")
+
+        # Load prompts
+        if not BIOGRAPHY_DETECTION_PROMPT.exists():
+            logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
+            return
+
+        with open(BIOGRAPHY_DETECTION_PROMPT, 'r', encoding='utf-8') as f:
+            detection_prompt = f.read()
+
+        with open(BIOGRAPHY_PROMPT, 'r', encoding='utf-8') as f:
+            full_prompt = f.read()
+
+        with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
+            light_prompt = f.read()
+
+        # Get list of journal entries
+        from daily_insights.services.journal_service import find_all_journal_entries
+
+        # Process ALL journal conversations (not just unprocessed)
+        # Biographical processing is separate from journal formatting
+        # We process all journals each run to catch any new biographical content
+        journal_entries = find_all_journal_entries()
+
+        if not journal_entries:
+            logger.info("No journal entries found for biographical processing")
+            return
+
+        processed_count = 0
+        biographical_count = 0
+
+        for date_str, lifelog_path, conversation in journal_entries:
+            try:
+                # Extract raw transcript
+                raw_transcript = extract_transcript(conversation)
+
+                # Process for biographical content
+                logger.info(f"Checking journal from {date_str} for biographical content")
+
+                # Note: We pass None to check if biographical content exists
+                # The actual processing happens inside process_biographical_extraction
+                process_biographical_extraction(
+                    raw_transcript,
+                    "journal",
+                    date_str,
+                    BIOGRAPHIES_DIR,
+                    detection_prompt,
+                    full_prompt,
+                    light_prompt,
+                    generate_summary
+                )
+
+                processed_count += 1
+                biographical_count += 1  # This will be updated in future to track actual detections
+
+            except Exception as e:
+                logger.error(f"Error processing biographical content for {date_str}: {e}")
+                continue
+
+        logger.info(f"Biographical processing complete: {processed_count} journals checked")
+
+    except Exception as e:
+        logger.error(f"Error in biographical processing from journals: {e}")
+        raise
+
+
+def process_biographies_from_lifelogs() -> None:
+    """
+    Process biographical content from lifelogs.
+
+    This function scans lifelog files and processes any biographical
+    content found in them. It processes all conversations in lifelogs
+    that aren't journal or therapy sessions.
+    """
+    from daily_insights.config import (
+        BIOGRAPHIES_DIR,
+        BIOGRAPHY_DETECTION_PROMPT,
+        BIOGRAPHY_PROMPT,
+        BIOGRAPHY_LIGHT_PROMPT,
+        LIFELOGS_DIR
+    )
+    from daily_insights.api.llm_client import generate_summary
+    from daily_insights.models.conversation_parser import (
+        parse_lifelog_dialogue,
+        group_into_conversations,
+        is_journal_session,
+        is_therapy_session,
+        is_doctor_visit,
+        extract_transcript
+    )
+    from daily_insights.utils.date_utils import should_process_date
+    from pathlib import Path
+    import re
+
+    try:
+        logger.info("Starting biographical processing from lifelogs...")
+
+        # Load prompts
+        if not BIOGRAPHY_DETECTION_PROMPT.exists():
+            logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
+            return
+
+        with open(BIOGRAPHY_DETECTION_PROMPT, 'r', encoding='utf-8') as f:
+            detection_prompt = f.read()
+
+        with open(BIOGRAPHY_PROMPT, 'r', encoding='utf-8') as f:
+            full_prompt = f.read()
+
+        with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
+            light_prompt = f.read()
+
+        # Get all lifelog files
+        lifelog_files = sorted(Path(LIFELOGS_DIR).glob("*.md"))
+        date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})\.md")
+
+        processed_count = 0
+        biographical_count = 0
+
+        for lifelog_path in lifelog_files:
+            match = date_pattern.match(lifelog_path.name)
+            if not match:
+                continue
+
+            date_str = match.group(1)
+
+            # Skip today's lifelogs (incomplete data)
+            if not should_process_date(date_str):
+                continue
+
+            try:
+                # Parse lifelog into conversations
+                dialogues = parse_lifelog_dialogue(lifelog_path)
+                if not dialogues:
+                    continue
+
+                conversations = group_into_conversations(dialogues)
+
+                # Process each conversation (excluding journals, therapy, doctor visits)
+                for conversation in conversations:
+                    # Skip if it's a journal session, therapy session, or doctor visit
+                    if (is_journal_session(conversation) or
+                        is_therapy_session(conversation) or
+                        is_doctor_visit(conversation)):
+                        continue
+
+                    # Extract raw transcript
+                    raw_transcript = extract_transcript(conversation)
+
+                    # Process for biographical content
+                    logger.info(f"Checking lifelog conversation from {date_str} for biographical content")
+
+                    process_biographical_extraction(
+                        raw_transcript,
+                        "lifelog",
+                        date_str,
+                        BIOGRAPHIES_DIR,
+                        detection_prompt,
+                        full_prompt,
+                        light_prompt,
+                        generate_summary
+                    )
+
+                    processed_count += 1
+
+            except Exception as e:
+                logger.error(f"Error processing biographical content for {date_str}: {e}")
+                continue
+
+        logger.info(f"Biographical processing complete: {processed_count} lifelog conversations checked")
+
+    except Exception as e:
+        logger.error(f"Error in biographical processing from lifelogs: {e}")
+        raise
+
+
+def process_biographies_from_bee() -> None:
+    """
+    Process biographical content from bee transcriptions.
+
+    This function scans bee transcription files and processes any biographical
+    content found in them.
+    """
+    from daily_insights.config import (
+        BIOGRAPHIES_DIR,
+        BIOGRAPHY_DETECTION_PROMPT,
+        BIOGRAPHY_PROMPT,
+        BIOGRAPHY_LIGHT_PROMPT,
+        BEE_DIR
+    )
+    from daily_insights.api.llm_client import generate_summary
+    from daily_insights.utils.date_utils import should_process_date
+    from pathlib import Path
+    import re
+
+    try:
+        logger.info("Starting biographical processing from bee transcriptions...")
+
+        # Load prompts
+        if not BIOGRAPHY_DETECTION_PROMPT.exists():
+            logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
+            return
+
+        with open(BIOGRAPHY_DETECTION_PROMPT, 'r', encoding='utf-8') as f:
+            detection_prompt = f.read()
+
+        with open(BIOGRAPHY_PROMPT, 'r', encoding='utf-8') as f:
+            full_prompt = f.read()
+
+        with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
+            light_prompt = f.read()
+
+        # Get all bee transcription files
+        bee_files = sorted(Path(BEE_DIR).glob("*_bee.md"))
+        date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})_bee\.md")
+
+        processed_count = 0
+
+        for bee_path in bee_files:
+            match = date_pattern.match(bee_path.name)
+            if not match:
+                continue
+
+            date_str = match.group(1)
+
+            # Skip today's bee files (incomplete data)
+            if not should_process_date(date_str):
+                continue
+
+            try:
+                # Read raw transcript from bee file
+                with open(bee_path, 'r', encoding='utf-8') as f:
+                    raw_transcript = f.read()
+
+                # Process for biographical content
+                logger.info(f"Checking bee transcription from {date_str} for biographical content")
+
+                process_biographical_extraction(
+                    raw_transcript,
+                    "bee",
+                    date_str,
+                    BIOGRAPHIES_DIR,
+                    detection_prompt,
+                    full_prompt,
+                    light_prompt,
+                    generate_summary
+                )
+
+                processed_count += 1
+
+            except Exception as e:
+                logger.error(f"Error processing biographical content for {date_str}: {e}")
+                continue
+
+        logger.info(f"Biographical processing complete: {processed_count} bee transcriptions checked")
+
+    except Exception as e:
+        logger.error(f"Error in biographical processing from bee transcriptions: {e}")
+        raise
+
+
+def process_biographies_from_therapy() -> None:
+    """
+    Process biographical content from therapy sessions.
+
+    This function scans therapy session files and processes any biographical
+    content found in them. It uses the already-detected therapy sessions
+    from the therapy service.
+    """
+    from daily_insights.config import (
+        BIOGRAPHIES_DIR,
+        BIOGRAPHY_DETECTION_PROMPT,
+        BIOGRAPHY_PROMPT,
+        BIOGRAPHY_LIGHT_PROMPT,
+        LIFELOGS_DIR
+    )
+    from daily_insights.api.llm_client import generate_summary
+    from daily_insights.services.therapy_service import detect_therapy_sessions_mvp
+    from daily_insights.models.conversation_parser import extract_transcript
+    from daily_insights.utils.date_utils import should_process_date
+    from pathlib import Path
+    import re
+
+    try:
+        logger.info("Starting biographical processing from therapy sessions...")
+
+        # Load prompts
+        if not BIOGRAPHY_DETECTION_PROMPT.exists():
+            logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
+            return
+
+        with open(BIOGRAPHY_DETECTION_PROMPT, 'r', encoding='utf-8') as f:
+            detection_prompt = f.read()
+
+        with open(BIOGRAPHY_PROMPT, 'r', encoding='utf-8') as f:
+            full_prompt = f.read()
+
+        with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
+            light_prompt = f.read()
+
+        # Get all lifelog files to detect therapy sessions
+        lifelog_files = sorted(Path(LIFELOGS_DIR).glob("*.md"))
+        date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})\.md")
+
+        processed_count = 0
+
+        for lifelog_path in lifelog_files:
+            match = date_pattern.match(lifelog_path.name)
+            if not match:
+                continue
+
+            date_str = match.group(1)
+
+            # Skip today's lifelogs (incomplete data)
+            if not should_process_date(date_str):
+                continue
+
+            try:
+                # Detect therapy sessions in this lifelog
+                therapy_sessions = detect_therapy_sessions_mvp(lifelog_path)
+
+                for session in therapy_sessions:
+                    # Extract raw transcript from therapy conversation
+                    raw_transcript = extract_transcript(session["conversation"])
+
+                    # Process for biographical content
+                    logger.info(f"Checking therapy session from {date_str} for biographical content")
+
+                    process_biographical_extraction(
+                        raw_transcript,
+                        "therapy",
+                        date_str,
+                        BIOGRAPHIES_DIR,
+                        detection_prompt,
+                        full_prompt,
+                        light_prompt,
+                        generate_summary
+                    )
+
+                    processed_count += 1
+
+            except Exception as e:
+                logger.error(f"Error processing biographical content for therapy on {date_str}: {e}")
+                continue
+
+        logger.info(f"Biographical processing complete: {processed_count} therapy sessions checked")
+
+    except Exception as e:
+        logger.error(f"Error in biographical processing from therapy sessions: {e}")
+        raise
+
+
+def process_biographies_from_doctors() -> None:
+    """
+    Process biographical content from doctor visits.
+
+    This function scans doctor visit files and processes any biographical
+    content found in them. It uses the already-detected doctor visits
+    from the doctor visit service.
+    """
+    from daily_insights.config import (
+        BIOGRAPHIES_DIR,
+        BIOGRAPHY_DETECTION_PROMPT,
+        BIOGRAPHY_PROMPT,
+        BIOGRAPHY_LIGHT_PROMPT,
+        LIFELOGS_DIR
+    )
+    from daily_insights.api.llm_client import generate_summary
+    from daily_insights.services.doctor_visit_service import detect_doctor_visits_mvp
+    from daily_insights.models.conversation_parser import extract_transcript
+    from daily_insights.utils.date_utils import should_process_date
+    from pathlib import Path
+    import re
+
+    try:
+        logger.info("Starting biographical processing from doctor visits...")
+
+        # Load prompts
+        if not BIOGRAPHY_DETECTION_PROMPT.exists():
+            logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
+            return
+
+        with open(BIOGRAPHY_DETECTION_PROMPT, 'r', encoding='utf-8') as f:
+            detection_prompt = f.read()
+
+        with open(BIOGRAPHY_PROMPT, 'r', encoding='utf-8') as f:
+            full_prompt = f.read()
+
+        with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
+            light_prompt = f.read()
+
+        # Get all lifelog files to detect doctor visits
+        lifelog_files = sorted(Path(LIFELOGS_DIR).glob("*.md"))
+        date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})\.md")
+
+        processed_count = 0
+
+        for lifelog_path in lifelog_files:
+            match = date_pattern.match(lifelog_path.name)
+            if not match:
+                continue
+
+            date_str = match.group(1)
+
+            # Skip today's lifelogs (incomplete data)
+            if not should_process_date(date_str):
+                continue
+
+            try:
+                # Detect doctor visits in this lifelog
+                doctor_visits = detect_doctor_visits_mvp(lifelog_path)
+
+                for visit in doctor_visits:
+                    # Extract raw transcript from doctor visit conversation
+                    raw_transcript = extract_transcript(visit["conversation"])
+
+                    # Process for biographical content
+                    logger.info(f"Checking doctor visit from {date_str} for biographical content")
+
+                    process_biographical_extraction(
+                        raw_transcript,
+                        "doctor",
+                        date_str,
+                        BIOGRAPHIES_DIR,
+                        detection_prompt,
+                        full_prompt,
+                        light_prompt,
+                        generate_summary
+                    )
+
+                    processed_count += 1
+
+            except Exception as e:
+                logger.error(f"Error processing biographical content for doctor visit on {date_str}: {e}")
+                continue
+
+        logger.info(f"Biographical processing complete: {processed_count} doctor visits checked")
+
+    except Exception as e:
+        logger.error(f"Error in biographical processing from doctor visits: {e}")
+        raise

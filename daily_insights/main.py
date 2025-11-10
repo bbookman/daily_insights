@@ -15,6 +15,7 @@ from daily_insights.config import (
     CREATE_MONTHLY_SUMMARIES,
     CREATE_THERAPY_MONTHLY_SUMMARIES,
     CREATE_JOURNAL_MONTHLY_SUMMARIES,
+    PROCESS_BIOGRAPHIES,
     LABEL_SPEAKERS,
     LOG_LEVEL,
     LOG_FILE,
@@ -60,6 +61,13 @@ from daily_insights.services.journal_monthly_service import (
 from daily_insights.services.doctor_visit_service import (
     process_doctor_visits,
     process_doctor_visits_async
+)
+from daily_insights.services.biography_service import (
+    process_biographies_from_journals,
+    process_biographies_from_lifelogs,
+    process_biographies_from_bee,
+    process_biographies_from_therapy,
+    process_biographies_from_doctors
 )
 from daily_insights.utils.pipeline_stats import display_pipeline_summary
 
@@ -110,6 +118,18 @@ def main() -> None:
         process_journal_entries()
     else:
         logger.info("Skipping journal entry processing (PROCESS_JOURNAL_ENTRIES=False)")
+
+    # Biographical processing - Pass 2 (after source formatting)
+    if PROCESS_BIOGRAPHIES:
+        logger.info("Processing biographical content from all sources...")
+        process_biographies_from_journals()
+        process_biographies_from_lifelogs()
+        process_biographies_from_bee()
+        process_biographies_from_therapy()
+        process_biographies_from_doctors()
+        logger.info("Biographical processing complete for all sources")
+    else:
+        logger.info("Skipping biographical processing (PROCESS_BIOGRAPHIES=False)")
 
     if CREATE_WEEKLY_SUMMARIES:
         build_weekly_summaries()
@@ -212,6 +232,19 @@ async def main_async() -> None:
 
     if process_tasks:
         await asyncio.gather(*process_tasks)
+
+    # Biographical processing - Pass 2 (after source formatting)
+    # Note: Currently synchronous, can be parallelized in future
+    if PROCESS_BIOGRAPHIES:
+        logger.info("Processing biographical content from all sources...")
+        process_biographies_from_journals()
+        process_biographies_from_lifelogs()
+        process_biographies_from_bee()
+        process_biographies_from_therapy()
+        process_biographies_from_doctors()
+        logger.info("Biographical processing complete for all sources")
+    else:
+        logger.info("Skipping biographical processing (PROCESS_BIOGRAPHIES=False)")
 
     # Stage 3: Generate summaries in parallel (depend on daily files existing)
     logger.info("[Stage 3] Generating summaries")

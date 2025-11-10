@@ -59,6 +59,68 @@ def get_existing_journal_dates() -> Set[str]:
     return dates
 
 
+def find_all_journal_entries() -> List[tuple]:
+    """
+    Find ALL journal entries in lifelogs (including already processed ones).
+
+    Scans lifelog files for journal sessions (single-speaker conversations
+    with journal indicators) and returns all found entries.
+
+    Returns
+    -------
+    List[tuple]
+        List of (date_str, lifelog_path, conversation) tuples for all journal entries
+
+    Example
+    -------
+    >>> entries = find_all_journal_entries()
+    >>> len(entries)
+    45
+    """
+    print("\nScanning lifelogs for all journal entries...")
+
+    all_entries = []
+    skipped_today = 0
+    date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})\.md")
+
+    for lifelog_path in sorted(Path(LIFELOGS_DIR).glob("*.md")):
+        match = date_pattern.match(lifelog_path.name)
+        if not match:
+            continue
+
+        date_str = match.group(1)
+
+        # Skip today's lifelogs (incomplete data)
+        if not should_process_date(date_str):
+            skipped_today += 1
+            continue
+
+        # Parse lifelog and find journal sessions
+        try:
+            dialogues = parse_lifelog_dialogue(lifelog_path)
+            if not dialogues:
+                continue
+
+            conversations = group_into_conversations(dialogues)
+
+            # Find journal sessions (single-speaker, monologue-style)
+            for conversation in conversations:
+                if is_journal_session(conversation):
+                    all_entries.append((date_str, lifelog_path, conversation))
+                    print(f"Found journal session in {lifelog_path.name}")
+                    break  # Only take first journal session per day
+
+        except Exception as e:
+            print(f"Warning: Error parsing {lifelog_path.name}: {e}")
+            continue
+
+    if skipped_today > 0:
+        print(f"Skipped {skipped_today} lifelog(s) from today (incomplete data)")
+
+    print(f"Found {len(all_entries)} journal entries total.")
+    return all_entries
+
+
 def find_unprocessed_journal_entries() -> List[tuple]:
     """
     Find journal entries in lifelogs that haven't been processed yet.
