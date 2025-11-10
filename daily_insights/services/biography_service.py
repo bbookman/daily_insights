@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Optional, Dict, List
 from enum import Enum
 from datetime import datetime
+import json
+import logging
 
 from daily_insights.utils.biography_utils import (
     sanitize_biography_filename,
@@ -21,6 +23,8 @@ from daily_insights.utils.biography_utils import (
     needs_synthesis,
     remove_synthesis_marker
 )
+
+logger = logging.getLogger(__name__)
 
 
 class BiographyCategory(Enum):
@@ -276,13 +280,79 @@ def detect_biographical_content(
             'source_type': str
         }
     """
-    # TODO: Implement in Phase 2
-    # This will:
-    # 1. Combine detection prompt + raw transcript
-    # 2. Send to LLM
-    # 3. Parse JSON response
-    # 4. Return detection result or None
-    pass
+    try:
+        # Combine detection prompt with raw transcript
+        combined_input = f"{detection_prompt}\n\n=== TRANSCRIPT TO ANALYZE ===\n\n{raw_transcript}"
+
+        # Send to LLM for detection
+        logger.info(f"Detecting biographical content in {source_type} from {date}")
+        response = llm_function(combined_input)
+
+        # Parse JSON response
+        # The LLM should return pure JSON, but we'll handle potential markdown wrapping
+        response_text = response.strip()
+
+        # Remove markdown code blocks if present
+        if response_text.startswith("```json"):
+            response_text = response_text[7:]  # Remove ```json
+        if response_text.startswith("```"):
+            response_text = response_text[3:]  # Remove ```
+        if response_text.endswith("```"):
+            response_text = response_text[:-3]  # Remove trailing ```
+
+        response_text = response_text.strip()
+
+        # Parse JSON
+        detection_result = json.loads(response_text)
+
+        # Check if biographical content was detected
+        if not detection_result.get('is_biographical', False):
+            logger.info(f"No biographical content detected: {detection_result.get('reasoning', 'No reason given')}")
+            return None
+
+        # Validate required fields
+        required_fields = ['subject_name', 'category', 'depth']
+        for field in required_fields:
+            if field not in detection_result:
+                logger.warning(f"Missing required field '{field}' in detection result")
+                return None
+
+        # Validate category
+        valid_categories = ['person', 'place', 'object']
+        if detection_result['category'] not in valid_categories:
+            logger.warning(f"Invalid category: {detection_result['category']}")
+            return None
+
+        # Validate depth
+        valid_depths = ['full', 'lightweight']
+        if detection_result['depth'] not in valid_depths:
+            logger.warning(f"Invalid depth: {detection_result['depth']}")
+            return None
+
+        # Return biographical content info with additional metadata
+        result = {
+            'subject_name': detection_result['subject_name'],
+            'category': detection_result['category'],
+            'depth': detection_result['depth'],
+            'date': date,
+            'source_type': source_type,
+            'confidence': detection_result.get('confidence', 0.0),
+            'reasoning': detection_result.get('reasoning', '')
+        }
+
+        logger.info(f"Biographical content detected: {result['subject_name']} "
+                   f"({result['category']}, {result['depth']}) - "
+                   f"confidence: {result['confidence']}")
+
+        return result
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse JSON response from LLM: {e}")
+        logger.debug(f"Raw response: {response[:500]}")
+        return None
+    except Exception as e:
+        logger.error(f"Error detecting biographical content: {e}")
+        return None
 
 
 def extract_biographical_content(
@@ -310,12 +380,21 @@ def extract_biographical_content(
     str
         Extracted biographical content
     """
-    # TODO: Implement in Phase 2
-    # This will:
-    # 1. Combine prompt + raw transcript
-    # 2. Send to LLM
-    # 3. Return extracted content
-    pass
+    try:
+        # Combine extraction prompt with raw transcript
+        combined_input = f"{prompt_text}\n\n=== RAW TRANSCRIPT ===\n\n{raw_transcript}"
+
+        # Send to LLM for extraction
+        logger.info(f"Extracting biographical content (depth: {depth.value})")
+        extracted_content = llm_function(combined_input)
+
+        # Return the extracted content (LLM will format according to prompt)
+        logger.info(f"Successfully extracted biographical content ({len(extracted_content)} characters)")
+        return extracted_content.strip()
+
+    except Exception as e:
+        logger.error(f"Error extracting biographical content: {e}")
+        raise
 
 
 # ============================================================================
