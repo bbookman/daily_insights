@@ -31,7 +31,7 @@ def parse_therapy_filename(filename: str) -> Optional[str]:
 
     Returns
     -------
-    str | None
+    Optional[str]
         Date string "2025-04-01" or None if invalid format
 
     Example

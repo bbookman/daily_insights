@@ -325,7 +325,7 @@ async def get_existing_bee_insight_dates_async() -> Set[str]:
     date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})\.md")
     bee_marker = "🐝 Bee Transcription Insights"
 
-    async def check_file(file_path: Path) -> str | None:
+    async def check_file(file_path: Path) -> Optional[str]:
         # Skip weekly/monthly summary files
         if "-weekly" in file_path.name or file_path.name.startswith("20") and len(file_path.stem) == 7:
             return None

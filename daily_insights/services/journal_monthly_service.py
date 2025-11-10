@@ -30,7 +30,7 @@ def parse_journal_filename(filename: str) -> Optional[str]:
 
     Returns
     -------
-    str | None
+    Optional[str]
         Date string "2025-03-22" or None if invalid format
 
     Example

@@ -233,7 +233,7 @@ async def build_monthly_summaries_async() -> None:
         print(f"Building monthly summary for {month} ({len(week_files)} weeks)")
 
         # Read all weekly files concurrently
-        async def read_weekly(week_file: Path) -> str | None:
+        async def read_weekly(week_file: Path) -> Optional[str]:
             try:
                 start_date, end_date = parse_week_filename(week_file.name)
                 content = await read_file_async(str(week_file))

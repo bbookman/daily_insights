@@ -40,6 +40,7 @@ THERAPY_MONTHLY_DIR = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_DIR', 'therapy_m
 JOURNAL_DIR = PROJECT_ROOT / os.getenv('JOURNAL_DIR', 'journal')
 JOURNAL_MONTHLY_DIR = PROJECT_ROOT / os.getenv('JOURNAL_MONTHLY_DIR', 'journal_monthly')
 DOCTOR_DIR = PROJECT_ROOT / os.getenv('DOCTOR_DIR', 'doctor')
+BIOGRAPHIES_DIR = PROJECT_ROOT / os.getenv('BIOGRAPHIES_DIR', 'biographies')
 
 # ============================================================================
 # Prompt File Paths
@@ -52,6 +53,10 @@ THERAPY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_PROMPT', 'prompts/psycho_anal
 THERAPY_MONTHLY_PROMPT = PROJECT_ROOT / os.getenv('THERAPY_MONTHLY_PROMPT', 'prompts/therapy_monthly.txt')
 JOURNAL_MONTHLY_PROMPT = PROJECT_ROOT / os.getenv('JOURNAL_MONTHLY_PROMPT', 'prompts/journal_monthly.txt')
 DOCTOR_PROMPT = PROJECT_ROOT / os.getenv('DOCTOR_PROMPT', 'prompts/doctor_visit.txt')
+BIOGRAPHY_PROMPT = PROJECT_ROOT / os.getenv('BIOGRAPHY_PROMPT', 'prompts/person_place_thing.txt')
+BIOGRAPHY_LIGHT_PROMPT = PROJECT_ROOT / os.getenv('BIOGRAPHY_LIGHT_PROMPT', 'prompts/biography_light_extraction.txt')
+BIOGRAPHY_SYNTHESIS_PROMPT = PROJECT_ROOT / os.getenv('BIOGRAPHY_SYNTHESIS_PROMPT', 'prompts/biography_synthesis.txt')
+BIOGRAPHY_DETECTION_PROMPT = PROJECT_ROOT / os.getenv('BIOGRAPHY_DETECTION_PROMPT', 'prompts/biography_detection.txt')
 
 # ============================================================================
 # Therapy Detection Parameters (MVP Phase 0 + Enhancements)
@@ -259,6 +264,7 @@ CREATE_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_MONTHLY_SUMMARIES', 'tr
 CREATE_THERAPY_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_THERAPY_MONTHLY_SUMMARIES', 'true'))
 CREATE_JOURNAL_MONTHLY_SUMMARIES = _parse_bool(os.getenv('CREATE_JOURNAL_MONTHLY_SUMMARIES', 'true'))
 LABEL_SPEAKERS = _parse_bool(os.getenv('LABEL_SPEAKERS', 'true'))
+PROCESS_BIOGRAPHIES = _parse_bool(os.getenv('PROCESS_BIOGRAPHIES', 'true'))
 
 # ============================================================================
 # Utility Functions
@@ -282,6 +288,11 @@ def ensure_directories():
 
     for dir_path in directories:
         dir_path.mkdir(parents=True, exist_ok=True)
+
+    # Biography category subdirectories
+    biography_categories = ['people', 'places', 'objects']
+    for category in biography_categories:
+        (BIOGRAPHIES_DIR / category).mkdir(parents=True, exist_ok=True)
 
     # Also ensure prompt directory exists
     prompts_dir = PROJECT_ROOT / 'prompts'
