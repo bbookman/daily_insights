@@ -15,6 +15,7 @@ from daily_insights.services.speaker_service import (
     apply_speaker_labels,
     mark_file_processed
 )
+from daily_insights.services.transcript_standardizer import standardize_transcript
 
 
 def get_existing_lifelog_dates() -> Set[str]:
@@ -110,6 +111,8 @@ def save_lifelogs(lifelogs: List[Dict]) -> None:
                     "- You", "- Bruce"
                 )
                 if content:
+                    # Apply STT corrections before writing
+                    content = standardize_transcript(content)
                     entry_content = (
                         f"\n\n---\n\n### {time_str}\n\n{content}"
                     )
@@ -250,6 +253,10 @@ async def save_lifelogs_async(lifelogs: List[Dict]) -> None:
                 content_parts.append(entry_content)
 
         combined_content = "".join(content_parts)
+
+        # Apply STT corrections (transcript standardization)
+        # This fixes known speech-to-text errors before any other processing
+        combined_content = standardize_transcript(combined_content)
 
         # Apply speaker identification if enabled
         if LABEL_SPEAKERS:

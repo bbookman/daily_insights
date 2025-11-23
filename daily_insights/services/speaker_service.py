@@ -22,6 +22,9 @@ def load_speaker_profiles() -> Dict:
     """
     Load speaker profiles from configuration file.
 
+    Prefers the unified entity registry (entity_profiles.json) and
+    filters to speakers only. Falls back to legacy speaker_profiles.json.
+
     Returns
     -------
     Dict
@@ -33,6 +36,18 @@ def load_speaker_profiles() -> Dict:
     >>> 'Bruce' in profiles['speakers']
     True
     """
+    # Try unified entity registry first
+    try:
+        from daily_insights.services.entity_registry import get_speaker_profiles_legacy_format
+        profiles = get_speaker_profiles_legacy_format()
+        if profiles.get('speakers'):
+            return profiles
+    except ImportError:
+        pass  # Entity registry not available, fall back to legacy
+    except Exception as e:
+        print(f"Warning: Error loading from entity registry: {e}")
+
+    # Fall back to legacy speaker_profiles.json
     if not SPEAKER_PROFILES_FILE.exists():
         print(f"Warning: Speaker profiles file not found: {SPEAKER_PROFILES_FILE}")
         return {"version": "1.0", "speakers": {}}

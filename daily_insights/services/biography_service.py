@@ -23,6 +23,7 @@ from daily_insights.utils.biography_utils import (
     needs_synthesis,
     remove_synthesis_marker
 )
+from daily_insights.services.entity_resolver import resolve_and_categorize
 
 logger = logging.getLogger(__name__)
 
@@ -643,6 +644,13 @@ def process_biographical_extraction(
         subject_name = detection_result['subject_name']
         category_str = detection_result['category']
         depth_str = detection_result['depth']
+
+        # Step 2.5: Resolve entity name to canonical form (prevents duplicate files)
+        resolved_name, resolved_category = resolve_and_categorize(subject_name, category_str)
+        if resolved_name != subject_name:
+            logger.info(f"Resolved entity: '{subject_name}' -> '{resolved_name}'")
+        subject_name = resolved_name
+        category_str = resolved_category
 
         logger.info(f"Extracting biographical content for '{subject_name}' "
                    f"({category_str}, {depth_str})")

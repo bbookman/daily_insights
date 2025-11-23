@@ -1,0 +1,572 @@
+{
+  "version": "2.0",
+  "entities": {
+    "Bruce": {
+      "canonical_name": "Bruce Bookman",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": false,
+      "aliases": ["Bruce Bookman", "Bruce B"],
+      "stt_corrections": {
+        "Bruce Buckman": "Bruce Bookman"
+      },
+      "relationship": "self",
+      "relationships": {
+        "Ivette": "spouse",
+        "Russell": "son",
+        "Benetton": "son",
+        "Matt Bookman": "brother",
+        "Myron": "friend",
+        "Eve": "friend",
+        "Neil Lieb": "friend",
+        "Lydia": "friend",
+        "Alan": "friend",
+        "Chad": "friend",
+        "Mike": "friend",
+        "Tony": "friend",
+        "Kela": "sister in-law",
+        "Joel Guilmet": "friend",
+        "Phil Bookman": "father",
+        "Lois Bookman": "mother",
+        "Larry": "psychologist",
+        "Dorinda Dew": "psychiatrist",
+        "Mark Armitage": "doctor"
+      },
+      "biographical_context": "Primary user, lives in Wilmington NC",
+      "languages": {
+        "English": "fluent",
+        "Spanish": "conversational"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "college",
+        "speaking_style": "logical, ordered, analytical, emotional, fatherly, long monologues",
+        "common_topics": [
+          "work",
+          "pets (Peach, Grape)",
+          "journal",
+          "friends",
+          "home projects",
+          "retirement",
+          "technology",
+          "psychological issues",
+          "computers",
+          "software",
+          "news",
+          "politics",
+          "science",
+          "medicine"
+        ],
+        "distinctive_phrases": [
+          "Just a second",
+          "I can't hear you",
+          "Are you talking to me?",
+          "I'm in the bathroom",
+          "Bookman like a book and a man",
+          "669-221-9612",
+          "bruce.bookman@gmail.com",
+          "xanax",
+          "zoloft",
+          "I'll be down in a minute"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Ivette": {
+      "canonical_name": "Ivette",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": true,
+      "aliases": [],
+      "stt_corrections": {
+        "Yvette": "Ivette",
+        "Evette": "Ivette"
+      },
+      "relationship": "spouse",
+      "relationships": {
+        "Bruce": "spouse",
+        "Russell": "son",
+        "Benetton": "son",
+        "Kela": "sister",
+        "Joey": "brother in-law",
+        "Anna": "sister",
+        "Luis": "brother in-law",
+        "Rodger": "nephew",
+        "Elizabeth": "niece",
+        "Carlos": "brother"
+      },
+      "biographical_context": "Bruce's wife, from Mexico",
+      "languages": {
+        "English": "fluent",
+        "Spanish": "native"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "conversational",
+        "speaking_style": "direct, expressive, emphatic, instructional, demanding, imaginative, motherly, unfocused, code-switches naturally",
+        "common_topics": [
+          "pets (Peach, Grape)",
+          "household",
+          "dream",
+          "stress",
+          "work",
+          "YWCA",
+          "travel",
+          "Mexico",
+          "cleaning",
+          "tasks",
+          "school",
+          "migrane",
+          "headaches",
+          "anxiety"
+        ],
+        "distinctive_phrases": [
+          "I am not a housekeeper"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Russell": {
+      "canonical_name": "Russell",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": true,
+      "aliases": ["Russell White"],
+      "stt_corrections": {},
+      "relationship": "son",
+      "relationships": {
+        "Bruce": "father",
+        "Ivette": "mother",
+        "Benetton": "brother",
+        "Rodger": "cousin",
+        "David": "friend"
+      },
+      "biographical_context": "Bruce's son, attending Cape Fear Community College",
+      "languages": {
+        "English": "native",
+        "Spanish": "learning"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "conversational",
+        "speaking_style": "unfocused, slang",
+        "common_topics": [
+          "school",
+          "friends",
+          "sports",
+          "gym",
+          "work",
+          "YWCA",
+          "college"
+        ],
+        "distinctive_phrases": [
+          "Cape Fear Community College",
+          "Cape Fear"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Benetton": {
+      "canonical_name": "Benetton",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": true,
+      "aliases": ["Bennetton"],
+      "stt_corrections": {
+        "Bennetton": "Benetton",
+        "Benneton": "Benetton"
+      },
+      "relationship": "son",
+      "relationships": {
+        "Bruce": "father",
+        "Ivette": "mother",
+        "Russell": "brother",
+        "Rodger": "cousin"
+      },
+      "biographical_context": "Bruce's younger son",
+      "languages": {
+        "English": "learning"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "child like",
+        "speaking_style": "child like, simple, repetative, short sentences",
+        "common_topics": [
+          "school"
+        ],
+        "distinctive_phrases": [
+          "Thank you",
+          "I already have lunch",
+          "already have dinner",
+          "go some places",
+          "what is today"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Alexa": {
+      "canonical_name": "Alexa",
+      "entity_type": "device",
+      "is_speaker": true,
+      "is_biographical_subject": false,
+      "aliases": ["Echo"],
+      "stt_corrections": {},
+      "relationship": "device",
+      "relationships": {},
+      "biographical_context": "Amazon voice assistant",
+      "languages": {
+        "English": "fluent"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "technical",
+        "speaking_style": "robotic, monotone",
+        "common_topics": [
+          "music",
+          "weather",
+          "reminders",
+          "timers"
+        ],
+        "distinctive_phrases": [
+          "Alexa",
+          "Echo"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Siri": {
+      "canonical_name": "Siri",
+      "entity_type": "device",
+      "is_speaker": true,
+      "is_biographical_subject": false,
+      "aliases": [],
+      "stt_corrections": {},
+      "relationship": "device",
+      "relationships": {},
+      "biographical_context": "Apple voice assistant",
+      "languages": {
+        "English": "fluent"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "technical",
+        "speaking_style": "robotic, monotone",
+        "common_topics": [
+          "music",
+          "reminders",
+          "appointments",
+          "calendar",
+          "events"
+        ],
+        "distinctive_phrases": [
+          "Might I have a word with you, please?",
+          "Urgent"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Suzy": {
+      "canonical_name": "Suzy",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": true,
+      "aliases": ["Suzanne"],
+      "stt_corrections": {},
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend",
+        "Casey": "daughter",
+        "Rick": "husband",
+        "Brook": "daughter"
+      },
+      "biographical_context": "Friend of Bruce",
+      "languages": {
+        "English": "fluent"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "college",
+        "speaking_style": "logical, ordered, analytical, emotional",
+        "common_topics": [
+          "family",
+          "politics",
+          "science",
+          "medicine"
+        ],
+        "distinctive_phrases": []
+      },
+      "added_date": "2025-10-29"
+    },
+    "Sherry": {
+      "canonical_name": "Sherry",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": true,
+      "aliases": [],
+      "stt_corrections": {},
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend"
+      },
+      "biographical_context": "Friend of Bruce",
+      "languages": {
+        "English": "fluent"
+      },
+      "speech_patterns": {
+        "vocabulary_level": "college",
+        "speaking_style": "analytical, emotional",
+        "common_topics": [
+          "self reflection"
+        ],
+        "distinctive_phrases": [
+          "dark",
+          "shadow"
+        ]
+      },
+      "added_date": "2025-10-29"
+    },
+    "Joel Guilmet": {
+      "canonical_name": "Joel Guilmet",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": true,
+      "aliases": ["Joel"],
+      "stt_corrections": {
+        "Joel Gil": "Joel",
+        "Joel Gilmet": "Joel Guilmet",
+        "Joel Guillerme": "Joel Guilmet",
+        "Joel Gilhamet": "Joel Guilmet"
+      },
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend"
+      },
+      "biographical_context": "College friend, worked at Lowe's then Walgreens",
+      "languages": {
+        "English": "fluent"
+      },
+      "added_date": "2025-10-30"
+    },
+    "Eve": {
+      "canonical_name": "Eve Meyer",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": true,
+      "aliases": ["Eve", "Eve Tracy"],
+      "stt_corrections": {},
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend",
+        "Myron": "spouse"
+      },
+      "biographical_context": "Friend of Bruce, married to Myron",
+      "languages": {
+        "English": "fluent"
+      },
+      "added_date": "2025-10-30"
+    },
+    "Matt Bookman": {
+      "canonical_name": "Matt Bookman",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": true,
+      "aliases": ["Matt", "Matthew", "Matthew Bookman"],
+      "stt_corrections": {
+        "Mat": "Matt",
+        "Mat Bookman": "Matt Bookman",
+        "Mathew": "Matt",
+        "Mathew Bookman": "Matt Bookman"
+      },
+      "relationship": "brother",
+      "relationships": {
+        "Bruce": "brother",
+        "Linda Bookman": "spouse",
+        "Evan": "son"
+      },
+      "biographical_context": "Bruce's brother, Stanford grad, bioinformatics, works at Verily",
+      "languages": {
+        "English": "fluent"
+      },
+      "added_date": "2025-11-23"
+    },
+    "Myron": {
+      "canonical_name": "Myron Meyer",
+      "entity_type": "person",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": ["Myron"],
+      "stt_corrections": {
+        "Miron": "Myron"
+      },
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend",
+        "Eve Meyer": "spouse"
+      },
+      "biographical_context": "Friend of Bruce, software career, married to Eve",
+      "added_date": "2025-11-23"
+    },
+    "Neil Lieb": {
+      "canonical_name": "Neil Lieb",
+      "entity_type": "person",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": ["Neil"],
+      "stt_corrections": {
+        "Neil Leib": "Neil Lieb",
+        "Neal Lieb": "Neil Lieb"
+      },
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend"
+      },
+      "biographical_context": "High school friend of Bruce",
+      "added_date": "2025-11-23"
+    },
+    "Phil Bookman": {
+      "canonical_name": "Phil Bookman",
+      "entity_type": "person",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": ["Phil", "Dad"],
+      "stt_corrections": {},
+      "relationship": "father",
+      "relationships": {
+        "Bruce": "son",
+        "Matt Bookman": "son",
+        "Lois Bookman": "spouse"
+      },
+      "biographical_context": "Bruce's father, founded Filton Bookman Systems",
+      "added_date": "2025-11-23"
+    },
+    "Lois Bookman": {
+      "canonical_name": "Lois Bookman",
+      "entity_type": "person",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": ["Lois", "Mom"],
+      "stt_corrections": {},
+      "relationship": "mother",
+      "relationships": {
+        "Bruce": "son",
+        "Matt Bookman": "son",
+        "Phil Bookman": "spouse"
+      },
+      "biographical_context": "Bruce's mother",
+      "added_date": "2025-11-23"
+    },
+    "Larry": {
+      "canonical_name": "Larry",
+      "entity_type": "person",
+      "is_speaker": true,
+      "is_biographical_subject": false,
+      "aliases": [],
+      "stt_corrections": {},
+      "relationship": "psychologist",
+      "relationships": {
+        "Bruce": "patient"
+      },
+      "biographical_context": "Bruce's psychologist/therapist",
+      "added_date": "2025-11-23"
+    },
+    "Peach": {
+      "canonical_name": "Peach",
+      "entity_type": "pet",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": ["Peachy"],
+      "stt_corrections": {
+        "Peech": "Peach"
+      },
+      "relationship": "pet",
+      "relationships": {},
+      "biographical_context": "Family cat",
+      "added_date": "2025-11-23"
+    },
+    "Grape": {
+      "canonical_name": "Grape",
+      "entity_type": "pet",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": [],
+      "stt_corrections": {
+        "Crape": "Grape",
+        "Gray": "Grape",
+        "Grabe": "Grape"
+      },
+      "relationship": "pet",
+      "relationships": {},
+      "biographical_context": "Family cat",
+      "added_date": "2025-11-23"
+    },
+    "TV Pow": {
+      "canonical_name": "TV Pow",
+      "entity_type": "object",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": ["TV Power"],
+      "stt_corrections": {
+        "TV Pal": "TV Pow",
+        "TV Paul": "TV Pow",
+        "TV Pao": "TV Pow"
+      },
+      "relationship": "childhood memory",
+      "relationships": {},
+      "biographical_context": "Interactive TV show from late 1970s",
+      "added_date": "2025-11-23"
+    },
+    "Mike Rabel": {
+      "canonical_name": "Mike Rabel",
+      "entity_type": "person",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": ["Mike"],
+      "stt_corrections": {
+        "Mike Rable": "Mike Rabel",
+        "Mike Rabble": "Mike Rabel"
+      },
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend"
+      },
+      "biographical_context": "Friend of Bruce",
+      "added_date": "2025-11-23"
+    },
+    "Suzanne Mallory": {
+      "canonical_name": "Suzanne Mallory",
+      "entity_type": "person",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": ["Suzanne"],
+      "stt_corrections": {
+        "Suzanne Mallary": "Suzanne Mallory",
+        "Susan Mallory": "Suzanne Mallory"
+      },
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend"
+      },
+      "biographical_context": "Friend of Bruce",
+      "added_date": "2025-11-23"
+    },
+    "Voice Farm": {
+      "canonical_name": "Voice Farm",
+      "entity_type": "object",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": [],
+      "stt_corrections": {},
+      "relationship": "music",
+      "relationships": {},
+      "biographical_context": "Band that Bruce saw in concerts",
+      "added_date": "2025-11-23"
+    },
+    "Randy": {
+      "canonical_name": "Randy",
+      "entity_type": "person",
+      "is_speaker": false,
+      "is_biographical_subject": true,
+      "aliases": [],
+      "stt_corrections": {},
+      "relationship": "friend",
+      "relationships": {
+        "Bruce": "friend"
+      },
+      "biographical_context": "College friend of Bruce",
+      "added_date": "2025-11-23"
+    }
+  }
+}
