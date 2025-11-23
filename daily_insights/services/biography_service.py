@@ -34,6 +34,14 @@ class BiographyCategory(Enum):
     OBJECT = "objects"
 
 
+# Mapping from detection strings to enum values
+CATEGORY_MAPPING = {
+    'person': 'people',
+    'place': 'places',
+    'object': 'objects'
+}
+
+
 class ContentDepth(Enum):
     """Depth of biographical content detected."""
     NONE = "none"              # Not biographical
@@ -51,6 +59,118 @@ class ContentDepth(Enum):
 #     PROCESS_BIOGRAPHIES
 # )
 # from daily_insights.api.llm_client import generate_summary, generate_summary_async
+
+
+# ============================================================================
+# State Tracking Functions
+# ============================================================================
+
+def load_biographical_state(biographies_dir: Path) -> Dict:
+    """
+    Load state tracking file for biographical processing.
+
+    Parameters
+    ----------
+    biographies_dir : Path
+        Base biographies directory
+
+    Returns
+    -------
+    Dict
+        State dictionary mapping state_key to processing metadata
+
+    Example
+    -------
+    >>> state = load_biographical_state(Path("biographies"))
+    >>> "journal:2025-05-15" in state
+    True
+    """
+    state_file = biographies_dir / ".biographical_processing_state.json"
+    if state_file.exists():
+        with open(state_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+
+def save_biographical_state(state: Dict, biographies_dir: Path) -> None:
+    """
+    Save state tracking file for biographical processing.
+
+    Parameters
+    ----------
+    state : Dict
+        State dictionary to save
+    biographies_dir : Path
+        Base biographies directory
+
+    Example
+    -------
+    >>> state = {"journal:2025-05-15": {"checked_at": "...", "status": "..."}}
+    >>> save_biographical_state(state, Path("biographies"))
+    """
+    # Ensure directory exists
+    biographies_dir.mkdir(parents=True, exist_ok=True)
+
+    state_file = biographies_dir / ".biographical_processing_state.json"
+    with open(state_file, 'w', encoding='utf-8') as f:
+        json.dump(state, f, indent=2, sort_keys=True)
+
+
+def get_state_key(source_type: str, date: str, conversation_id: Optional[str] = None) -> str:
+    """
+    Generate consistent state key for tracking biographical processing.
+
+    Parameters
+    ----------
+    source_type : str
+        Type of source (journal, lifelog, bee, therapy, doctor)
+    date : str
+        Date of source (YYYY-MM-DD)
+    conversation_id : Optional[str]
+        Conversation identifier for multi-conversation sources (lifelogs)
+
+    Returns
+    -------
+    str
+        State key in format: source_type:date or source_type:date:conversation_id
+
+    Example
+    -------
+    >>> get_state_key("journal", "2025-05-15")
+    'journal:2025-05-15'
+    >>> get_state_key("lifelog", "2025-05-15", "conv_0")
+    'lifelog:2025-05-15:conv_0'
+    """
+    if conversation_id:
+        return f"{source_type}:{date}:{conversation_id}"
+    return f"{source_type}:{date}"
+
+
+def is_already_processed(state: Dict, state_key: str) -> bool:
+    """
+    Check if source has already been processed for biographical content.
+
+    Parameters
+    ----------
+    state : Dict
+        Current state dictionary
+    state_key : str
+        State key to check
+
+    Returns
+    -------
+    bool
+        True if source has been processed, False otherwise
+
+    Example
+    -------
+    >>> state = {"journal:2025-05-15": {"status": "biographical_found"}}
+    >>> is_already_processed(state, "journal:2025-05-15")
+    True
+    >>> is_already_processed(state, "journal:2025-05-16")
+    False
+    """
+    return state_key in state
 
 
 # ============================================================================
@@ -471,7 +591,7 @@ def process_biographical_extraction(
     full_prompt: str,
     light_prompt: str,
     llm_function
-) -> None:
+) -> Optional[Dict]:
     """
     Process transcript for biographical content.
 
@@ -495,6 +615,12 @@ def process_biographical_extraction(
         Lightweight extraction prompt text
     llm_function : callable
         LLM function to use
+
+    Returns
+    -------
+    Optional[Dict]
+        Dict with subject_name, category, depth if biographical found
+        None if no biographical content detected
     """
     try:
         logger.info(f"Processing biographical extraction for {source_type} from {date}")
@@ -508,10 +634,10 @@ def process_biographical_extraction(
             llm_function
         )
 
-        # If no biographical content detected, return early
+        # If no biographical content detected, return None
         if detection_result is None:
             logger.info(f"No biographical content detected in {source_type} from {date}")
-            return
+            return None
 
         # Step 2: Extract biographical content using appropriate prompt
         subject_name = detection_result['subject_name']
@@ -538,7 +664,9 @@ def process_biographical_extraction(
         )
 
         # Step 3: Create or append to biography file
-        category_enum = BiographyCategory(category_str)
+        # Convert detection string ('person') to enum value ('people')
+        category_value = CATEGORY_MAPPING.get(category_str, category_str)
+        category_enum = BiographyCategory(category_value)
 
         # Check if biography already exists
         if biography_exists(subject_name, category_enum, biographies_dir):
@@ -566,22 +694,34 @@ def process_biographical_extraction(
 
         logger.info(f"Successfully processed biographical content for '{subject_name}'")
 
+        # Return detection result for state tracking
+        return {
+            'subject_name': subject_name,
+            'category': category_str,
+            'depth': depth_str
+        }
+
     except Exception as e:
         logger.error(f"Error processing biographical extraction: {e}")
         raise
 
 
-def process_biographies_from_journals() -> None:
+def process_biographies_from_journals(force_reprocess: bool = False) -> None:
     """
     Process biographical content from journal entries.
 
     This function scans journal entries and processes any biographical
     content found in them. It's designed to run after journal formatting.
 
+    Parameters
+    ----------
+    force_reprocess : bool
+        If True, reprocess all journals even if already checked
+
     The function will:
     1. Find processed journal entries
     2. For each entry, extract raw transcript from original lifelog
-    3. Run biographical detection and extraction
+    3. Run biographical detection and extraction (skipping already-processed sources)
     4. Create or update biography files as needed
     """
     from daily_insights.config import (
@@ -597,6 +737,9 @@ def process_biographies_from_journals() -> None:
     try:
         logger.info("Starting biographical processing from journal entries...")
 
+        if force_reprocess:
+            logger.info("Force reprocess enabled - will reprocess all journals")
+
         # Load prompts
         if not BIOGRAPHY_DETECTION_PROMPT.exists():
             logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
@@ -611,12 +754,12 @@ def process_biographies_from_journals() -> None:
         with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
             light_prompt = f.read()
 
+        # Load state tracking
+        state = load_biographical_state(BIOGRAPHIES_DIR)
+
         # Get list of journal entries
         from daily_insights.services.journal_service import find_all_journal_entries
 
-        # Process ALL journal conversations (not just unprocessed)
-        # Biographical processing is separate from journal formatting
-        # We process all journals each run to catch any new biographical content
         journal_entries = find_all_journal_entries()
 
         if not journal_entries:
@@ -624,19 +767,26 @@ def process_biographies_from_journals() -> None:
             return
 
         processed_count = 0
+        skipped_count = 0
         biographical_count = 0
 
         for date_str, lifelog_path, conversation in journal_entries:
             try:
+                # Generate state key for this journal
+                state_key = get_state_key("journal", date_str)
+
+                # Skip if already processed (unless force_reprocess)
+                if not force_reprocess and is_already_processed(state, state_key):
+                    skipped_count += 1
+                    continue
+
                 # Extract raw transcript
                 raw_transcript = extract_transcript(conversation)
 
                 # Process for biographical content
                 logger.info(f"Checking journal from {date_str} for biographical content")
 
-                # Note: We pass None to check if biographical content exists
-                # The actual processing happens inside process_biographical_extraction
-                process_biographical_extraction(
+                result = process_biographical_extraction(
                     raw_transcript,
                     "journal",
                     date_str,
@@ -647,27 +797,56 @@ def process_biographies_from_journals() -> None:
                     generate_summary
                 )
 
+                # Update state
+                if result:
+                    state[state_key] = {
+                        "checked_at": datetime.now().isoformat(),
+                        "status": "biographical_found",
+                        "subjects": [result['subject_name']],
+                        "categories": [result['category']]
+                    }
+                    biographical_count += 1
+                else:
+                    state[state_key] = {
+                        "checked_at": datetime.now().isoformat(),
+                        "status": "no_biographical",
+                        "subjects": []
+                    }
+
+                save_biographical_state(state, BIOGRAPHIES_DIR)
                 processed_count += 1
-                biographical_count += 1  # This will be updated in future to track actual detections
 
             except Exception as e:
                 logger.error(f"Error processing biographical content for {date_str}: {e}")
+                # Mark as error in state
+                state[state_key] = {
+                    "checked_at": datetime.now().isoformat(),
+                    "status": "processing_error",
+                    "error": str(e)
+                }
+                save_biographical_state(state, BIOGRAPHIES_DIR)
                 continue
 
-        logger.info(f"Biographical processing complete: {processed_count} journals checked")
+        logger.info(f"Biographical processing complete: {processed_count} journals checked, "
+                   f"{skipped_count} skipped, {biographical_count} biographical content found")
 
     except Exception as e:
         logger.error(f"Error in biographical processing from journals: {e}")
         raise
 
 
-def process_biographies_from_lifelogs() -> None:
+def process_biographies_from_lifelogs(force_reprocess: bool = False) -> None:
     """
     Process biographical content from lifelogs.
 
     This function scans lifelog files and processes any biographical
     content found in them. It processes all conversations in lifelogs
     that aren't journal or therapy sessions.
+
+    Parameters
+    ----------
+    force_reprocess : bool
+        If True, reprocess all lifelog conversations even if already checked
     """
     from daily_insights.config import (
         BIOGRAPHIES_DIR,
@@ -692,6 +871,9 @@ def process_biographies_from_lifelogs() -> None:
     try:
         logger.info("Starting biographical processing from lifelogs...")
 
+        if force_reprocess:
+            logger.info("Force reprocess enabled - will reprocess all lifelog conversations")
+
         # Load prompts
         if not BIOGRAPHY_DETECTION_PROMPT.exists():
             logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
@@ -706,11 +888,15 @@ def process_biographies_from_lifelogs() -> None:
         with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
             light_prompt = f.read()
 
+        # Load state tracking
+        state = load_biographical_state(BIOGRAPHIES_DIR)
+
         # Get all lifelog files
         lifelog_files = sorted(Path(LIFELOGS_DIR).glob("*.md"))
         date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})\.md")
 
         processed_count = 0
+        skipped_count = 0
         biographical_count = 0
 
         for lifelog_path in lifelog_files:
@@ -733,20 +919,28 @@ def process_biographies_from_lifelogs() -> None:
                 conversations = group_into_conversations(dialogues)
 
                 # Process each conversation (excluding journals, therapy, doctor visits)
-                for conversation in conversations:
+                for conv_index, conversation in enumerate(conversations):
                     # Skip if it's a journal session, therapy session, or doctor visit
                     if (is_journal_session(conversation) or
                         is_therapy_session(conversation) or
                         is_doctor_visit(conversation)):
                         continue
 
+                    # Generate state key for this conversation
+                    state_key = get_state_key("lifelog", date_str, f"conv_{conv_index}")
+
+                    # Skip if already processed (unless force_reprocess)
+                    if not force_reprocess and is_already_processed(state, state_key):
+                        skipped_count += 1
+                        continue
+
                     # Extract raw transcript
                     raw_transcript = extract_transcript(conversation)
 
                     # Process for biographical content
-                    logger.info(f"Checking lifelog conversation from {date_str} for biographical content")
+                    logger.info(f"Checking lifelog conversation from {date_str} (conv_{conv_index}) for biographical content")
 
-                    process_biographical_extraction(
+                    result = process_biographical_extraction(
                         raw_transcript,
                         "lifelog",
                         date_str,
@@ -757,25 +951,48 @@ def process_biographies_from_lifelogs() -> None:
                         generate_summary
                     )
 
+                    # Update state
+                    if result:
+                        state[state_key] = {
+                            "checked_at": datetime.now().isoformat(),
+                            "status": "biographical_found",
+                            "subjects": [result['subject_name']],
+                            "categories": [result['category']]
+                        }
+                        biographical_count += 1
+                    else:
+                        state[state_key] = {
+                            "checked_at": datetime.now().isoformat(),
+                            "status": "no_biographical",
+                            "subjects": []
+                        }
+
+                    save_biographical_state(state, BIOGRAPHIES_DIR)
                     processed_count += 1
 
             except Exception as e:
                 logger.error(f"Error processing biographical content for {date_str}: {e}")
                 continue
 
-        logger.info(f"Biographical processing complete: {processed_count} lifelog conversations checked")
+        logger.info(f"Biographical processing complete: {processed_count} lifelog conversations checked, "
+                   f"{skipped_count} skipped, {biographical_count} biographical content found")
 
     except Exception as e:
         logger.error(f"Error in biographical processing from lifelogs: {e}")
         raise
 
 
-def process_biographies_from_bee() -> None:
+def process_biographies_from_bee(force_reprocess: bool = False) -> None:
     """
     Process biographical content from bee transcriptions.
 
     This function scans bee transcription files and processes any biographical
     content found in them.
+
+    Parameters
+    ----------
+    force_reprocess : bool
+        If True, reprocess all bee transcriptions even if already checked
     """
     from daily_insights.config import (
         BIOGRAPHIES_DIR,
@@ -792,6 +1009,9 @@ def process_biographies_from_bee() -> None:
     try:
         logger.info("Starting biographical processing from bee transcriptions...")
 
+        if force_reprocess:
+            logger.info("Force reprocess enabled - will reprocess all bee transcriptions")
+
         # Load prompts
         if not BIOGRAPHY_DETECTION_PROMPT.exists():
             logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
@@ -806,11 +1026,16 @@ def process_biographies_from_bee() -> None:
         with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
             light_prompt = f.read()
 
+        # Load state tracking
+        state = load_biographical_state(BIOGRAPHIES_DIR)
+
         # Get all bee transcription files
         bee_files = sorted(Path(BEE_DIR).glob("*_bee.md"))
         date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})_bee\.md")
 
         processed_count = 0
+        skipped_count = 0
+        biographical_count = 0
 
         for bee_path in bee_files:
             match = date_pattern.match(bee_path.name)
@@ -824,6 +1049,14 @@ def process_biographies_from_bee() -> None:
                 continue
 
             try:
+                # Generate state key for this bee file
+                state_key = get_state_key("bee", date_str)
+
+                # Skip if already processed (unless force_reprocess)
+                if not force_reprocess and is_already_processed(state, state_key):
+                    skipped_count += 1
+                    continue
+
                 # Read raw transcript from bee file
                 with open(bee_path, 'r', encoding='utf-8') as f:
                     raw_transcript = f.read()
@@ -831,7 +1064,7 @@ def process_biographies_from_bee() -> None:
                 # Process for biographical content
                 logger.info(f"Checking bee transcription from {date_str} for biographical content")
 
-                process_biographical_extraction(
+                result = process_biographical_extraction(
                     raw_transcript,
                     "bee",
                     date_str,
@@ -842,26 +1075,56 @@ def process_biographies_from_bee() -> None:
                     generate_summary
                 )
 
+                # Update state
+                if result:
+                    state[state_key] = {
+                        "checked_at": datetime.now().isoformat(),
+                        "status": "biographical_found",
+                        "subjects": [result['subject_name']],
+                        "categories": [result['category']]
+                    }
+                    biographical_count += 1
+                else:
+                    state[state_key] = {
+                        "checked_at": datetime.now().isoformat(),
+                        "status": "no_biographical",
+                        "subjects": []
+                    }
+
+                save_biographical_state(state, BIOGRAPHIES_DIR)
                 processed_count += 1
 
             except Exception as e:
                 logger.error(f"Error processing biographical content for {date_str}: {e}")
+                # Mark as error in state
+                state[state_key] = {
+                    "checked_at": datetime.now().isoformat(),
+                    "status": "processing_error",
+                    "error": str(e)
+                }
+                save_biographical_state(state, BIOGRAPHIES_DIR)
                 continue
 
-        logger.info(f"Biographical processing complete: {processed_count} bee transcriptions checked")
+        logger.info(f"Biographical processing complete: {processed_count} bee transcriptions checked, "
+                   f"{skipped_count} skipped, {biographical_count} biographical content found")
 
     except Exception as e:
         logger.error(f"Error in biographical processing from bee transcriptions: {e}")
         raise
 
 
-def process_biographies_from_therapy() -> None:
+def process_biographies_from_therapy(force_reprocess: bool = False) -> None:
     """
     Process biographical content from therapy sessions.
 
     This function scans therapy session files and processes any biographical
     content found in them. It uses the already-detected therapy sessions
     from the therapy service.
+
+    Parameters
+    ----------
+    force_reprocess : bool
+        If True, reprocess all therapy sessions even if already checked
     """
     from daily_insights.config import (
         BIOGRAPHIES_DIR,
@@ -880,6 +1143,9 @@ def process_biographies_from_therapy() -> None:
     try:
         logger.info("Starting biographical processing from therapy sessions...")
 
+        if force_reprocess:
+            logger.info("Force reprocess enabled - will reprocess all therapy sessions")
+
         # Load prompts
         if not BIOGRAPHY_DETECTION_PROMPT.exists():
             logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
@@ -894,11 +1160,16 @@ def process_biographies_from_therapy() -> None:
         with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
             light_prompt = f.read()
 
+        # Load state tracking
+        state = load_biographical_state(BIOGRAPHIES_DIR)
+
         # Get all lifelog files to detect therapy sessions
         lifelog_files = sorted(Path(LIFELOGS_DIR).glob("*.md"))
         date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})\.md")
 
         processed_count = 0
+        skipped_count = 0
+        biographical_count = 0
 
         for lifelog_path in lifelog_files:
             match = date_pattern.match(lifelog_path.name)
@@ -915,14 +1186,22 @@ def process_biographies_from_therapy() -> None:
                 # Detect therapy sessions in this lifelog
                 therapy_sessions = detect_therapy_sessions_mvp(lifelog_path)
 
-                for session in therapy_sessions:
+                for session_index, session in enumerate(therapy_sessions):
+                    # Generate state key for this therapy session
+                    state_key = get_state_key("therapy", date_str, f"session_{session_index}")
+
+                    # Skip if already processed (unless force_reprocess)
+                    if not force_reprocess and is_already_processed(state, state_key):
+                        skipped_count += 1
+                        continue
+
                     # Extract raw transcript from therapy conversation
                     raw_transcript = extract_transcript(session["conversation"])
 
                     # Process for biographical content
-                    logger.info(f"Checking therapy session from {date_str} for biographical content")
+                    logger.info(f"Checking therapy session from {date_str} (session_{session_index}) for biographical content")
 
-                    process_biographical_extraction(
+                    result = process_biographical_extraction(
                         raw_transcript,
                         "therapy",
                         date_str,
@@ -933,26 +1212,49 @@ def process_biographies_from_therapy() -> None:
                         generate_summary
                     )
 
+                    # Update state
+                    if result:
+                        state[state_key] = {
+                            "checked_at": datetime.now().isoformat(),
+                            "status": "biographical_found",
+                            "subjects": [result['subject_name']],
+                            "categories": [result['category']]
+                        }
+                        biographical_count += 1
+                    else:
+                        state[state_key] = {
+                            "checked_at": datetime.now().isoformat(),
+                            "status": "no_biographical",
+                            "subjects": []
+                        }
+
+                    save_biographical_state(state, BIOGRAPHIES_DIR)
                     processed_count += 1
 
             except Exception as e:
                 logger.error(f"Error processing biographical content for therapy on {date_str}: {e}")
                 continue
 
-        logger.info(f"Biographical processing complete: {processed_count} therapy sessions checked")
+        logger.info(f"Biographical processing complete: {processed_count} therapy sessions checked, "
+                   f"{skipped_count} skipped, {biographical_count} biographical content found")
 
     except Exception as e:
         logger.error(f"Error in biographical processing from therapy sessions: {e}")
         raise
 
 
-def process_biographies_from_doctors() -> None:
+def process_biographies_from_doctors(force_reprocess: bool = False) -> None:
     """
     Process biographical content from doctor visits.
 
     This function scans doctor visit files and processes any biographical
     content found in them. It uses the already-detected doctor visits
     from the doctor visit service.
+
+    Parameters
+    ----------
+    force_reprocess : bool
+        If True, reprocess all doctor visits even if already checked
     """
     from daily_insights.config import (
         BIOGRAPHIES_DIR,
@@ -971,6 +1273,9 @@ def process_biographies_from_doctors() -> None:
     try:
         logger.info("Starting biographical processing from doctor visits...")
 
+        if force_reprocess:
+            logger.info("Force reprocess enabled - will reprocess all doctor visits")
+
         # Load prompts
         if not BIOGRAPHY_DETECTION_PROMPT.exists():
             logger.warning(f"Detection prompt not found: {BIOGRAPHY_DETECTION_PROMPT}")
@@ -985,11 +1290,16 @@ def process_biographies_from_doctors() -> None:
         with open(BIOGRAPHY_LIGHT_PROMPT, 'r', encoding='utf-8') as f:
             light_prompt = f.read()
 
+        # Load state tracking
+        state = load_biographical_state(BIOGRAPHIES_DIR)
+
         # Get all lifelog files to detect doctor visits
         lifelog_files = sorted(Path(LIFELOGS_DIR).glob("*.md"))
         date_pattern = re.compile(r"(\d{4}-\d{2}-\d{2})\.md")
 
         processed_count = 0
+        skipped_count = 0
+        biographical_count = 0
 
         for lifelog_path in lifelog_files:
             match = date_pattern.match(lifelog_path.name)
@@ -1006,14 +1316,22 @@ def process_biographies_from_doctors() -> None:
                 # Detect doctor visits in this lifelog
                 doctor_visits = detect_doctor_visits_mvp(lifelog_path)
 
-                for visit in doctor_visits:
+                for visit_index, visit in enumerate(doctor_visits):
+                    # Generate state key for this doctor visit
+                    state_key = get_state_key("doctor", date_str, f"visit_{visit_index}")
+
+                    # Skip if already processed (unless force_reprocess)
+                    if not force_reprocess and is_already_processed(state, state_key):
+                        skipped_count += 1
+                        continue
+
                     # Extract raw transcript from doctor visit conversation
                     raw_transcript = extract_transcript(visit["conversation"])
 
                     # Process for biographical content
-                    logger.info(f"Checking doctor visit from {date_str} for biographical content")
+                    logger.info(f"Checking doctor visit from {date_str} (visit_{visit_index}) for biographical content")
 
-                    process_biographical_extraction(
+                    result = process_biographical_extraction(
                         raw_transcript,
                         "doctor",
                         date_str,
@@ -1024,13 +1342,31 @@ def process_biographies_from_doctors() -> None:
                         generate_summary
                     )
 
+                    # Update state
+                    if result:
+                        state[state_key] = {
+                            "checked_at": datetime.now().isoformat(),
+                            "status": "biographical_found",
+                            "subjects": [result['subject_name']],
+                            "categories": [result['category']]
+                        }
+                        biographical_count += 1
+                    else:
+                        state[state_key] = {
+                            "checked_at": datetime.now().isoformat(),
+                            "status": "no_biographical",
+                            "subjects": []
+                        }
+
+                    save_biographical_state(state, BIOGRAPHIES_DIR)
                     processed_count += 1
 
             except Exception as e:
                 logger.error(f"Error processing biographical content for doctor visit on {date_str}: {e}")
                 continue
 
-        logger.info(f"Biographical processing complete: {processed_count} doctor visits checked")
+        logger.info(f"Biographical processing complete: {processed_count} doctor visits checked, "
+                   f"{skipped_count} skipped, {biographical_count} biographical content found")
 
     except Exception as e:
         logger.error(f"Error in biographical processing from doctor visits: {e}")
